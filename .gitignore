@@ -1,0 +1,19 @@
+# Git ignore list for grails project
+*.class
+*.iws
+*.war
+.classpath
+.DS_Store
+.project
+.settings
+/*.launch
+/*.tmproj
+/out/**
+/docs/**
+stacktrace.log
+test/reports
+/target/**
+jetty-env.xml
+/files/**
+*~
+._*
