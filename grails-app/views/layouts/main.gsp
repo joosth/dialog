@@ -7,30 +7,32 @@
         <title><g:layoutTitle default="Dialog plugin demo" /></title>
                 
         <%-- css from used modules --%>
-        <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'jquery.cluetip.css',contextPath:'',plugin:'dialog')}" />
-    	<link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'datatables.css',plugin:'dialog',contextPath:'')}" />
+        <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'jquery.cluetip.css',plugin:'dialog')}" />
+    	<link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'datatables.css',plugin:'dialog')}" />
 	    
 		<%-- Theme style --%>
-		<link rel="stylesheet" type="text/css" href="${resource(dir:'css/theme',file:'roller-theme.css',contextPath:'',plugin:'dialog')}" />
-        <link rel="stylesheet" type="text/css" href="${resource(dir:'css/theme',file:'theme.css',contextPath:'',plugin:'dialog')}" />
+		<link rel="stylesheet" type="text/css" href="${resource(dir:'css/theme',file:'roller-theme.css',plugin:'dialog')}" />
+        <link rel="stylesheet" type="text/css" href="${resource(dir:'css/theme',file:'theme.css',plugin:'dialog')}" />
         
-        <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'dialog.css',plugin:'dialog',contextPath:'')}" />              
-        <link rel="shortcut icon" href="${createLinkTo(dir:'images',file:'favicon.ico',contextPath:'',plugin:'dialog')}" type="image/x-icon" />
+        <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'dialog.css',plugin:'dialog')}" />              
+        <link rel="shortcut icon" href="${createLinkTo(dir:'images',file:'favicon.ico',plugin:'dialog')}" type="image/x-icon" />
         
         <g:javascript src="jquery/jquery-1.4.2.js" plugin="dialog" />
         <g:javascript>
-        	var wfp={};
-        	var dataTableHashList = {};
-        	wfp.baseUrl="${request.contextPath}";
+        	var dialog={};
+        	var dialog.dataTableHashList = {};
+        	dialog.baseUrl="${request.contextPath}";
         </g:javascript>
-                 
-        <g:javascript src="jquery/jquery-ui-1.8.custom.min.js" contextPath="" plugin="dialog" />
-        <g:javascript src="jquery/jquery.cluetip-patched.js"  contextPath="" plugin="dialog" />
-        <g:javascript src="jquery/jquery.dataTables.js"  contextPath="" plugin='dialog'/>
+        
+        
+        <g:javascript src="jquery/jquery-ui-1.8.custom.min.js" plugin="dialog" />
+        <g:javascript src="jquery/jquery.cluetip-patched.js"  plugin="dialog" />
+        <g:javascript src="jquery/jquery.dataTables.js"  plugin='dialog'/>
                         
-        <g:javascript src="dialog.js"  contextPath="" plugin="dialog" />
+        <g:javascript src="dialog.js"  plugin="dialog" />
         
 		<g:layoutHead />
+		
 	</head>
     <body>
     
