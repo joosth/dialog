@@ -27,11 +27,19 @@ import org.apache.commons.lang.WordUtils
 
 class ListService {
 	
-	def wf4pConfigService
 	def grailsApplication
     boolean transactional = true
 	
-	// Data provider for data list
+
+	/**
+	* Generates a JSON response to feed the datalist
+	* @param dc The domain class to be used
+	* @param params The parameters from the http request
+	* @param request the HTTPServletRequest
+	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
+	* @param actions A closure that provides customized actions in the actions column of the table
+	* @return a map that is ready to be rendered as a JSON message
+	*/
 
     def jsonlist(dc,params,request,filterColumnName=null,actions=null) {
         	def title=dc.getName();
@@ -81,7 +89,7 @@ class ListService {
         		}	            		
         		def baseUrl=request.contextPath
         		if(!actions) {
-        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
         		}
         		inLine+=actions(doc,['detailTableId':detailTableId])
         		def aaLine=[inLine]
@@ -91,6 +99,82 @@ class ListService {
     		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
         	return json
         }
+	
+	/*
+	 * JSON service that allows for an arbitrary HQL query to be the source of the list 
+	 */
+	
+	/**
+	* Generates a JSON response to feed the datalist from an arbitrary HQL query
+	* @param dc The domain class to be used
+	* @param params The parameters from the http request
+	* @param request the HTTPServletRequest
+	* @param query the HQL query
+	* @param the HQL query that counts the number of items in above query, if null, the query is created by prepending 'select count(*) ' to the query above
+	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
+	* @param actions A closure that provides customized actions in the actions column of the table
+	* @return a map that is ready to be rendered as a JSON message
+	*/
+	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnName=null,actions=null) {
+		def title=dc.getName();
+		title=title.replaceAll (".*\\.", "")
+		def propName=title[0].toLowerCase()+title.substring(1)
+		
+		if(!countQuery) {
+			countQuery="select count(*) ${query}"
+		}
+		
+		
+		//def columns=listProperties ? listProperties : dc.listProperties
+		def columns= dc.listProperties
+		def sortName=columns[new Integer(params.iSortCol_0)]
+		sortName=sortName? sortName:columns[0]
+		
+		def documentList
+		
+		//Create Id for the table
+		def detailTableId="detailTable_"+dc
+		detailTableId=detailTableId.replace(".","_")
+		detailTableId=detailTableId.replace("class ","")
+		
+		
+					
+		if (params['objectId'] != null) {
+			query = "${query} and (${params.property}.id=${params.objectId})"
+			countQuery= "${countQuery} and (${params.property}.id=${params.objectId})"
+		}
+		def iTotalRecords=dc.executeQuery(countQuery)[0]
+		def iTotalDisplayRecords=iTotalRecords
+		if (filterColumnName && params.sSearch) {
+			query = "${query} and (${filterColumnName} like '${params.sSearch}%')"
+			countQuery= "${countQuery} and (${filterColumnName} like '${params.sSearch}%')"
+			iTotalDisplayRecords=dc.executeQuery(countQuery)[0]
+		}
+		
+		query="${query} order by ${sortName} ${params.sSortDir_0}" 
+
+		documentList=dc.executeQuery(query,[],[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
+		
+		def aaData=[]
+		documentList.each { doc ->
+			def inLine=[]
+			columns.each {
+				inLine +=doc."${it}".toString()
+			}
+			def baseUrl=request.contextPath
+			if(!actions) {
+				actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+			}
+			inLine+=actions(doc,['detailTableId':detailTableId])
+			def aaLine=[inLine]
+			aaData+=(aaLine)
+		}
+
+		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
+		return json
+	}
+	
+	
     
     
 }
