@@ -17,11 +17,17 @@
 * along with this program.  If not, see http://www.gnu.org/licenses
 */
 
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 /*
  * Modal JQuery UI confirmation dialog
  */
 
-function jqConfirm(message,title,url) {
+
+
+dialog.confirm = function confirm(message,title,url) {
 	var htmlMessage='<div id="dialog-confirm" title="'+title+'"><p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>'+message+'</p></div>';
 	
 	var confirmDialog=$(htmlMessage).dialog({
@@ -30,8 +36,7 @@ function jqConfirm(message,title,url) {
 		//height:140,
 		modal: true,
 		buttons: {
-			"OK": function() {				
-				alert(url)
+			"OK": function() {								
 				$( this ).dialog( "close" );
 			},
 			Cancel: function() {
@@ -46,28 +51,23 @@ function jqConfirm(message,title,url) {
 }
 
 
-function trim(value) {
+dialog.trim = function trim(value) {
 	  value = value.replace(/^\s+/,'');
 	  value = value.replace(/\s+$/,'');
 	  return value;
 	}
 
-
-
-function logMessage(message) {
-		var oldmessage=$("#log").html();
-	$("#log").html(oldmessage+'<br />'+message);
-	
-}
-
-function formDialog(id,controllerName, options ,urlParams) {
-	var urlId=id+obj2ParamStr(urlParams);
+dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
+	var urlId=id+dialog.obj2ParamStr(urlParams);
 	
 	var dialogName = (options != null && options["dialogname"] != null) ? options["dialogname"] : "dialog";
 	var submitName = (options != null && options["submitname"] != null) ? options["submitname"] : "submitdialog";
 	var refreshTableKey = (options != null && options["refresh"] != null) ? options["refresh"] : "NO_REFRESH";
-			 
-	 theUrl=wfp.baseUrl+'/'+controllerName+'/'+dialogName+'/'+urlId	 	
+	var submitForm = (options != null && options["submitform"] != null) ? options["submitform"] : false;
+	
+	var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
+	
+	 theUrl=dialog.baseUrl+'/'+controllerName+'/'+dialogName+'/'+urlId	 	
 	 
 	 var dialogHTML = $.ajax({
 		  url: theUrl,
@@ -81,31 +81,27 @@ function formDialog(id,controllerName, options ,urlParams) {
 	 } else {
 	 
 	 var theWidth=$(dialogHTML).css("width");
+     //var theWidth=600;
 	 
 	 var theDialog=$(dialogHTML).dialog({ 
 		 modal:true,
 		 width:theWidth,
 		 buttons: { 
-		 	"Save": function(e) {
+		 	"OK": function(e) {
+		 		if (submitForm) {
+		 			theDialog.find("form").attr("action",dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId);
+		        	theDialog.find("form").submit();
+		        	$( this ).dialog( "close" );
+		 		} else {
+		 		
 			 	var formData=theDialog.find("form").serialize();
-			 	$.post(wfp.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId,formData, function(data) 
+			 	$.post(dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId,formData, function(data) 
 			 		{
 			 		var jsonResponse = data.result;
-
-			 		$("#statusmessage").html(jsonResponse.message);
-
-			 		//DME logMessage & refreshTree (editor.js)
-			 		if (typeof(refreshTree) === 'function') {
-				 		for (i in jsonResponse.refreshNodes) {
-				 			refreshTree(jsonResponse.refreshNodes[i]);
-				 		}
-			 		}
-			 		if (typeof(logMessage) === 'function') {
-			 			logMessage(jsonResponse.message);			 			
-			 		}
-
-			 		refreshDataTable(refreshTableKey, dataTableHashList, (id ? false : true));
 			 		
+			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
+			 		$(".dialog-events").trigger("dialog-message",{message:jsonResponse.message})
+			 					 		
 			 		if(jsonResponse.success){
 				 		theDialog.dialog("close");
 				 	} else  {
@@ -115,14 +111,39 @@ function formDialog(id,controllerName, options ,urlParams) {
 				 		}
 				 		theDialog.find("div.errors").html(jsonResponse.message)
 				 		theDialog.find("div.errors").show();				 		
-				 	}			 		
-			 	});			 	
+				 	
+			 		}
+			 	});	
+		 		}
         	},
+
        	Cancel: function() {
 	        		$( this ).dialog( "close" );
 	        	}
        	},
         open: function(event, ui) { 
+        	/*
+        	 * First attempt to have a default submit on <enter>
+        	 $(this).find("form").first().unbind('submit');
+        	 $(this).find("form").first().submit(function(){
+             //simulate click on create button
+        		 $(this).parents('.ui-dialog').first().find('.ui-button').first().click();
+        		 return false;
+        	 });
+        	 */
+        	
+        	 $(this).keyup(function(e) {
+        		    if (e.keyCode == 13) {
+        		    	$(this).parents('.ui-dialog').first().find('.ui-button').first().click();
+               		 return false;
+        		    }
+        		});
+        	
+
+        	 
+        	 $(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
+        	 
+        	
          	// Initialize date picker input elements
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
        		$(this).find(".dialogtabs").tabs();
@@ -136,10 +157,10 @@ function formDialog(id,controllerName, options ,urlParams) {
        			var jsonUrl = curMatch.attr("jsonUrl");
        			var controller = jsonUrl.split('/')[1]; //extract controller name from json url
        			
-       			dataTableHashList[tableId] = curMatch.dataTable({
+       			dialog.dataTableHashList[tableId] = curMatch.dataTable({
     				"bProcessing": true,
     				"bServerSide": true,
-    				"sAjaxSource": wfp.baseUrl+jsonUrl,
+    				"sAjaxSource": dialog.baseUrl+jsonUrl,
     				"sPaginationType": "full_numbers",
     				"bFilter": false,
     				"bJQueryUI": true
@@ -147,7 +168,7 @@ function formDialog(id,controllerName, options ,urlParams) {
        			
        			// Add NEW button ("parent()" is the div with class dataTables_wrapper)
        			if (id != null) {
-       				curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
+       				curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
        			}
        			
        		});
@@ -169,11 +190,12 @@ function formDialog(id,controllerName, options ,urlParams) {
 }
 
 
-function deleteDialog(id,controllerName, options ,urlParams) {
-	var urlId=id+obj2ParamStr(urlParams);
+dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
+	var urlId=id+dialog.obj2ParamStr(urlParams);
 	 
 	 var dialogHTML = '<div "title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerName+' '+id+' ?</div></form></div>'	 
-	 
+	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
+
 	 var theDialog=$(dialogHTML).dialog({ 
 		 modal:false,
 		 width:400,
@@ -181,12 +203,13 @@ function deleteDialog(id,controllerName, options ,urlParams) {
 		 buttons: { 
 		 	"Delete": function(e) {
 			 	var formData=theDialog.find("form").serialize();
-			 	$.post(wfp.baseUrl+"/"+controllerName+"/delete/"+urlId,formData, function(data) 
+			 	$.post(dialog.baseUrl+"/"+controllerName+"/delete/"+urlId,formData, function(data) 
 			 		{
 			 		var result=data.result			 		
-			 		$("#statusmessage").html(result.message);
+
 			 		
-			 		refreshDataTable(options["refresh"], dataTableHashList, false);
+			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
+			 		$(".dialog-events").trigger("dialog-message",{message:result.message})
 			 		
 			 		if(result.success){
 				 		theDialog.dialog("close");
@@ -206,7 +229,24 @@ function deleteDialog(id,controllerName, options ,urlParams) {
         });
 }
 
-function refreshDataTable(key, list, lastPage) {
+dialog.refreshDatatableEvent = function refreshDatatableEvent(event,eventData) {	
+	var lastPage = eventData.id==null;
+	
+	if (eventData.dc!=null) {
+        var tableId="detailTable_" + eventData.dc.replace(".","_").replace("class ","");
+        
+        for(key in dialog.dataTableHashList) {
+        	// TODO this is a crude measure. All datatables will refresh. 
+        	// The logic between messages, dialogs and datatables needs to be fixed
+        	if (key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
+        		dialog.refreshDataTable(key,dialog.dataTableHashList,lastPage)		
+        	}        	
+        }
+	}
+}
+
+
+dialog.refreshDataTable = function refreshDataTable(key, list, lastPage) {
 	var curTable = list[key];
 	if (typeof(curTable) !== 'undefined' && curTable != null) {
 		if (lastPage == false) {
@@ -214,11 +254,10 @@ function refreshDataTable(key, list, lastPage) {
 		} else {
 			curTable.fnPageChange( 'last' );
 		}
-		
 	}
 }
 
-function obj2ParamStr(params) {
+dialog.obj2ParamStr = function obj2ParamStr(params) {
 	var paramStr="";
 	 if (params) {
 		 var sep = "?";
@@ -228,6 +267,25 @@ function obj2ParamStr(params) {
 		 }		 
 	 }
 	 return paramStr;
+}
+
+dialog.statusMessage = function statusMessage(event,eventData) {
+	if (eventData.message) {	
+		$("#statusmessage").html(eventData.message);
+	}
+}
+
+jQuery.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
+    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+    return this;
+}
+
+jQuery.fn.hcenter = function () {
+    this.css("position","absolute");
+    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+    return this;
 }
 		
 $(function() {		        
@@ -248,5 +306,8 @@ $(function() {
 			document.location = curMatch[0].href;
 		});
 	});
-  	
+	
+	$("#statusmessage").bind("dialog-message",dialog.statusMessage);	
+	$("#statusmessage").addClass("dialog-events");
+	
 });
