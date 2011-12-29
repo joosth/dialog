@@ -252,3 +252,7 @@ div#topleft-logo h1 .red {color:red;font-size:16px;}
 input:required:invalid, input:focus:invalid { background-image: url(/dialog/css/theme/images/validation/invalid.png); background-position: right top; background-repeat: no-repeat; }
 input:required:valid { background-image: url(/dialog/css/theme/images/validation/valid.png); background-position: right top; background-repeat: no-repeat; }
 */
+
+
+.wide input { width:300px;}
+.extrawide input { width:600px;}
