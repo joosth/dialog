@@ -18,6 +18,8 @@
  */
 package org.open_t.dialog;
 
+import java.util.Date;
+
 import org.springframework.beans.PropertyEditorRegistrar
 import org.springframework.beans.PropertyEditorRegistry
 
@@ -30,7 +32,9 @@ import org.springframework.beans.PropertyEditorRegistry
 public class MyPropertyEditorRegistrar implements PropertyEditorRegistrar {
 
 	public void registerCustomEditors(PropertyEditorRegistry registry) {
-		registry.registerCustomEditor(Date.class, new org.open_t.dialog.DateEditor());
+		//registry.registerCustomEditor(Date.class, new org.open_t.dialog.DateEditor());
 		registry.registerCustomEditor(BigDecimal.class, new org.open_t.dialog.BigDecimalEditor());
+		registry.registerCustomEditor(Date.class, new DateTimePropertyEditor("yyyy-MM-dd'T'HH:mm"));
+		
 	}
 }
