@@ -29,6 +29,30 @@ import org.codehaus.groovy.grails.commons.*
 class DialogTagLib {
 	def dialogService
 	static namespace = 'dialog'
+	
+	/**
+	 * Element to place in HTML page's <head> section
+	 * Initializes nameaspace dialog and hashlist for datatable
+	 * Sets base URL to be used.
+	 * @param request The HTTPServletRequest
+	 */
+	def head = {
+		out << """<script type="text/javascript">
+        	var dialog={};
+        	dialog.dataTableHashList = {};
+        	dialog.baseUrl="${request.contextPath}";
+        </script>        
+		"""
+	}
+	
+	/**
+	 * This tag generates a 2-cell row in the dialog table. The first cell contains the property's label, the second one contains the edit element or display value.
+	 * It is mostly for internal use, the dialog elements input, select etc. use this to wrap themselves in.
+	 * 
+	 *  @param object The domain object
+	 *  @param propertyName The property of the domain object
+	 *  
+	 */
 
 	
 	def row = { attrs,body ->
@@ -76,6 +100,18 @@ class DialogTagLib {
 	
 	}
 	
+	/**
+	* Text input field tag
+	* Any extra attributes are copied over to the HTML &lt;input&gt; element.
+	* The only attributes not copied over are:  object,propertyName,mode,class
+	*
+	* @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param type The type of input to be used (default: text)
+	* @param class The CSS class to be supplied to the enclosing row  
+	*/
+
 	
 	def textField = { attrs ->
 		
@@ -110,10 +146,22 @@ class DialogTagLib {
 		}
 	}
 	
+	/**
+	* Date input field tag
+	* This generates an text input element that pops up a calendar
+	* Currently the format to be used is fixed yyyy-MM-dd
+	* It uses the DateTimePropertyEditor to process the text
+	* Generates a hidden field which triggers the use of the structured property editor
+	* 
+	* @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param class The CSS class to be supplied to the enclosing row
+	*/
+	
 	def date = { attrs ->
 	
-		out << row (object:attrs.object,propertyName:attrs.propertyName) {
-			
+		out << row ("class":attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			
 			switch(attrs.mode) {
 				case "show":
@@ -121,13 +169,71 @@ class DialogTagLib {
 					break
 				
 				case "edit":
-					def dateValue="${formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd")}"
-					"""${g.textField(name:attrs.propertyName,value:dateValue,class:'datepicker')}"""
+					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
+					out << g.hiddenField(hiddenAttrs)
+					
+				
+					def dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd")
+					out << g.textField(name:attrs.propertyName+'_date',value:dateValue,class:'datepicker')
 					break
 			}
 		}
 	}
 	
+	/**
+	* Date input field tag
+	* This generates an text input element that pops up a calendar plus a text input element for the time in hh:mm format
+	* Currently the format to be used for the date is fixed yyyy-MM-dd
+	* It uses the DateTimePropertyEditor to process the text
+	* Generates a hidden field which triggers the use of the structured property editor
+	*
+	* @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param class The CSS class to be supplied to the enclosing row
+	*/
+	
+	def dateTime = { attrs ->
+		
+		out << row (object:attrs.object,propertyName:attrs.propertyName) {
+			
+			switch(attrs.mode) {
+				case "show":
+					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
+					break
+				
+				case "edit":
+					def dateValue=attrs.object."${attrs.propertyName}"
+					
+					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
+					out << g.hiddenField(hiddenAttrs)
+					
+					
+					def dateAttrs=[name:attrs.propertyName+'_date',value:g.formatDate([date:dateValue,format:"yyyy-MM-dd"]),class:'datepicker']
+					out << g.field(dateAttrs)
+					
+					def timeAttrs=[name:attrs.propertyName+'_time',value:g.formatDate([date:dateValue,format:"HH:mm"]),class:'time']
+					out << g.field(timeAttrs)
+					
+					
+					break
+			}
+			
+		}
+		
+		
+				
+	}
+	
+	/**
+	* Text area field tag
+	* 
+	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param class The CSS class to be supplied to the enclosing row
+	*/
+
 	
 	def textArea = { attrs ->
 		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
@@ -142,6 +248,16 @@ class DialogTagLib {
 			}
 		}
 	}
+	
+	/**
+	* XML editing text area field tag
+	*
+	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param class The CSS class to be supplied to the enclosing row
+	*/
+
 	
 	def xml = { attrs ->
 	out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
@@ -159,10 +275,18 @@ class DialogTagLib {
 	}
 	}
 	
+	/**
+	* Checkbox tag
+	*
+	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param class The CSS class to be supplied to the enclosing row
+	*/
 	
 	def checkBox = { attrs ->
 	
-		out << row (object:attrs.object,propertyName:attrs.propertyName) {
+		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			switch(attrs.mode) {
 				case "show":
 					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
@@ -175,10 +299,20 @@ class DialogTagLib {
 		}
 	}
 	
+	/**
+	* domainObject tag - shows a select box that allows to select an object from a domain class
+	*
+	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param class The CSS class to be supplied to the enclosing row
+	* @param from A list of values to be used in lieu of all objects in the domain class
+	* @param sort The property to sort the domain class items in the list by (default: name)
+	*/
 	
 	def domainObject = { attrs ->
 	
-		out << row (object:attrs.object,propertyName:attrs.propertyName) {
+		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			switch(attrs.mode) {
 				case "show":
 					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
@@ -212,6 +346,21 @@ class DialogTagLib {
 		}
 	}
 	
+	/**
+	* select tag - shows a select 
+	*
+	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
+	* @param propertyName The property of the domain object
+	* @param object The domain object
+	* @param class The CSS class to be supplied to the enclosing row
+	* @param from A list of values to be used
+	* @param sort The property to sort the domain class items in the list by (default: name)
+	* @param optionKey attribute to be supplied to the &lt;select&gt; element
+	* @param multiple attribute to be supplied to the &lt;select&gt; element
+	* @param style attribute to be supplied to the &lt;select&gt; element
+	*/
+
+	
 	def select = { attrs ->
 
 		out << row (object:attrs.object,propertyName:attrs.propertyName, vertical:attrs.vertical) {
@@ -240,24 +389,30 @@ class DialogTagLib {
 						optionValues=attrs.object.constraints."${attrs.propertyName}".inList
 					}
 					
-					def opts=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",from:optionValues,noSelection:['null': '-']]
+					def opts=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",from:optionValues]
 					if (attrs["class"]) opts.put("class",attrs["class"])
 					if (attrs["optionKey"]) opts.put("optionKey",attrs["optionKey"])
 					if (attrs["multiple"]) opts.put("multiple",attrs["multiple"])
 					if (attrs["style"]) opts.put("style", attrs["style"])
 					
 					if (property.isOptional()) {
-						// yes. ''  for strings, null for int's
-						opts.put("noSelection",['': '-'])
+						// TODO: yes. ''  for strings, null for int's
+						//opts.put("noSelection",['': '-'])
+						opts.put("noSelection",['null': '-'])
 					}
 					"""${g.select(opts)}"""
 					break
 			}
 		}
 	}
-/*
-	<g:select class="multiselect" name="importSchema" from="${org.workflow4people.Namespace.list(sort:'prefix')}" multiple="yes" optionKey="id" value="${namespaceInstance?.importSchema}" />
+	
+	/**
+	* tabs tag - create a &lt;tabs&gt; enclosure for &lt;tab&gt; elements
+	*
+	* @param names Contains a comma separated string containing the names of the tabs
+	* @param object The domain object
 	*/
+
 	def tabs = { attrs,body ->
 	
 		out << """<div id="dialogtabs" class="dialogtabs" >
@@ -277,16 +432,30 @@ class DialogTagLib {
 		out << "</div>"
 	}
 
+	/**
+	* tab tag - create a &lt;tab&gt; element
+	*
+	* @param name The name of this tab
+	* @param object The domain object
+	*/
+	
 	def tab = { attrs,body ->
-	def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
-	prefix=prefix.replace(".","_")
-	out << """<div id="${prefix}${attrs.name}">
-			<table ><tbody>"""
-		
-	out << body()
-	out << "</tbody></table></div>"
-}
+		def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
+		prefix=prefix.replace(".","_")
+		out << """<div id="${prefix}${attrs.name}">
+				<table ><tbody>"""		
+				out << body()
+				out << "</tbody></table></div>"
+		}
 
+	/**
+	* form tag - create a &lt;form&gt;
+	*
+	* @param name The name of this tab
+	* @param object The domain object
+	* @param width The CSS width of this dialog (default: 600px)
+	* @param title The title of this dialog
+	*/
 	
 	def form = { attrs,body ->
 		def width = attrs.width ? attrs.width : "600px";
@@ -302,7 +471,7 @@ class DialogTagLib {
 			Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
 			if (belongToMap?.size() == 1) {
 				belongToMap.each { key, value ->
-					out << '<input id="' + key + '.id" type="hidden" name="' + key + '.id" value="'+ attrs.object."${key}"?.id +'">'
+					out << '<input id="' + key + '.id" type="hidden" name="' + key + '.id" value="'+ attrs.object."${key}"?.id +'" />'
 				}
 			}
 		}
@@ -310,6 +479,12 @@ class DialogTagLib {
 		out << body()
 		out << "</form></div>"
 	}
+	
+	/**
+	* table tag - create a &lt;table&gt; to contain form rows
+	*
+	*/
+	
 
 	def table = { attrs,body ->
 	
@@ -318,15 +493,18 @@ class DialogTagLib {
 		out << "</tbody></table>"
 	}
 	
+	/**
+	* detailTable tag - create a detail table in master/detail view 
+	* @param domainClass detail class name
+	* @param object master object
+	* @param property property that links detail with the master
+	*/
+	
 	def detailTable = { attrs ->
 		
 		def domainClass = new DefaultGrailsDomainClass( attrs.domainClass)
 
 		def domainPropertyName=domainClass.getPropertyName()
-		
-		//attrs.domainClass = detail class name
-		//attrs.object      = master object
-		//attrs.property    = property that links detail with the master
 		
 		def prefix="detailTable_"+attrs.domainClass
 		prefix=prefix.replace(".","_")
