@@ -147,7 +147,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
          	// Initialize date picker input elements
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
        		$(this).find(".dialogtabs").tabs();
-       		//$(this).find(".altselect").altselect();
+       		$(this).find(".altselect").altselect();
        		
        		var dataTable = $(this).find('.detailTable');
        		

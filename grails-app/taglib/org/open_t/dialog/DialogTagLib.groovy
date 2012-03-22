@@ -356,6 +356,7 @@ class DialogTagLib {
 	* @param from A list of values to be used
 	* @param sort The property to sort the domain class items in the list by (default: name)
 	* @param optionKey attribute to be supplied to the &lt;select&gt; element
+	* @param optionValue attribute to be supplied to the &lt;select&gt; element
 	* @param multiple attribute to be supplied to the &lt;select&gt; element
 	* @param style attribute to be supplied to the &lt;select&gt; element
 	*/
@@ -392,6 +393,7 @@ class DialogTagLib {
 					def opts=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",from:optionValues]
 					if (attrs["class"]) opts.put("class",attrs["class"])
 					if (attrs["optionKey"]) opts.put("optionKey",attrs["optionKey"])
+					if (attrs["optionValue"]) opts.put("optionValue",attrs["optionValue"])
 					if (attrs["multiple"]) opts.put("multiple",attrs["multiple"])
 					if (attrs["style"]) opts.put("style", attrs["style"])
 					
