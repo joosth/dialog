@@ -113,9 +113,10 @@ class ListService {
 	* @param the HQL query that counts the number of items in above query, if null, the query is created by prepending 'select count(*) ' to the query above
 	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
 	* @param actions A closure that provides customized actions in the actions column of the table
+	* @param queryParams a parameter map for the query
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnName=null,actions=null) {
+	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnName=null,actions=null,queryParams=[]) {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
 		def propName=title[0].toLowerCase()+title.substring(1)
@@ -143,17 +144,17 @@ class ListService {
 			query = "${query} and (${params.property}.id=${params.objectId})"
 			countQuery= "${countQuery} and (${params.property}.id=${params.objectId})"
 		}
-		def iTotalRecords=dc.executeQuery(countQuery)[0]
+		def iTotalRecords=dc.executeQuery(countQuery,queryParams)[0]
 		def iTotalDisplayRecords=iTotalRecords
 		if (filterColumnName && params.sSearch) {
 			query = "${query} and (${filterColumnName} like '${params.sSearch}%')"
 			countQuery= "${countQuery} and (${filterColumnName} like '${params.sSearch}%')"
-			iTotalDisplayRecords=dc.executeQuery(countQuery)[0]
+			iTotalDisplayRecords=dc.executeQuery(countQuery,queryParams)[0]
 		}
 		
 		query="${query} order by ${sortName} ${params.sSortDir_0}" 
 
-		documentList=dc.executeQuery(query,[],[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
+		documentList=dc.executeQuery(query,queryParams,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
 		
 		def aaData=[]
 		documentList.each { doc ->

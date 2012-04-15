@@ -7,7 +7,13 @@ class DialogGrailsPlugin {
     def dependsOn = [:]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
-            "grails-app/views/error.gsp"
+            "grails-app/views/error.gsp",
+			"grails-app/domain/org/open_t/dialog/demo/Demo.groovy",
+			"grails-app/domain/org/open_t/dialog/demo/DemoItem.groovy",
+			"grails-app/controllers/org/open_t/dialog/demo/DemoController.groovy",
+			"grails-app/controllers/org/open_t/dialog/demo/DemoItemController.groovy",			
+			"grails-app/views/demo/dialog.gsp",
+			"grails-app/views/demoItem/dialog.gsp"
     ]
 
     // TODO Fill in these fields
