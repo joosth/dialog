@@ -256,3 +256,5 @@ input:required:valid { background-image: url(/dialog/css/theme/images/validation
 
 .wide input { width:300px;}
 .extrawide input { width:600px;}
+
+.autocomplete-description {font-size:10px;}

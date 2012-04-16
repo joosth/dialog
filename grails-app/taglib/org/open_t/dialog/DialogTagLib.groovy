@@ -342,6 +342,28 @@ class DialogTagLib {
 					else
 						"""${g.select(name:attrs.propertyName+'.id',value:valueId,from:optionValues,optionKey:'id')}"""
 					break
+				case "autocomplete":
+					def optionValues=[]
+					def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
+					def property=domainClass.getPropertyByName(attrs.propertyName)
+					if (attrs.from) {
+						optionValues=attrs.from
+					}
+					def value=attrs.object."${attrs.propertyName}"
+					def valueId=value ? value.id : null
+					
+					def dc = new DefaultGrailsDomainClass( property.getType())
+					def domainPropertyName=dc.getPropertyName()
+					
+					def jsonUrl="${request.contextPath}/${domainPropertyName}/autocomplete"
+					
+					
+					// input+hidden veld
+					"""<input name="${attrs.propertyName}-entry" value="${value?.acLabel}" type="text" class="autocomplete" jsonUrl="${jsonUrl}" />
+					   <p id="${attrs.propertyName}-description" class="autocomplete-description">${value?.acDescription}</p>
+					   <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" />"""
+					break
+			
 			}
 		}
 	}

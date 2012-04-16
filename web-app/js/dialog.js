@@ -180,7 +180,40 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			splitTitle: '|',  
        			cluezIndex: parentZIndex+1
       	    	});
-                     },
+       		
+       		//$(".autocomplete").autocomplete({source:"/boekhouding/rekening/autocomplete"})
+       		$(".autocomplete").each(function (index) {
+       			var curMatch = $(this);
+       			var jsonUrl = curMatch.attr("jsonUrl");
+       			curMatch.autocomplete({source:jsonUrl,
+       				select: function( event, ui ) {
+       					$( this ).val( ui.item.label );
+       					var name=$( this ).attr("name");       					
+       					name=name.replace("-entry","");
+       					$('[name='+ name+'.id]' ).val( ui.item.value );
+       					if (ui.item.description) {
+       						$('#'+name+'-description' ).html( ui.item.description);
+       					}
+       					// nice idea! should use this.
+       					//$( "#project-icon" ).attr( "src", "images/" + ui.item.icon );
+
+       					return false;
+       				},
+       				focus: function( event, ui ) {
+       					$( this ).val( ui.item.label );
+       					return false;
+       				}
+       			}).data( "autocomplete" )._renderItem = function( ul, item ) {       					
+       					var desc = item.description ? item.description : ""
+       				return $( "<li></li>" )
+    				.data( "item.autocomplete", item )
+    				.append( "<a>" + item.label + "<br><span class=\"autocomplete-description\">" + desc + "</span></a>" )
+    				.appendTo( ul );
+       			};
+       			
+       		}
+       		);
+         },
         close: function(event, ui) {      
                theDialog.dialog("destroy").remove();
              }

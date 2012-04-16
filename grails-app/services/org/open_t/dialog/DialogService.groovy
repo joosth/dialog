@@ -20,6 +20,7 @@ package org.open_t.dialog
 import org.codehaus.groovy.grails.commons.* 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
+import org.apache.commons.lang.WordUtils
 
 /*
  * Provide generic edit,submit,delete operations for dialog handling 
@@ -258,5 +259,50 @@ class DialogService {
 		
 	}
 	
+	
+	/**
+	* Generates a JSON response to feed the datalist
+	* @param dc The domain class to be used
+	* @param params The parameters from the http request
+	* @param request the HTTPServletRequest
+	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
+	* @param actions A closure that provides customized actions in the actions column of the table
+	* @return a map that is ready to be rendered as a JSON message
+	*/
 
+	def autocomplete(dc,params,request,searchColumnName="name",labelColumnName="acLabel",descriptionColumnName="acDescription") {
+			def title=dc.getName();
+			title=title.replaceAll (".*\\.", "")
+			def propName=title[0].toLowerCase()+title.substring(1)
+			
+			def columns=dc.listProperties
+			def sortName=searchColumnName
+			 
+			def documentList
+			def iTotalRecords=dc.count()
+			def iTotalDisplayRecords
+			def maxResults=10
+						
+			if (searchColumnName) {
+				def filterMethod = "findAllBy"+WordUtils.capitalize(searchColumnName)+"Like"
+				documentList=dc."$filterMethod"(params.term+"%", [max:maxResults,sort:sortName])
+			} else {
+				documentList=dc.list([max:maxResults,sort:sortName])
+			}
+			
+			
+			def json=[]
+			documentList.each { doc ->
+				if (labelColumnName) {
+					if (descriptionColumnName) {
+						json+=[value:doc.id,label:doc."${labelColumnName}", description:doc."${descriptionColumnName}"]
+					} else {
+						json+=[value:doc.id,label:doc."${labelColumnName}"]
+					}
+				} else {
+					json+=[value:doc.id,label:doc.toString()]				
+				}
+			} 
+			return json
+		}
 }
