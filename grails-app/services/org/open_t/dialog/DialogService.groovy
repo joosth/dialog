@@ -270,26 +270,22 @@ class DialogService {
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 
-	def autocomplete(dc,params,request,searchColumnName="name",labelColumnName="acLabel",descriptionColumnName="acDescription") {
+	def autocomplete(dc,params,request,searchColumnName="name",engine="hibernate",labelColumnName="acLabel",descriptionColumnName="acDescription") {
 			def title=dc.getName();
 			title=title.replaceAll (".*\\.", "")
 			def propName=title[0].toLowerCase()+title.substring(1)
-			
-			def columns=dc.listProperties
-			def sortName=searchColumnName
-			 
+					 
 			def documentList
-			def iTotalRecords=dc.count()
-			def iTotalDisplayRecords
 			def maxResults=10
 						
-			if (searchColumnName) {
+			if (engine=="hibernate") {
 				def filterMethod = "findAllBy"+WordUtils.capitalize(searchColumnName)+"Like"
-				documentList=dc."$filterMethod"(params.term+"%", [max:maxResults,sort:sortName])
-			} else {
-				documentList=dc.list([max:maxResults,sort:sortName])
+				documentList=dc."$filterMethod"(params.term+"%", [max:maxResults,sort:searchColumnName])
 			}
-			
+			if (engine=="lucene") {
+				def res=dc.search(params.term,[max:maxResults])
+				documentList=res.results
+			}
 			
 			def json=[]
 			documentList.each { doc ->
@@ -305,4 +301,18 @@ class DialogService {
 			} 
 			return json
 		}
+	
+	/*
+	def booksearch() {
+		def res=Book.search(params.id)
+		println res
+		def rslt=[total:res.total,results:res.results]
+		render rslt as JSON
+	}
+	*/
+	
+	
+	
+	
+	
 }
