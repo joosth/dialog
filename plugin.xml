@@ -1,0 +1,29 @@
+<plugin name='dialog' version='0.1' grailsVersion='1.3.5 &gt; *'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>\
+Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/dialog</documentation>
+  <type>DialogGrailsPlugin</type>
+  <resources>
+    <resource>spring.resources</resource>
+    <resource>org.open_t.dialog.demo.DemoController</resource>
+    <resource>org.open_t.dialog.demo.DemoItemController</resource>
+    <resource>org.open_t.dialog.demo.Demo</resource>
+    <resource>org.open_t.dialog.demo.DemoItem</resource>
+    <resource>org.open_t.dialog.DialogService</resource>
+    <resource>org.open_t.dialog.ListService</resource>
+    <resource>org.open_t.dialog.DialogTagLib</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://plugins.grails.org' />
+    <repository name='http://repo.grails.org/grails/plugins' url='http://repo.grails.org/grails/plugins/' />
+    <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
+    <repository name='grailsCore' url='http://svn.codehaus.org/grails/trunk/grails-plugins' />
+  </repositories>
+  <dependencies />
+  <plugins />
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

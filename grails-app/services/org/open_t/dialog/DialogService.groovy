@@ -270,19 +270,34 @@ class DialogService {
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 
-	def autocomplete(dc,params,request,searchColumnName="name",engine="hibernate",labelColumnName="acLabel",descriptionColumnName="acDescription") {
+	def autocomplete(dc,params,request,query=["name"],queryType="prop",queryParams=[],labelColumnName="acLabel",descriptionColumnName="acDescription") {
 			def title=dc.getName();
 			title=title.replaceAll (".*\\.", "")
 			def propName=title[0].toLowerCase()+title.substring(1)
 					 
 			def documentList
 			def maxResults=10
-						
-			if (engine=="hibernate") {
-				def filterMethod = "findAllBy"+WordUtils.capitalize(searchColumnName)+"Like"
-				documentList=dc."$filterMethod"(params.term+"%", [max:maxResults,sort:searchColumnName])
+			
+			// Search on properties using HQL
+			if (queryType=="prop") {								
+				def fields=query
+				def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
+				def order=fields.collect {"dc.${it}"}.join(",")
+				documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params.term+'%'],[max:maxResults])				
 			}
-			if (engine=="lucene") {
+			
+			// Custom HQL query with like-ready 'term' parameter
+			if (queryType=="hql-like") {				
+				documentList=dc.findAll(query,[term:'%'+params.term+'%'],[max:maxResults])
+			}
+			
+			// Bring-your-own-parameters HQL
+			if (queryType=="hql") {
+				documentList=dc.findAll(query,[term:params.term],queryParams)
+			}
+			
+			// Lucene keyword search
+			if (queryType=="lucene") {
 				def res=dc.search(params.term,[max:maxResults])
 				documentList=res.results
 			}
@@ -301,18 +316,6 @@ class DialogService {
 			} 
 			return json
 		}
-	
-	/*
-	def booksearch() {
-		def res=Book.search(params.id)
-		println res
-		def rslt=[total:res.total,results:res.results]
-		render rslt as JSON
-	}
-	*/
-	
-	
-	
 	
 	
 }

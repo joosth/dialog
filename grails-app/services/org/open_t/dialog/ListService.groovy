@@ -72,9 +72,16 @@ class ListService {
 				}				
 			} else {
 				if (filterColumnName && params.sSearch) {
-					def filterMethod = "findAllBy"+WordUtils.capitalize(filterColumnName)+"Like"
-					iTotalDisplayRecords=dc."$filterMethod"(params.sSearch+"%").size()
-					documentList=dc."$filterMethod"(params.sSearch+"%", [max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
+					def fields
+					if (String.isInstance(filterColumnName)) {
+						fields=[filterColumnName]
+					} else {
+						fields=filterColumnName
+					}
+					def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
+					def order=fields.collect {"dc.${it}"}.join(",")
+					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params.sSearch+'%'],[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
+					iTotalDisplayRecords =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}",[term:'%'+params.sSearch+'%'])				
 				} else {
 					documentList=dc.list([max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
 					iTotalDisplayRecords = iTotalRecords
@@ -126,8 +133,8 @@ class ListService {
 		}
 		
 		
-		//def columns=listProperties ? listProperties : dc.listProperties
-		def columns= dc.listProperties
+		def columns=listProperties ? listProperties : dc.listProperties
+		//def columns= dc.listProperties
 		def sortName=columns[new Integer(params.iSortCol_0)]
 		sortName=sortName? sortName:columns[0]
 		
@@ -147,8 +154,8 @@ class ListService {
 		def iTotalRecords=dc.executeQuery(countQuery,queryParams)[0]
 		def iTotalDisplayRecords=iTotalRecords
 		if (filterColumnName && params.sSearch) {
-			query = "${query} and (${filterColumnName} like '${params.sSearch}%')"
-			countQuery= "${countQuery} and (${filterColumnName} like '${params.sSearch}%')"
+			query = "${query} and (${filterColumnName} like '%${params.sSearch}%')"
+			countQuery= "${countQuery} and (${filterColumnName} like '%${params.sSearch}%')"
 			iTotalDisplayRecords=dc.executeQuery(countQuery,queryParams)[0]
 		}
 		

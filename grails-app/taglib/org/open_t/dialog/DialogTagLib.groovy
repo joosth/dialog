@@ -40,6 +40,9 @@ class DialogTagLib {
 		out << """<script type="text/javascript">
         	var dialog={};
         	dialog.dataTableHashList = {};
+			dialog.options = {
+				"refreshPage":false
+			};
         	dialog.baseUrl="${request.contextPath}";
         </script>        
 		"""
@@ -350,18 +353,26 @@ class DialogTagLib {
 						optionValues=attrs.from
 					}
 					def value=attrs.object."${attrs.propertyName}"
+					def valueLabel=value ? value.acLabel : ""
+					def valueDescription=value ? value.acDescription : ""
+					
 					def valueId=value ? value.id : null
 					
 					def dc = new DefaultGrailsDomainClass( property.getType())
 					def domainPropertyName=dc.getPropertyName()
 					
-					def jsonUrl="${request.contextPath}/${domainPropertyName}/autocomplete"
+					def acAction=attrs.acAction ? attrs.acAction : "autocomplete" 
+					def jsonUrl="${request.contextPath}/${domainPropertyName}/${acAction}"
 					
-					
-					// input+hidden veld
-					"""<input name="${attrs.propertyName}-entry" value="${value?.acLabel}" type="text" class="autocomplete" jsonUrl="${jsonUrl}" />
-					   <p id="${attrs.propertyName}-description" class="autocomplete-description">${value?.acDescription}</p>
-					   <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" />"""
+					def descriptionText=""
+					if (attrs.subtitle=="true") {
+						descriptionText="""<p id="${attrs.propertyName}-description" class="autocomplete-description">${valueDescription}</p>"""
+					}
+					def containerClass = value ? "ac-selected" : "ac-idle"
+					// input+hidden field
+					"""<span class="autocomplete-container ${containerClass}" id="${attrs.propertyName}-container"><input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete" jsonUrl="${jsonUrl}" />
+					   ${descriptionText}
+					   <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}"/><span id="${attrs.propertyName}-icon" class="ac-icon ui-icon ui-icon-triangle-1-w">&nbsp;</span></span>"""
 					break
 			
 			}
@@ -483,9 +494,9 @@ class DialogTagLib {
 	
 	def form = { attrs,body ->
 		def width = attrs.width ? attrs.width : "600px";
-		
-		out << """<div aid="dialog" style="width:${width};" title="${attrs.title}">
-		<form class="ajaxdialogform">
+		def name = attrs.name ? attrs.name : "form"
+		out << """<div aid="dialog" style="width:${width};" title="${attrs.title}" id="${name}">
+		<form class="ajaxdialogform" name="${name}">
 		<div class="errors" style="display:none;"></div>"""
 
 		// Add Hidden field with the id of the parent DomainObject (belongsTo)

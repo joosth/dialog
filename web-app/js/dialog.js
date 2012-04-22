@@ -141,7 +141,6 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         	
 
         	 
-        	 $(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
         	 
         	
          	// Initialize date picker input elements
@@ -182,25 +181,58 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
       	    	});
        		
        		//$(".autocomplete").autocomplete({source:"/boekhouding/rekening/autocomplete"})
-       		$(".autocomplete").each(function (index) {
+       		$("input.autocomplete").each(function (index) {
        			var curMatch = $(this);
        			var jsonUrl = curMatch.attr("jsonUrl");
        			curMatch.autocomplete({source:jsonUrl,
+       									minLength:0,
        				select: function( event, ui ) {
        					$( this ).val( ui.item.label );
        					var name=$( this ).attr("name");       					
        					name=name.replace("-entry","");
        					$('[name='+ name+'.id]' ).val( ui.item.value );
+       					$('[name='+ name+'.id]' ).attr("label", ui.item.label );
        					if (ui.item.description) {
        						$('#'+name+'-description' ).html( ui.item.description);
        					}
+       					$('#'+name+'-container' ).addClass("ac-selected");
+       					$('#'+name+'-container' ).removeClass("ac-idle");
+       					$('#'+name+'-container' ).removeClass("ac-selecting");
        					// nice idea! should use this.
        					//$( "#project-icon" ).attr( "src", "images/" + ui.item.icon );
 
        					return false;
        				},
+       			   change: function(event, ui) {
+       				  // var value=this.attributes["value"];
+       				   //$( this ).val( value.nodeValue );
+       				   
+       				   var name=$( this ).attr("name");       					
+       				   var currentValue=$( this ).val();
+       				   
+       				   name=name.replace("-entry","");       				   
+       				   var label=$('[name='+ name+'.id]' ).attr("label");
+       				   if (currentValue=="" || currentValue=="-") {
+       					$('[name='+ name+'.id]' ).val("null");
+       				   } else {
+       					   $( this ).val( label );
+       				   }
+       				   
+       				   $('#'+name+'-container' ).addClass("ac-selected");
+       				   $('#'+name+'-container' ).removeClass("ac-idle");
+       				   $('#'+name+'-container' ).removeClass("ac-selecting");
+       				   $(this).trigger("change");
+       				   $('[name='+ name+'.id]' ).trigger("change",this);
+       				   return false;
+       			   },
+       				
        				focus: function( event, ui ) {
        					$( this ).val( ui.item.label );
+       					var name=$( this ).attr("name");       					
+       					name=name.replace("-entry","");
+       					$('#'+name+'-container' ).removeClass("ac-selected");
+       					$('#'+name+'-container' ).removeClass("ac-idle");
+       					$('#'+name+'-container' ).addClass("ac-selecting");       					
        					return false;
        				}
        			}).data( "autocomplete" )._renderItem = function( ul, item ) {       					
@@ -213,6 +245,9 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			
        		}
        		);
+       		$(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
+
+       		
          },
         close: function(event, ui) {      
                theDialog.dialog("destroy").remove();
@@ -262,19 +297,23 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
         });
 }
 
-dialog.refreshDatatableEvent = function refreshDatatableEvent(event,eventData) {	
-	var lastPage = eventData.id==null;
-	
-	if (eventData.dc!=null) {
-        var tableId="detailTable_" + eventData.dc.replace(".","_").replace("class ","");
-        
-        for(key in dialog.dataTableHashList) {
-        	// TODO this is a crude measure. All datatables will refresh. 
-        	// The logic between messages, dialogs and datatables needs to be fixed
-        	if (key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
-        		dialog.refreshDataTable(key,dialog.dataTableHashList,lastPage)		
-        	}        	
-        }
+dialog.refreshDatatableEvent = function refreshDatatableEvent(event,eventData) {
+	if (dialog.options.refreshPage) {
+		window.location.reload();
+	} else {	
+		var lastPage = eventData.id==null;
+		
+		if (eventData.dc!=null) {
+	        var tableId="detailTable_" + eventData.dc.replace(".","_").replace("class ","");
+	        
+	        for(key in dialog.dataTableHashList) {
+	        	// TODO this is a crude measure. All datatables will refresh. 
+	        	// The logic between messages, dialogs and datatables needs to be fixed
+	        	if (key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
+	        		dialog.refreshDataTable(key,dialog.dataTableHashList,lastPage)		
+	        	}        	
+	        }
+		}
 	}
 }
 
