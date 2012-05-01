@@ -32,7 +32,7 @@ class DialogTagLib {
 	
 	/**
 	 * Element to place in HTML page's <head> section
-	 * Initializes nameaspace dialog and hashlist for datatable
+	 * Initializes namespace dialog and hashlist for datatable
 	 * Sets base URL to be used.
 	 * @param request The HTTPServletRequest
 	 */

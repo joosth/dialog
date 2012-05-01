@@ -132,6 +132,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         	 });
         	 */
         	
+        
+        	
         	 $(this).keyup(function(e) {
         		    if (e.keyCode == 13) {
         		    	$(this).parents('.ui-dialog').first().find('.ui-button').first().click();
@@ -141,7 +143,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         	
 
         	 
-        	 
+        	$(this).find("td.tinymce textarea").tinymce({});
+        	
         	
          	// Initialize date picker input elements
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
