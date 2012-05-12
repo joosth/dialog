@@ -66,10 +66,17 @@ class DialogTagLib {
 		def propertyName=attrs.propertyName;
 		def property=domainClass.getPropertyByName(propertyName)
 		def naturalName=property.naturalName;
-		
+		def cssClass=attrs.class ? attrs.class : ""
+		def errors=""
+		if (attrs.object.hasErrors()) {
+			if(attrs.object.errors.getFieldError(propertyName)) {
+				errors=g.message(code:"${domainPropertyName}.${propertyName}.error", default:attrs.object.errors.getFieldError(propertyName).defaultMessage)
+				cssClass+=" error"
+			}
+		}
 		if (attrs.vertical == "true") {
 			out <<"""
-			<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${attrs.class}">
+			<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">
 				<td valign="top" class="name">
 					<label for="name">${g.message(code:"${domainPropertyName}.${propertyName}.label", default:"${naturalName}")}</label>
 				</td>
@@ -86,7 +93,7 @@ class DialogTagLib {
 				</td>
 			</tr>"""
 		} else {
-			out <<"""<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${attrs.class}">
+			out <<"""<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">
 					<td valign="top" class="name">
 					<label for="name">${g.message(code:"${domainPropertyName}.${propertyName}.label", default:"${naturalName}")}</label>
 					</td>
@@ -94,7 +101,7 @@ class DialogTagLib {
 			out << body()
 			
 			out << """</td><td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span>
-				</td></tr>"""
+				</td><td>${errors}</td></tr>"""
 		}
 	
 
