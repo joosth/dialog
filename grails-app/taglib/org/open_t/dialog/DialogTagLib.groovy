@@ -554,8 +554,14 @@ class DialogTagLib {
 		
 		def optionalParams = '?objectId='+attrs.object.id+'&objectClass='+attrs.object.getClass().getName()+'&property='+attrs.property
 		def jsonUrl='/'+domainPropertyName+'/jsonlist'+optionalParams
+		def positionUrl='/'+domainPropertyName+'/position'+optionalParams
+		def cssClass="detailTable"
+		if (attrs.rowreordering) {
+			cssClass+=" rowreordering"
+		}
+		
 		out << """<div>
-					<table id="${prefix}" class="detailTable" jsonUrl=${jsonUrl}><thead><tr>"""
+					<table id="${prefix}" class="${cssClass}" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
 			attrs.domainClass.listProperties.each { propertyName ->
 
 				def property=domainClass.getPropertyByName(propertyName)

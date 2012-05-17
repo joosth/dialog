@@ -20,6 +20,7 @@
 package org.open_t.dialog
 
 import org.apache.commons.lang.WordUtils
+import org.codehaus.groovy.grails.commons.*
 
 /*
  * Provide list handling service
@@ -90,17 +91,18 @@ class ListService {
 			
     		def aaData=[]
             documentList.each { doc ->
-        		def inLine=[]
+        		def inLine=[DT_RowId:doc.id]
+				def i=0				
         		columns.each { 	            			   
-        			inLine +=doc."${it}".toString()
+        			inLine +=["${i}":doc."${it}".toString()]
+					i++
         		}	            		
         		def baseUrl=request.contextPath
         		if(!actions) {
         			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
         		}
-        		inLine+=actions(doc,['detailTableId':detailTableId])
-        		def aaLine=[inLine]
-        		aaData+=(aaLine)
+        		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
+				aaData+=inLine
     		}
 
     		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
@@ -164,23 +166,58 @@ class ListService {
 		documentList=dc.executeQuery(query,queryParams,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
 		
 		def aaData=[]
-		documentList.each { doc ->
-			def inLine=[]
-			columns.each {
-				inLine +=doc."${it}".toString()
-			}
-			def baseUrl=request.contextPath
-			if(!actions) {
-				actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
-			}
-			inLine+=actions(doc,['detailTableId':detailTableId])
-			def aaLine=[inLine]
-			aaData+=(aaLine)
-		}
+            documentList.each { doc ->
+        		def inLine=[DT_RowId:doc.id]
+				def i=0				
+        		columns.each { 	            			   
+        			inLine +=["${i}":doc."${it}".toString()]
+					i++
+        		}	            		
+        		def baseUrl=request.contextPath
+        		if(!actions) {
+        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+        		}
+        		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
+				aaData+=inLine
+    		}
 
-		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
-		return json
+    		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
+    	return json
 	}
+	
+	def position(dc,params) {
+		def defaultDomainClass = new DefaultGrailsDomainClass( dc )		
+		Map belongsToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
+		
+		def movedItem=dc.get(params.id)
+		Integer toPosition=new Integer(params.toPosition)
+		movedItem.position=toPosition
+		movedItem.save(flush:true)
+		def items
+		if (belongsToMap?.size() == 1 ) {
+			String parentname=""
+			belongsToMap.each { key, value ->
+				parentname=key
+			}
+			def parent=movedItem."${parentname}"
+			items=dc.findAll("from ${dc.getName()} where ${parentname}=:parent order by position asc",[parent:parent])
+		} else {
+			items=dc.findAll([sort:'position',order:'asc'])
+		}
+		int idx=1
+		items.each { item ->
+			if (item.id!=movedItem.id){
+				if (idx==toPosition) {
+					idx++
+				}
+				item.position=idx
+				item.save()
+				idx++
+			}
+		}
+		return ['succes':true]
+	}
+	
 	
 	
     

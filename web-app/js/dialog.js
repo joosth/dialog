@@ -157,6 +157,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			var curMatch = $(this);
        			var tableId = curMatch.attr('id');
        			var jsonUrl = curMatch.attr("jsonUrl");
+       			var positionUrl = curMatch.attr("positionUrl");
        			var controller = jsonUrl.split('/')[1]; //extract controller name from json url
        			
        			dialog.dataTableHashList[tableId] = curMatch.dataTable({
@@ -167,6 +168,19 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     				"bFilter": false,
     				"bJQueryUI": true
     			});
+       			
+       			if ( $(this).hasClass("rowreordering")) {
+       				dialog.dataTableHashList[tableId].rowReordering(
+       				
+       				{
+       					 sURL:dialog.baseUrl+positionUrl,
+                         sRequestType: "POST"
+		
+       				});
+       				
+       				
+       			}
+       			
        			
        			// Add NEW button ("parent()" is the div with class dataTables_wrapper)
        			if (id != null) {

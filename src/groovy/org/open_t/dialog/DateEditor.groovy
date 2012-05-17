@@ -32,8 +32,9 @@ import java.beans.PropertyEditorSupport
 public class DateEditor extends PropertyEditorSupport{
 	
 	String getAsText() {
-		def locale = new Locale('nl')
+		//def locale = new Locale('nl')
 		Date d = (Date) super.getValue()
+		println "GetAsText: ${d}"
 		if (d) {
 			return d.format("yyyy-MM-dd'T'HH:mm:ss")
 		} else {
@@ -42,6 +43,7 @@ public class DateEditor extends PropertyEditorSupport{
 	}
 	
 	void setAsText(String value) {
+		println "SetAsText: ${value}"
 		if (value=="") {
 			setValue(null)
 		} else {
