@@ -268,3 +268,6 @@ td.value { padding-top:4px;}
 .autocomplete-container { height:18px;display: inline-block;}
 
 td.tinymce textarea {width:100%;}
+
+
+table.rowreordering tr { cursor:pointer;}

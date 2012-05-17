@@ -25,7 +25,13 @@
 		]
 		
 		} );
-		
+		<g:if test="${rowreordering}">
+			dialog.dataTableHashList[tableId].rowReordering(       				
+       				{
+       					 sURL:"${resource(dir:controllerName,file: position ? position :'position')}",
+                         sRequestType: "POST"
+       				});       	
+		</g:if>
 		
 		
 		
@@ -53,7 +59,7 @@
    			</div>
 	      	<div class="datatable">
 	      
-	   			<table cellpadding="0" cellspacing="0" border="0" class="display" id="detailTable_${dc.getName().replace(".","_").replace("class ","")}">
+	   			<table cellpadding="0" cellspacing="0" border="0" class="display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace(".","_").replace("class ","")}">
 					<thead>
 				
 						<tr>
