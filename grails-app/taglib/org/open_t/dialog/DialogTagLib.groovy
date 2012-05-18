@@ -103,12 +103,50 @@ class DialogTagLib {
 			out << """</td><td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span>
 				</td><td>${errors}</td></tr>"""
 		}
-	
-
 		
-
-	
 	}
+	
+	def simplerow = { attrs,body ->		
+		def cssClass=attrs.class ? attrs.class : ""
+		def error=attrs.error ? attrs.error : ""
+		def errors=""
+		if (attrs.error) {
+				cssClass+=" error"
+			}
+		
+		if (attrs.vertical == "true") {
+			out <<"""
+			<tr class="prop ${cssClass}">
+				<td valign="top" class="name">
+					<label for="name">${g.message(code:"dialog.${attrs.name}.label", default:"${attrs.name}")}</label>
+				</td>
+				<td>&nbsp;
+				</td>
+				<td>
+					<p align=right><span class="help-icon help action" title="${g.message(code:"dialog.${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span></p>
+				</td>
+			</tr>
+			<tr class="prop ${attrs.class}">
+				<td valign="top" colspan="3" class="value ${attrs.class}">"""
+			out << body()
+			out << """
+				</td>
+			</tr>"""
+		} else {
+			out <<"""<tr class="prop ${cssClass}">
+					<td valign="top" class="name">
+					<label for="name">${g.message(code:"dialog.${attrs.name}.label", default:"${attrs.name}")}</label>
+					</td>
+					<td valign="top" class="value ${attrs.class}">"""
+			out << body()
+			
+			out << """</td><td>&nbsp;<span class="help-icon help action" title="${g.message(code:"dialog.${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span>
+				</td><td>${error}</td></tr>"""
+		}
+		
+	}
+	
+	
 	
 	/**
 	* Text input field tag
@@ -135,11 +173,16 @@ class DialogTagLib {
 				
 				case "edit":
 					def name=attrs.propertyName
-					def value=fieldValue(bean: attrs.object, field: attrs.propertyName)
+					def value=null
+					if (attrs.value) {
+						value=attrs.value
+					} else {
+						value=fieldValue(bean: attrs.object, field: attrs.propertyName)
+					}
 					
 					// Copy all extra attributes, skip the ones that are only meaningful for textField or are handled manually
 					def copiedAttrs=""
-					def skipAttrs=['object','propertyName','mode','class','type']
+					def skipAttrs=['object','propertyName','mode','class','type','value']
 					attrs.each { attrKey, attrValue ->						 
 						 if (!skipAttrs.contains(attrKey))
 						 {
