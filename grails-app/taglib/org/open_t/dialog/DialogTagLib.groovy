@@ -546,8 +546,13 @@ class DialogTagLib {
 		def width = attrs.width ? attrs.width : "600px";
 		def name = attrs.name ? attrs.name : "form"
 		out << """<div aid="dialog" style="width:${width};" title="${attrs.title}" id="${name}">
-		<form class="ajaxdialogform" name="${name}">
-		<div class="errors" style="display:none;"></div>"""
+		<form class="ajaxdialogform" name="${name}" method="post" action="${attrs.action}" >"""
+		
+		if (attrs.error) {
+			out << """<div class="errors">${attrs.error?attrs.error:''}</div>"""
+		} else {
+			out << """<div class="errors" style="display:none;"></div>"""
+		}
 
 		// Add Hidden field with the id of the parent DomainObject (belongsTo)
 		// REMARK: Currently it will only work if belongto has only 1 relation
@@ -564,6 +569,64 @@ class DialogTagLib {
 		out << body()
 		out << "</form></div>"
 	}
+	
+	/**
+	* pageform tag - create a &lt;pageform&gt;
+	* this one is ment to be on a full page rather than in a popup dialog
+	*
+	* @param name The name of this tab
+	* @param object The domain object
+	* @param width The CSS width of this dialog (default: 600px)
+	* @param title The title of this dialog
+	*/
+	
+	def pageform = { attrs,body ->		
+		def name = attrs.name ? attrs.name : "form"
+		def action = attrs.action ? attrs.action : "submit${name}"
+		def cssClass=attrs.class ? "pageform ${attrs.class}" : "pageform"
+				
+		out << """<div class="${cssClass}" id="${name}">
+			<h2>${g.message(code:"page.${name}.title", default:"${name}")}</h2>
+			<p>${g.message(code:"page.${name}.help", default:"")}</p>
+		<form class="${cssClass}" name="${name}" method="post" action="${action}" >"""		
+		if (attrs.error) {
+			out << """<div class="errors">${attrs.error?attrs.error:''}</div>"""
+		} else {
+			out << """<div class="errors" style="display:none;"></div>"""
+		}
+
+		// Add Hidden field with the id of the parent DomainObject (belongsTo)
+		// REMARK: Currently it will only work if belongto has only 1 relation
+		if (attrs.object) {
+			def defaultDomainClass = new DefaultGrailsDomainClass( attrs.object.class )
+			Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
+			if (belongToMap?.size() == 1) {
+				belongToMap.each { key, value ->
+					out << '<input id="' + key + '.id" type="hidden" name="' + key + '.id" value="'+ attrs.object."${key}"?.id +'" />'
+				}
+			}
+		}
+		
+		out << body()
+		out << "</form></div>"
+		
+	}
+	/**
+	 * Navigation buttons
+	 */
+	
+	def navigation = {attrs,body ->
+		out << """<div class="navigation">
+			<ul class="clearfix">"""
+		def buttons=attrs.buttons.split(",")
+		buttons.each { name ->
+			out << """<li><button type="submit" name="${name}" class="${name}" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button></li>"""
+		}
+		out << """	</ul>
+		</div>"""
+
+	}	
+	
 	
 	/**
 	* table tag - create a &lt;table&gt; to contain form rows
