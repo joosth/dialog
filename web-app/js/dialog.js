@@ -198,6 +198,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
       	    	});
        		
        		//$(".autocomplete").autocomplete({source:"/boekhouding/rekening/autocomplete"})
+       		
        		$("input.autocomplete").each(function (index) {
        			var curMatch = $(this);
        			var jsonUrl = curMatch.attr("jsonUrl");
@@ -229,6 +230,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        				   
        				   name=name.replace("-entry","");       				   
        				   var label=$('[name='+ name+'.id]' ).attr("label");
+       				   /*
        				   if (currentValue=="" || currentValue=="-") {
        					$('[name='+ name+'.id]' ).val("null");
        				   } else {
@@ -238,6 +240,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        				   $('#'+name+'-container' ).addClass("ac-selected");
        				   $('#'+name+'-container' ).removeClass("ac-idle");
        				   $('#'+name+'-container' ).removeClass("ac-selecting");
+       				   */
        				   $(this).trigger("change");
        				   $('[name='+ name+'.id]' ).trigger("change",this);
        				   return false;
@@ -262,6 +265,26 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			
        		}
        		);
+       		$("input.autocomplete").blur(function() {
+       			   var name=$( this ).attr("name");       					
+				   var currentValue=$( this ).val();
+				   
+				   name=name.replace("-entry","");       				   
+				   var label=$('[name='+ name+'.id]' ).attr("label");
+				   
+				   if (currentValue=="" || currentValue=="-") {
+					$('[name='+ name+'.id]' ).val("null");
+				   } else {
+					   $( this ).val( label );
+				   }
+				   
+				   $('#'+name+'-container' ).addClass("ac-selected");
+				   $('#'+name+'-container' ).removeClass("ac-idle");
+				   $('#'+name+'-container' ).removeClass("ac-selecting");
+				   
+       		});
+       		
+       		
        		$(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
 
        		
@@ -377,7 +400,11 @@ jQuery.fn.hcenter = function () {
     return this;
 }
 		
-$(function() {		        
+$(function() {
+	// tinymce
+	$("td.tinymce textarea").tinymce({});
+
+	
 	// Initialize date picker input elements
  	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
   	
