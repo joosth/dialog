@@ -680,8 +680,48 @@ class DialogTagLib {
 	
 	}
 	
-	
-	
-	
+	def upload = { attrs,body ->
+		def copiedAttrs=""
+		def skipAttrs=['object','propertyName','mode','class','type','value']
+		attrs.each { attrKey, attrValue ->
+			 if (!skipAttrs.contains(attrKey))
+			 {
+				 copiedAttrs+=""" ${attrKey}="${attrValue}" """
+			 }
+		}
+		
+		out <<"""<div class="upload" ${copiedAttrs}>"""
+		out << body()
+		out << """</div>"""
+	}
+	/*
+	def uploadHead = { attrs ->
+		
+		def html="""
+		 <script  type="text/javascript">
+		\$(function() {
+			var uploader = new qq.FileUploader({
+				  element: document.getElementById('file-uploader'),
+				  // path to server-side upload script
+				  action: cmis.baseUrl+'/cmisDocument/fileupload',
+				  params: {
+					  },
+				  onComplete: function(id, fileName, responseJSON){
+					  \$("#form").append('<input type=\"hidden\" name=\"filename\" value=\"'+fileName+'\" />');
+				  },
+				  template: '<div class="qq-uploader">' +
+				'<div class="qq-upload-drop-area"><span>${message(code:'cmis.uploader.dropfileshere')}</span></div>' +
+				'<div class="qq-upload-button">${message(code:'cmis.uploader.uploadafile')}</div>' +
+				'<ul class="qq-upload-list"></ul>' +
+				 '</div>'
+			   });
+			   });
+		</script>
+		"""
+		
+		out << html
+		
+	}
+	*/
 }
 

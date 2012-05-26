@@ -151,6 +151,21 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		$(this).find(".dialogtabs").tabs();
        		$(this).find(".altselect").altselect();
        		
+       		$(this).find('.upload').each(function (index) {
+       			var theAction=$(this).attr("action");
+       			var uploader = new qq.FileUploader({
+       			    // pass the dom node (ex. $(selector)[0] for jQuery users)
+       			    element: $(this)[0],
+       			    // path to server-side upload script
+       			    action: $(this).attr("action"),
+       			    params: {identifier: $(this).attr("identifier")},
+       				
+       				onComplete: function(id, fileName, responseJSON){
+       					$(this.element).append('<input type=\"hidden\" name=\"filename\" value=\"'+fileName+'\" />');
+       				}
+       			});       			
+       		});
+       		
        		var dataTable = $(this).find('.detailTable');
        		
        		$(this).find('.detailTable').each(function (index) {
@@ -170,15 +185,12 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     			});
        			
        			if ( $(this).hasClass("rowreordering")) {
-       				dialog.dataTableHashList[tableId].rowReordering(
-       				
+       				dialog.dataTableHashList[tableId].rowReordering(       				
        				{
        					 sURL:dialog.baseUrl+positionUrl,
                          sRequestType: "POST"
 		
-       				});
-       				
-       				
+       				});       				
        			}
        			
        			

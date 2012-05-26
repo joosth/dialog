@@ -1,4 +1,4 @@
-<plugin name='dialog' version='0.1' grailsVersion='1.3.5 &gt; *'>
+<plugin name='dialog' version='0.1' grailsVersion='2.0.3 &gt; *'>
   <author>Your name</author>
   <title>Plugin summary/headline</title>
   <description>\
@@ -21,9 +21,19 @@ Brief description of the plugin.
     <repository name='http://repo.grails.org/grails/plugins' url='http://repo.grails.org/grails/plugins/' />
     <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
     <repository name='grailsCore' url='http://svn.codehaus.org/grails/trunk/grails-plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
   <dependencies />
-  <plugins />
+  <plugins>
+    <runtime>
+      <plugin group='org.grails.plugins' name='resources' version='1.1.6' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.0.3' />
+      <plugin group='org.grails.plugins' name='jquery' version='1.7.1' />
+    </runtime>
+    <build>
+      <plugin group='org.grails.plugins' name='tomcat' version='2.0.3' />
+    </build>
+  </plugins>
   <runtimePluginRequirements />
   <behavior />
 </plugin>
