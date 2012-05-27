@@ -39,14 +39,8 @@ class UploadService {
 
 		is.close()
 		os.close()
-		
-		//def res = [success : true]
-		//render res as JSON
-		//text/html
-		
-		//render(contentType:"text/html",text:"{success:true}")
-		return "{success:true}"
-		
-		
+
+		def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier]
+		return res		
 }
 }

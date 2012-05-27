@@ -143,7 +143,14 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         	
 
         	 
-        	$(this).find("td.tinymce textarea").tinymce({});
+        	$(this).find("td.tinymce textarea").tinymce({theme : "advanced",
+                mode : "textareas",
+                plugins : "media",
+                media_external_list_url:dialog.baseUrl+"/js/medialist.js",
+               // external_image_list_url:dialog.baseUrl+"/news/imagelist/1",
+                external_image_list_url:dialog.baseUrl+"/"+controllerName+"/imagelist/"+id,
+                theme_advanced_buttons1_add : "media"
+});
         	
         	
          	// Initialize date picker input elements
@@ -161,7 +168,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			    params: {identifier: $(this).attr("identifier")},
        				
        				onComplete: function(id, fileName, responseJSON){
-       					$(this.element).append('<input type=\"hidden\" name=\"filename\" value=\"'+fileName+'\" />');
+       					var upload=fileName+"|"+responseJSON.path+"|"+responseJSON.mimetype+"|"+responseJSON.identifier;
+       					$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
        				}
        			});       			
        		});

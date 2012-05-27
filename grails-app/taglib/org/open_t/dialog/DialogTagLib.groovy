@@ -289,6 +289,11 @@ class DialogTagLib {
 
 	
 	def textArea = { attrs ->
+		
+		def copiedAttrs=""
+		def skipAttrs=['object','propertyName','mode','type','value']
+		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}			 
+		
 		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			switch(attrs.mode) {
 				case "show":
@@ -296,7 +301,9 @@ class DialogTagLib {
 					break
 				
 				case "edit":
-					"""${g.textArea(name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5)}"""
+					newAttrs+=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5]
+					//"""${g.textArea(name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5)}"""
+					"""${g.textArea(newAttrs)}"""
 					break
 			}
 		}
@@ -679,6 +686,38 @@ class DialogTagLib {
 		out <<"""</tbody></table>"""
 	
 	}
+	
+	/**
+	* detailTable tag - create a detail table in master/detail view
+	* @param domainClass detail class name
+	* @param object master object
+	* @param property property that links detail with the master
+	*/
+	
+	def filesTable = { attrs ->
+		def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
+		def domainPropertyName=domainClass.getPropertyName()
+		
+		def prefix="filesTable_"+attrs.domainClass
+		prefix=prefix.replace(".","_")
+		prefix=prefix.replace("class ","")
+		
+		
+		def jsonUrl='/'+domainPropertyName+'/filelist/'+attrs.object.id
+		
+		def cssClass="detailTable"
+		
+		out << """<div>
+					<table id="${prefix}" class="${cssClass}" jsonUrl="${jsonUrl}" ><thead><tr>"""
+		out << """<th>${g.message(code:"filestable.filename.label")}</th>"""
+		out << """<th>${g.message(code:"filestable.size.label")}</th>"""
+		out << """<th>${g.message(code:"filestable.date.label")}</th>"""
+		out << """<th>${g.message(code:"filestable.actions.label")}</th>"""
+		out << "</tr></thead><tbody>"
+		out <<"""</tbody></table>"""
+	
+	}
+	
 	
 	def upload = { attrs,body ->
 		def copiedAttrs=""
