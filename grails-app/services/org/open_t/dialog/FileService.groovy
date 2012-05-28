@@ -42,7 +42,7 @@ class FileService {
 
 		is.close()
 		os.close()
-		if (params.direct && dc!=null && (params.identifier!=null)) {
+		if (params.direct && dc!=null && (params.identifier!=null && params.identifier!="null")) {
 			println "DIRECT"
 			def diPath=filePath(dc,params.identifier,fileCategory)
 			def destFile= new File("${diPath}/${filename}")
@@ -93,7 +93,7 @@ class FileService {
 		
 		def aaData=[:]
 		//def baseUrl=request.contextPath
-		if(params.id) {
+		if(params.id&& params.id!="null") {
 			File dir = new File(filePath(dc,params.id,fileCategory))
 			aaData=dir.listFiles().collect { file ->
 
