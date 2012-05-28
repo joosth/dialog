@@ -142,15 +142,32 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         		});
         	
 
-        	 
+        	 /*
         	$(this).find("td.tinymce textarea").tinymce({theme : "advanced",
                 mode : "textareas",
                 plugins : "media",
-                media_external_list_url:dialog.baseUrl+"/js/medialist.js",
-               // external_image_list_url:dialog.baseUrl+"/news/imagelist/1",
+                media_external_list_url:dialog.baseUrl+"/js/medialist.js",               
                 external_image_list_url:dialog.baseUrl+"/"+controllerName+"/imagelist/"+id,
                 theme_advanced_buttons1_add : "media"
-});
+        	});
+        	*/
+
+        	 
+        	$(this).find("td.tinymce textarea").each( function() {
+        		var curMatch = $(this);
+       			var theme = curMatch.attr('theme');
+       			var plugins=curMatch.attr('plugins');
+
+        		$(this).tinymce({theme : theme,
+                    //mode : "textareas",
+                    plugins : plugins,
+                    media_external_list_url:dialog.baseUrl+"/"+controllerName+"/medialist/"+id,               
+                    external_image_list_url:dialog.baseUrl+"/"+controllerName+"/imagelist/"+id,
+                    theme_advanced_buttons1_add : "media"
+            	});
+            	        		
+        	});
+        	
         	
         	
          	// Initialize date picker input elements
@@ -165,14 +182,25 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			    element: $(this)[0],
        			    // path to server-side upload script
        			    action: $(this).attr("action"),
-       			    params: {identifier: $(this).attr("identifier")},
+       			    params: {identifier: $(this).attr("identifier"),direct: $(this).attr("direct"),sFileName:$(this).attr("sFileName")},
+       			    onProgress:function(id, fileName, loaded, total){
+       			    	$(".qq-upload-list").show();       			    	
+       			    },
        				
        				onComplete: function(id, fileName, responseJSON){
-       					var upload=fileName+"|"+responseJSON.path+"|"+responseJSON.mimetype+"|"+responseJSON.identifier;
-       					$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
+       					var upload=fileName+"|"+responseJSON.path+"|"+responseJSON.mimetype+"|"+responseJSON.identifier+"|"+responseJSON.fileCategory+"|"+responseJSON.direct+"|"+responseJSON.sFileName;
+       					// Preventing the submit-time copy is a bad idea for new entries
+       					//if (!$(this).attr("direct") || $(this).attr("direct")=="false") {
+       						$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
+       					//}
+       					$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id});
+       					$(".qq-upload-list").hide();
        				}
        			});       			
        		});
+       		
+       		$(".refresh-image").bind("dialog-refresh",dialog.refreshImageEvent);
+       		
        		
        		var dataTable = $(this).find('.detailTable');
        		
@@ -180,6 +208,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			var curMatch = $(this);
        			var tableId = curMatch.attr('id');
        			var jsonUrl = curMatch.attr("jsonUrl");
+       			var newButton=curMatch.attr("newButton");
        			var positionUrl = curMatch.attr("positionUrl");
        			var controller = jsonUrl.split('/')[1]; //extract controller name from json url
        			
@@ -203,7 +232,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			
        			
        			// Add NEW button ("parent()" is the div with class dataTables_wrapper)
-       			if (id != null) {
+       			if (id != null && (!newButton || newButton!="false")) {
        				curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
        			}
        			
@@ -309,8 +338,20 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 
        		
          },
-        close: function(event, ui) {      
+        close: function(event, ui) {
+//       	 for(id in tinyMCE.editors){
+//             tinyMCE.execCommand('mceRemoveControl', false, id);
+//         }
+        	$(this).find("td.tinymce textarea").each( function() {
+        		//tinyMCE.remove(this)
+        		tinyMCE.triggerSave();
+        		tinyMCE.execCommand('mceFocus', false,"#content");
+        		tinyMCE.execCommand('mceRemoveControl', false, "#content");
+        	});
+        	
                theDialog.dialog("destroy").remove();
+               dialogHTML=null;
+               var test=dialogHTML;
              }
          });
 	 
@@ -389,6 +430,12 @@ dialog.refreshDataTable = function refreshDataTable(key, list, lastPage) {
 	}
 }
 
+dialog.refreshImageEvent=function refreshImageEvent(event,eventData){
+	//alert("we need a refresh!")
+	this.src=this.src+"&amp;nocache="+new Date().getTime();
+}
+
+
 dialog.obj2ParamStr = function obj2ParamStr(params) {
 	var paramStr="";
 	 if (params) {
@@ -406,6 +453,50 @@ dialog.statusMessage = function statusMessage(event,eventData) {
 		$("#statusmessage").html(eventData.message);
 	}
 }
+
+
+dialog.deleteFile = function deleteDialog(id,controllerName, filename,options) {
+	
+	 
+	 var dialogHTML = '<div "title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
+	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
+
+	 var theDialog=$(dialogHTML).dialog({ 
+		 modal:false,
+		 width:400,
+		 height:100,
+		 buttons: { 
+		 	"Delete": function(e) {
+			 	var formData=theDialog.find("form").serialize();
+			 	$.post(dialog.baseUrl+"/"+controllerName+"/deletefile/"+id+"?filename="+filename,formData, function(data) 
+			 		{
+			 		var result=data.result			 		
+
+			 		
+			 		//$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
+			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
+			 		$(".dialog-events").trigger("dialog-message",{message:result.message})
+			 		
+			 		if(result.success){
+				 		theDialog.dialog("close");
+				 	} else  {				 		
+				 		theDialog.find("div.errors").html(result.message)
+				 		theDialog.find("div.errors").show();				 		
+				 	}			 		
+			 	});			 	
+       	},
+      	Cancel: function() {
+	        		$( this ).dialog( "close" );
+	        	}
+      	},
+       close: function(event, ui) {      
+              theDialog.dialog("destroy").remove();
+            }
+        });
+}
+
+
+
 
 jQuery.fn.center = function () {
     this.css("position","absolute");
@@ -445,5 +536,5 @@ $(function() {
 	
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);	
 	$("#statusmessage").addClass("dialog-events");
-	
+    
 });

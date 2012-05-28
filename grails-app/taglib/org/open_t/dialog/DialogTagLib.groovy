@@ -301,8 +301,9 @@ class DialogTagLib {
 					break
 				
 				case "edit":
-					newAttrs+=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5]
-					//"""${g.textArea(name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5)}"""
+					// Hack to assign unique ID's and keep tinyMCE happy
+					newAttrs+=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5,id:"id${new Random().nextInt(10000000)}"]
+
 					"""${g.textArea(newAttrs)}"""
 					break
 			}
@@ -698,7 +699,7 @@ class DialogTagLib {
 		def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
 		def domainPropertyName=domainClass.getPropertyName()
 		
-		def prefix="filesTable_"+attrs.domainClass
+		def prefix="filesTable_"+domainClass.name
 		prefix=prefix.replace(".","_")
 		prefix=prefix.replace("class ","")
 		
@@ -708,7 +709,7 @@ class DialogTagLib {
 		def cssClass="detailTable"
 		
 		out << """<div>
-					<table id="${prefix}" class="${cssClass}" jsonUrl="${jsonUrl}" ><thead><tr>"""
+					<table id="${prefix}" class="${cssClass}" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
 		out << """<th>${g.message(code:"filestable.filename.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.size.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.date.label")}</th>"""
