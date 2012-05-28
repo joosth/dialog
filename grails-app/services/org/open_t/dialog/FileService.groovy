@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import grails.converters.*
 
-class UploadService {
+class FileService {
 
 	def uploadFile(request,params) {
 		def filename
