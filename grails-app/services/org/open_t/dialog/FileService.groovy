@@ -54,42 +54,53 @@ class FileService {
 		def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName]
 		return res		
 	}
+	
+	def pack(n) {
+		String s= Long.toString(new Long(n),36)
+		return String.format("%1\$#8s", s).replace(' ', '0')
+	}
+	
+	def packedPath(n) {
+		String s=pack(n)
+		return s.substring(0,2)+"/"+s.substring(2,4)+"/"+s.substring(4,6)+"/"+s.substring(6,8)
+	}
+	
 	// TODO offer possibility to provide alternate location per category.
-	// TODO offer balanced tree	
+	
+	def relativePath(dc,id,fileCategory) {		
+		def name=dc.getName();
+		name=name.replaceAll (".*\\.", "")
+		//println "BBB"
+		//println "METHODS: ${dc.methods}"
+		Boolean flag=dc.methods.collect { method -> method.name }.contains("getFolderPath")
+		println "FLAG: ${name} ${flag}"
+		if (flag) {
+			def dcInstance=dc.get(id)
+			return dcInstance.getFolderPath(fileCategory)
+		} else {
+			return "${fileCategory}/${name}/${packedPath(id)}"
+		}		
+	}
+	
 	def filePath(dc,id,fileCategory) {
 		def basePath=ConfigurationHolder.config.bookstore.files.basePath
 		def name=dc.getName();
 		name=name.replaceAll (".*\\.", "")
-		return "${basePath}/${fileCategory}/${name}/${id}"
+		//return "${basePath}/${fileCategory}/${name}/${packedPath(id)}"
+		return "${basePath}/${relativePath(dc,id,fileCategory)}"
 	}
 	
 	// TODO offer possibility to provide alternate location per category.
-	// TODO offer balanced tree
+
 	def fileUrl(dc,id,fileCategory) {
 		def baseUrl=ConfigurationHolder.config.bookstore.files.baseUrl
 		def name=dc.getName();
 		name=name.replaceAll (".*\\.", "")
-		return "${baseUrl}/${fileCategory}/${name}/${id}"
+		return "${baseUrl}/${fileCategory}/${name}/${packedPath(id)}"
 	}
 	
-	def filelist(dc,params,fileCategory="images") {
-		/*
-		def defaultDomainClass = new DefaultGrailsDomainClass( dc )
-		
-		def domainClassInstance
-		if (params.id && params.id !='null') {
-			if (params.id.contains("_")){
-				params.id=params.id.split("_")[1]
-			}
-			domainClassInstance = domainClass.get(params.id)
-		} else {
-			domainClassInstance = domainClass.newInstance()		
-		}
-		*/
-		
+	def filelist(dc,params,fileCategory="images") {		
 		def format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",new Locale('nl'))
-		
-		
 		
 		def aaData=[:]
 		//def baseUrl=request.contextPath
@@ -123,7 +134,6 @@ class FileService {
 			text=text.substring(0,text.length()-1)
 		}
 		text+=");"
-		//render text as text
 		return text
 	}
 	
@@ -140,7 +150,6 @@ class FileService {
 			text=text.substring(0,text.length()-1)
 		}
 		text+=");"
-		//render text as text
 		return text
 	}
 	
@@ -164,7 +173,6 @@ class FileService {
 	}
 	
 	
-	// TODO make this work for multiple files
 	// TODO error handling: return error that dialog can show
 	def submitFiles(dc,params,fileCategory="images") 
 	{
@@ -177,24 +185,7 @@ class FileService {
 				params.fileupload.each { fileupload ->
 					submitFile(dc,params.id,fileupload,fileCategory)					
 				}
-			}
-			
-			/*
-			
-			String fileupload=params.fileupload
-			def fileInfo=fileupload.split("\\|")
-			println "fileInfo=${fileInfo}"
-			//def dcInstance=dc.get(params.id)
-			// create folder structure
-			def diPath=filePath(dc,params.id,fileCategory)
-			new File(diPath).mkdirs()
-			// upload the file
-			File file=new File(fileInfo[1])
-			println "SUBMITFILES: moving ${file} ${fileInfo[1]} to ${diPath}"
-			def destFile= new File("${diPath}/${fileInfo[0]}")			
-			FileUtils.copyFile(file,destFile)
-			file.delete()
-			*/						
+			}								
 		}
 	}
 	

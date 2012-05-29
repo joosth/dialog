@@ -199,7 +199,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			});       			
        		});
        		
-       		$(".refresh-image").bind("dialog-refresh",dialog.refreshImageEvent);
+       		//$(".refresh-image").bind("dialog-refresh",dialog.refreshImageEvent);
        		
        		
        		var dataTable = $(this).find('.detailTable');
@@ -339,19 +339,23 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		
          },
         close: function(event, ui) {
-//       	 for(id in tinyMCE.editors){
-//             tinyMCE.execCommand('mceRemoveControl', false, id);
-//         }
-        	$(this).find("td.tinymce textarea").each( function() {
+        	//$(".tinymce").tinymce().remove();
+        
+       	 for(id in tinyMCE.editors){
+           tinyMCE.execCommand('mceRemoveControl', true, id);
+       		tinyMCE.remove(id);
+         }
+        var test="test"
+        /*	$(this).find("td.tinymce textarea").each( function() {
         		//tinyMCE.remove(this)
         		tinyMCE.triggerSave();
         		tinyMCE.execCommand('mceFocus', false,"#content");
         		tinyMCE.execCommand('mceRemoveControl', false, "#content");
         	});
-        	
+        	*/
                theDialog.dialog("destroy").remove();
-               dialogHTML=null;
-               var test=dialogHTML;
+               //dialogHTML=null;
+               //var test=dialogHTML;
              }
          });
 	 
@@ -429,12 +433,12 @@ dialog.refreshDataTable = function refreshDataTable(key, list, lastPage) {
 		}
 	}
 }
-
+/*
 dialog.refreshImageEvent=function refreshImageEvent(event,eventData){
 	//alert("we need a refresh!")
 	this.src=this.src+"&amp;nocache="+new Date().getTime();
 }
-
+*/
 
 dialog.obj2ParamStr = function obj2ParamStr(params) {
 	var paramStr="";
