@@ -257,8 +257,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        					$( this ).val( ui.item.label );
        					var name=$( this ).attr("name");       					
        					name=name.replace("-entry","");
-       					$('[name='+ name+'.id]' ).val( ui.item.value );
-       					$('[name='+ name+'.id]' ).attr("label", ui.item.label );
+       					$('[name="'+ name+'.id"]' ).val( ui.item.value );
+       					$('[name="'+ name+'.id"]' ).attr("label", ui.item.label );
        					if (ui.item.description) {
        						$('#'+name+'-description' ).html( ui.item.description);
        					}
@@ -278,7 +278,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        				   var currentValue=$( this ).val();
        				   
        				   name=name.replace("-entry","");       				   
-       				   var label=$('[name='+ name+'.id]' ).attr("label");
+       				   var label=$('[name="'+ name+'.id"]' ).attr("label");
        				   /*
        				   if (currentValue=="" || currentValue=="-") {
        					$('[name='+ name+'.id]' ).val("null");
@@ -291,7 +291,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        				   $('#'+name+'-container' ).removeClass("ac-selecting");
        				   */
        				   $(this).trigger("change");
-       				   $('[name='+ name+'.id]' ).trigger("change",this);
+       				   $('[name="'+ name+'.id"]' ).trigger("change",this);
        				   return false;
        			   },
        				
