@@ -65,8 +65,9 @@ class ListService {
 					def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
 					def masterDomainObj = grailsApplication.getClassForName(params.objectClass).get(params.objectId)
 					documentList=dc."$filterMethod"(masterDomainObj, [max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
-					iTotalRecords=documentList.size()
-					iTotalDisplayRecords = iTotalRecords
+					iTotalRecords =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object",[object:masterDomainObj])
+					iTotalDisplayRecords=iTotalRecords
+
 				} else {
 					iTotalRecords=0
 					iTotalDisplayRecords=0

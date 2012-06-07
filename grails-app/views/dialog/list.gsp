@@ -37,8 +37,6 @@
 		<g:else>
     		$("div.datatable div.fg-toolbar div.dataTables_length").prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\'${controllerName}\',{ domainclass : \''+domainClass+'\'}, null)"><g:message code="list.new" default="New" /></span></span>&nbsp;');			    		    							    							
 		</g:else>
-		}
-		} );
 		<g:if test="${rowreordering}">
 			dialog.dataTableHashList[tableId].rowReordering(       				
        				{
@@ -46,6 +44,12 @@
                          sRequestType: "POST"
        				});       	
 		</g:if>
+		
+		
+		}
+		} );
+		
+		
 		
 		
 		
