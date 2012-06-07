@@ -118,12 +118,12 @@ class DialogTagLib {
 			out <<"""
 			<tr class="prop ${cssClass}">
 				<td valign="top" class="name">
-					<label for="name">${g.message(code:"dialog.${attrs.name}.label", default:"${attrs.name}")}</label>
+					<label for="name">${g.message(code:"${attrs.name}.label", default:"${attrs.name}")}</label>
 				</td>
 				<td>&nbsp;
 				</td>
 				<td>
-					<p align=right><span class="help-icon help action" title="${g.message(code:"dialog.${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span></p>
+					<p align=right><span class="help-icon help action" title="${g.message(code:"${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span></p>
 				</td>
 			</tr>
 			<tr class="prop ${attrs.class}">
@@ -135,12 +135,12 @@ class DialogTagLib {
 		} else {
 			out <<"""<tr class="prop ${cssClass}">
 					<td valign="top" class="name">
-					<label for="name">${g.message(code:"dialog.${attrs.name}.label", default:"${attrs.name}")}</label>
+					<label for="name">${g.message(code:"${attrs.name}.label", default:"${attrs.name}")}</label>
 					</td>
 					<td valign="top" class="value ${attrs.class}">"""
 			out << body()
 			
-			out << """</td><td>&nbsp;<span class="help-icon help action" title="${g.message(code:"dialog.${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span>
+			out << """</td><td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span>
 				</td><td>${error}</td></tr>"""
 		}
 		
@@ -552,8 +552,19 @@ class DialogTagLib {
 	
 	def form = { attrs,body ->
 		def width = attrs.width ? attrs.width : "600px";
-		def name = attrs.name ? attrs.name : "form"
-		out << """<div aid="dialog" style="width:${width};" title="${attrs.title}" id="${name}">
+		
+		def defaultName="form"
+		if (attrs.object) {
+			defaultName = new DefaultGrailsDomainClass( attrs.object.class).getPropertyName()
+		}
+		
+		def name = attrs.name ? attrs.name : defaultName
+		def title=attrs.title?attrs.title:g.message(code:"form.${name}.title", default:name)
+		
+		
+		
+		
+		out << """<div aid="dialog" style="width:${width};" title="${title}" id="${name}">
 		<form class="ajaxdialogform" name="${name}" method="post" action="${attrs.action}" >"""
 		
 		if (attrs.error) {
@@ -564,16 +575,17 @@ class DialogTagLib {
 
 		// Add Hidden field with the id of the parent DomainObject (belongsTo)
 		// REMARK: Currently it will only work if belongto has only 1 relation
-		if (attrs.object) {
-			def defaultDomainClass = new DefaultGrailsDomainClass( attrs.object.class )
-			Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
-			if (belongToMap?.size() == 1) {
-				belongToMap.each { key, value ->
-					out << '<input id="' + key + '.id" type="hidden" name="' + key + '.id" value="'+ attrs.object."${key}"?.id +'" />'
+		if (!(attrs.noBelongsTo && (attrs.noBelongsTo==true || attrs.noBelongsTo=="true"))) { 
+			if (attrs.object) {
+				def defaultDomainClass = new DefaultGrailsDomainClass( attrs.object.class )
+				Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
+				if (belongToMap?.size() == 1) {
+					belongToMap.each { key, value ->
+						out << '<input id="' + key + '.id" type="hidden" name="' + key + '.id" value="'+ attrs.object."${key}"?.id +'" />'
+					}
 				}
-			}
 		}
-		
+		}
 		out << body()
 		out << "</form></div>"
 	}

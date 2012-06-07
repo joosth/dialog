@@ -319,10 +319,10 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 				   var currentValue=$( this ).val();
 				   
 				   name=name.replace("-entry","");       				   
-				   var label=$('[name='+ name+'.id]' ).attr("label");
+				   var label=$('[name="'+ name+'.id"]' ).attr("label");
 				   
 				   if (currentValue=="" || currentValue=="-") {
-					$('[name='+ name+'.id]' ).val("null");
+					$('[name="'+ name+'.id"]' ).val("null");
 				   } else {
 					   $( this ).val( label );
 				   }

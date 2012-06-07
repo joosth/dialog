@@ -6,7 +6,7 @@
         <title><g:message code="${controllerName}.list.title" default="${controllerName}.list.title" /></title>
         
         <script type="text/javascript">
-        $(function() {	
+        $(function() {
         
         //Create Id for the table
         var tableId="detailTable_" + "${dc.getName().replace(".","_").replace("class ","")}";
@@ -14,6 +14,8 @@
 
 		dialog.dataTableHashList[tableId]=$("#"+tableId).dataTable( {
 		//"sDom": '<"H"lfr>t<"F"ip>',
+		//	"sDom": '<"toolbar"><"H"lfr>t<"F"ip>',
+		//"sDom": '<"toolbar">frtip',
 		"bProcessing": true,
 		"bServerSide": true,		
 		"sAjaxSource": "${resource(dir:controllerName,file: jsonlist ? jsonlist :'jsonlist')}",
@@ -22,8 +24,20 @@
 		"bJQueryUI": true,
 		"aoColumnDefs": [ 
 			{ "bSortable": false, "aTargets": [ ${dc.listProperties.size()} ] }
-		]
+		] ,
 		
+		"oLanguage": {
+     	 "sUrl": "${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'datatables.language',default:'en')}.txt"
+    	},
+    	"fnInitComplete": function() {
+    		 
+   		<g:if test="${toolbar}" >	
+			$("div.datatable div.fg-toolbar div.dataTables_length").prepend('${toolbar}');
+		</g:if>
+		<g:else>
+    		$("div.datatable div.fg-toolbar div.dataTables_length").prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\'${controllerName}\',{ domainclass : \''+domainClass+'\'}, null)"><g:message code="list.new" default="New" /></span></span>&nbsp;');			    		    							    							
+		</g:else>
+		}
 		} );
 		<g:if test="${rowreordering}">
 			dialog.dataTableHashList[tableId].rowReordering(       				
@@ -39,12 +53,7 @@
 		
 		$("#"+tableId).addClass("dialog-events");
 		
-		<g:if test="${toolbar}" >	
-			$("div.datatable div.fg-toolbar div.dataTables_length").prepend('${toolbar}');
-		</g:if>
-		<g:else>
-			$("div.datatable div.fg-toolbar div.dataTables_length").prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\'${controllerName}\',{ domainclass : \''+domainClass+'\'}, null)">New</span></span>&nbsp;');		
-		</g:else>
+		
 		
 		
 		       
@@ -66,7 +75,7 @@
 						<g:each in="${dc.listProperties}" var="property">
 					 	<th><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>		
 						</g:each>
-						<th width="50px">Actions</th>
+						<th width="50px"><g:message code="list.actions.label" default="Actions" /></th>
 				
 						</tr>
 					</thead>
@@ -81,7 +90,7 @@
 							<g:each in="${dc.listProperties}" var="property">
 					 	<th><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>		
 						</g:each>
-						<th>Actions</th>				
+						<th><g:message code="list.actions.label" default="Actions" /></th>				
 						</tr>
 					</tfoot>
 				</table>
