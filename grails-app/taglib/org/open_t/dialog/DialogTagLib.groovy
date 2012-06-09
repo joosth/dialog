@@ -44,6 +44,8 @@ class DialogTagLib {
 				"refreshPage":false
 			};
         	dialog.baseUrl="${request.contextPath}";
+			dialog.pluginUrl="${resource(plugin:'dialog')}";
+			dialog.dataTablesLanguageUrl="${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'datatables.language',default:'en')}.txt";
         </script>        
 		"""
 	}
@@ -689,11 +691,12 @@ class DialogTagLib {
 		out << """<div>
 					<table id="${prefix}" class="${cssClass}" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
 			attrs.domainClass.listProperties.each { propertyName ->
-
-				def property=domainClass.getPropertyByName(propertyName)
-				def naturalName=property.naturalName;
+				
+				// Removed because this does not work for 'fake' properties like book.isbn
+				//def property=domainClass.getPropertyByName(propertyName)
+				//def naturalName=property.naturalName;
 			
-				out << """<th>${g.message(code:"${domainPropertyName}.${propertyName}.label", default:"${naturalName}")}</th>"""
+				out << """<th>${g.message(code:"${domainPropertyName}.${propertyName}.label", default:"${propertyName}")}</th>"""
 			}
 		out << "<th>Actions</th></tr></thead><tbody>"
 		out <<"""</tbody></table>"""

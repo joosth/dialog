@@ -22,6 +22,9 @@ package org.open_t.dialog
 import org.apache.commons.lang.WordUtils
 import org.codehaus.groovy.grails.commons.*
 
+
+import groovy.lang.Binding;
+
 /*
  * Provide list handling service
  */
@@ -41,8 +44,8 @@ class ListService {
 	* @param actions A closure that provides customized actions in the actions column of the table
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-
-    def jsonlist(dc,params,request,filterColumnName=null,actions=null) {
+	
+	def jsonlist(dc,params,request,filterColumnName=null,actions=null) {
         	def title=dc.getName();
         	title=title.replaceAll (".*\\.", "")
         	def propName=title[0].toLowerCase()+title.substring(1)
@@ -94,8 +97,15 @@ class ListService {
             documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
 				def i=0				
-        		columns.each { 	            			   
-        			inLine +=["${i}":doc."${it}".toString()]
+        		columns.each {
+					// If the prop name containts a '.' it needs to be evaluated through a groovy shell
+					// Doing so is considerably slower than the construct in the else
+					if (it.contains(".")) {						
+						def val=Eval.me("doc",doc,"doc.${it}")
+						inLine +=["${i}":val]						
+					} else { 	            			   
+        				inLine +=["${i}":doc."${it}".toString()]
+					}
 					i++
         		}	            		
         		def baseUrl=request.contextPath

@@ -218,9 +218,30 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     				"sAjaxSource": dialog.baseUrl+jsonUrl,
     				"sPaginationType": "full_numbers",
     				"bFilter": false,
-    				"bJQueryUI": true
+    				"bJQueryUI": true,
+    				
+    				"oLanguage": {
+    			     	 "sUrl": dialog.dataTablesLanguageUrl, 
+    			    	},
+			    	"fnInitComplete": function() {
+			    		if ( $(this).hasClass("rowreordering")) {
+		       				dialog.dataTableHashList[tableId].rowReordering(       				
+		       				{
+		       					 sURL:dialog.baseUrl+positionUrl,
+		                         sRequestType: "POST"
+				
+		       				});       				
+		       			};
+		       			// Add NEW button ("parent()" is the div with class dataTables_wrapper)		       			
+		       			if (id != null && (!newButton || newButton!="false")) {
+		       				curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
+		       			}
+    			    		
+			    	}
+    			    	
+    				
     			});
-       			
+       			/*
        			if ( $(this).hasClass("rowreordering")) {
        				dialog.dataTableHashList[tableId].rowReordering(       				
        				{
@@ -235,7 +256,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			if (id != null && (!newButton || newButton!="false")) {
        				curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
        			}
-       			
+       			*/
        		});
        		
        		// get z-index of dialog so we can put cluetips above it
