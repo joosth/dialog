@@ -121,11 +121,12 @@ class DialogService {
 					maxPosition=domainClass.executeQuery("select max(position) from ${domainClass.getName()} where ${key}=:parent",[parent:domainClassInstance."${key}"])[0];
 					}										
 				} else {
-					maxPosition=domainClass.executeQuery("select max(position) from ${domainClass.getName()}")[0];
+
+					maxPosition=domainClass.executeQuery("select max(position) from ${domainClass.getName()}")[0];					
 				}
+				maxPosition=maxPosition?maxPosition:0
 				domainClassInstance.position=maxPosition+1
 			} 
-			
 			
             def successFlag=!domainClassInstance.hasErrors() && domainClassInstance.save(flush: true)
 			
