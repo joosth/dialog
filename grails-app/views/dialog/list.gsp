@@ -3,7 +3,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
 		<jqui:resources theme="smoothness" />
-        <title><g:message code="${controllerName}.list.title" default="${controllerName}.list.title" /></title>
+        <title><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></title>
         
         <script type="text/javascript">
         $(function() {
@@ -68,7 +68,7 @@
     	<div class="body">
     		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr table-title" >
     	
-    			<h1><g:message code="${controllerName}.list.title" default="${controllerName}.list.title" /></h1>
+    			<h1><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></h1>
    			</div>
 	      	<div class="datatable">
 	      

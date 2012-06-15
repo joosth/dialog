@@ -98,9 +98,9 @@ class ListService {
         		def inLine=[DT_RowId:doc.id]
 				def i=0				
         		columns.each {
-					// If the prop name containts a '.' it needs to be evaluated through a groovy shell
+					// If the prop name contains a '.' it needs to be evaluated through a groovy shell
 					// Doing so is considerably slower than the construct in the else
-					if (it.contains(".")) {						
+					if (it.contains(".")) {												
 						def val=Eval.me("doc",doc,"doc.${it}")
 						inLine +=["${i}":val]						
 					} else { 	            			   
@@ -136,7 +136,7 @@ class ListService {
 	* @param queryParams a parameter map for the query
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnName=null,actions=null,queryParams=[]) {
+	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnName=null,actions=null,queryParams=[:]) {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
 		def propName=title[0].toLowerCase()+title.substring(1)
@@ -167,12 +167,28 @@ class ListService {
 		def iTotalRecords=dc.executeQuery(countQuery,queryParams)[0]
 		def iTotalDisplayRecords=iTotalRecords
 		if (filterColumnName && params.sSearch) {
-			query = "${query} and (${filterColumnName} like '%${params.sSearch}%')"
-			countQuery= "${countQuery} and (${filterColumnName} like '%${params.sSearch}%')"
+			def fields			
+			if (String.isInstance(filterColumnName)) {
+				fields=[filterColumnName]
+			} else {
+				fields=filterColumnName
+			}
+			def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
+			def order=fields.collect {"dc.${it}"}.join(",")
+			
+			//query = "${query} and (${filterColumnName} like '%${params.sSearch}%') order by ${order}"
+			query = "${query} and (${where})"
+			countQuery= "${countQuery} and (${where})"
+			queryParams.put('term','%'+params.sSearch+'%')
+			
+			
 			iTotalDisplayRecords=dc.executeQuery(countQuery,queryParams)[0]
 		}
 		
-		query="${query} order by ${sortName} ${params.sSortDir_0}" 
+		query="${query} order by ${sortName} ${params.sSortDir_0}"
+		//query="${query} "
+		
+		println "QUERY: ${query}" 
 
 		documentList=dc.executeQuery(query,queryParams,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
 		
