@@ -61,7 +61,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
 	
 	var dialogName = (options != null && options["dialogname"] != null) ? options["dialogname"] : "dialog";
-	var submitName = (options != null && options["submitname"] != null) ? options["submitname"] : "submitdialog";
+	var submitName = (options != null && options["submitname"] != null) ? options["submitname"] : "submit"+dialogName;
 	var refreshTableKey = (options != null && options["refresh"] != null) ? options["refresh"] : "NO_REFRESH";
 	var submitForm = (options != null && options["submitform"] != null) ? options["submitform"] : false;
 	

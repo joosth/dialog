@@ -232,7 +232,7 @@ div.body {width:auto;}
 }
 
 div.table-title { margin-bottom: 2px;}
-div.table-title h1 {color:#68a;margin:0px;}
+div.table-title h1 {color:#68a;margin:0px;padding:4px;}
 
 .list-toolbar-button {padding: 2px 6px}
 span.list-toolbar-button { cursor:pointer;font-weight:bold;color:#666}

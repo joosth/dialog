@@ -22,6 +22,7 @@ package org.open_t.dialog
 import org.apache.commons.lang.WordUtils
 import org.codehaus.groovy.grails.commons.*
 
+import org.compass.core.*
 
 import groovy.lang.Binding;
 
@@ -211,6 +212,70 @@ class ListService {
     		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
     	return json
 	}
+	
+	/**
+	* Generates a JSON response to feed the datalist from a searchable query
+	* @param dc The domain class to be used
+	* @param params The parameters from the http request
+	* @param request the HTTPServletRequest
+	* @param query the HQL query
+	* @param the HQL query that counts the number of items in above query, if null, the query is created by prepending 'select count(*) ' to the query above
+	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
+	* @param actions A closure that provides customized actions in the actions column of the table
+	* @param queryParams a parameter map for the query
+	* @return a map that is ready to be rendered as a JSON message
+	*/
+	def jsonsearch(dc,params,request,query,listProperties=null,actions=null,queryParams=[:]) {
+		def title=dc.getName();
+		title=title.replaceAll (".*\\.", "")
+		def propName=title[0].toLowerCase()+title.substring(1)
+		
+		
+		def columns=listProperties ? listProperties : dc.listProperties
+		//def columns= dc.listProperties
+		def sortName=columns[new Integer(params.iSortCol_0)]
+		sortName=sortName? sortName:columns[0]
+		
+		def documentList
+		
+		//Create Id for the table
+		def detailTableId="detailTable_"+dc
+		detailTableId=detailTableId.replace(".","_")
+		detailTableId=detailTableId.replace("class ","")
+		
+		
+		if (params.sSearch) {
+			query = params.sSearch			
+		}
+		def res=dc.search(query,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
+		documentList=res.results
+		
+		def iTotalRecords=res.total
+		def iTotalDisplayRecords=iTotalRecords
+		
+
+		
+		def aaData=[]
+			documentList.each { doc ->
+				def inLine=[DT_RowId:doc.id]
+				def i=0
+				columns.each {
+					inLine +=["${i}":doc."${it}".toString()]
+					i++
+				}
+				def baseUrl=request.contextPath
+				if(!actions) {
+					actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+				}
+				inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
+				aaData+=inLine
+			}
+
+			def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
+		return json
+	}
+	
+	
 	
 	def position(dc,params) {
 		def defaultDomainClass = new DefaultGrailsDomainClass( dc )		

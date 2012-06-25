@@ -1,3 +1,4 @@
+<%@page import="org.codehaus.groovy.grails.commons.*" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -23,7 +24,7 @@
 		"bFilter": ${bFilter ? true : false},
 		"bJQueryUI": true,
 		"aoColumnDefs": [ 
-			{ "bSortable": false, "aTargets": [ ${dc.listProperties.size()} ] }
+			{ "bSortable": false, "aTargets": [ ${dc.listProperties.size()} ,"nonsortable"] }
 		] ,
 		
 		"oLanguage": {
@@ -76,8 +77,8 @@
 					<thead>
 				
 						<tr>
-						<g:each in="${dc.listProperties}" var="property">
-					 	<th><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>		
+						<g:each in="${dc.listProperties}" var="property">						 
+					 	<th class="${new DefaultGrailsDomainClass(dc).hasPersistentProperty(property)?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>		
 						</g:each>
 						<th width="50px"><g:message code="list.actions.label" default="Actions" /></th>
 				
