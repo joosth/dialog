@@ -103,9 +103,10 @@ class ListService {
 					// Doing so is considerably slower than the construct in the else
 					if (it.contains(".")) {												
 						def val=Eval.me("doc",doc,"doc.${it}")
-						inLine +=["${i}":val]						
-					} else { 	            			   
-        				inLine +=["${i}":doc."${it}".toString()]
+						inLine +=["${i}": val?val.toString():""]						
+					} else {
+						def val=doc."${it}"
+        				inLine +=["${i}": val?val.toString():""]
 					}
 					i++
         		}	            		
