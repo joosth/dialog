@@ -218,7 +218,7 @@ tbody.sortable tr {cursor:move;}
 
 .DataTables_sort_wrapper .ui-icon { float:right;}
 .dataTables_filter { float: right;}
-.dataTables_length { width:200px;float:left;}
+.dataTables_length { width:300px;float:left;}
 
 
 div.body {width:auto;}

@@ -188,10 +188,7 @@ class ListService {
 		}
 		
 		query="${query} order by ${sortName} ${params.sSortDir_0}"
-		//query="${query} "
 		
-		println "QUERY: ${query}" 
-
 		documentList=dc.executeQuery(query,queryParams,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
 		
 		def aaData=[]
@@ -293,7 +290,12 @@ class ListService {
 				parentname=key
 			}
 			def parent=movedItem."${parentname}"
-			items=dc.findAll("from ${dc.getName()} where ${parentname}=:parent order by position asc",[parent:parent])
+			// Hibernate doesn't like =null, so we need to make an exception for that case.
+			if (parent) {
+				items=dc.findAll("from ${dc.getName()} where ${parentname}=:parent order by position asc",[parent:parent])
+			} else {
+				items=dc.findAll("from ${dc.getName()} where ${parentname} is null order by position asc")
+			}
 		} else {
 			items=dc.findAll([sort:'position',order:'asc'])
 		}

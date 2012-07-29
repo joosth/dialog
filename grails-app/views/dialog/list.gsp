@@ -4,7 +4,10 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
 		<jqui:resources theme="smoothness" />
-        <title><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></title>
+        <title>
+        	<g:if test="${title}">${title}</g:if>
+	        <g:else><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></g:else>
+        </title>
         
         <script type="text/javascript">
         $(function() {
@@ -19,7 +22,7 @@
 		//"sDom": '<"toolbar">frtip',
 		"bProcessing": true,
 		"bServerSide": true,		
-		"sAjaxSource": "${resource(dir:controllerName,file: jsonlist ? jsonlist :'jsonlist')}",
+		"sAjaxSource": "${createLink(controller:controllerName,action: jsonlist ? jsonlist :'jsonlist',params:jsonlistparams?jsonlistparams:[:])}",
 		"sPaginationType": "full_numbers",
 		"bFilter": ${bFilter ? true : false},
 		"bJQueryUI": true,
@@ -63,13 +66,16 @@
 		
 		       
 });
-        </script>       
+        </script>
+               
     </head>    
     <body>
     	<div class="body">
-    		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr table-title" >
-    	
-    			<h1><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></h1>
+    		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr table-title" >    	
+    			<h1>
+    				<g:if test="${title}">${title}</g:if>
+    				<g:else><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></g:else>
+    			</h1>
    			</div>
 	      	<div class="datatable">
 	      
