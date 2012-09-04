@@ -43,10 +43,8 @@ class FileService {
 		is.close()
 		os.close()
 		if (params.direct && dc!=null && (params.identifier!=null && params.identifier!="null")) {
-			println "DIRECT"
 			def diPath=filePath(dc,params.identifier,fileCategory)
 			def destFile= new File("${diPath}/${filename}")
-			println "Copying to ${diPath}/${filename}"
 			FileUtils.copyFile(tempFile,destFile)
 			//tempFile.delete()
 		}
@@ -70,10 +68,9 @@ class FileService {
 	def relativePath(dc,id,fileCategory) {		
 		def name=dc.getName();
 		name=name.replaceAll (".*\\.", "")
-		//println "BBB"
-		//println "METHODS: ${dc.methods}"
+
 		Boolean flag=dc.methods.collect { method -> method.name }.contains("getFolderPath")
-		println "FLAG: ${name} ${flag}"
+
 		if (flag) {
 			def dcInstance=dc.get(id)
 			return dcInstance.getFolderPath(fileCategory)
@@ -83,7 +80,7 @@ class FileService {
 	}
 	
 	def filePath(dc,id,fileCategory) {
-		def basePath=ConfigurationHolder.config.bookstore.files.basePath
+		def basePath=ConfigurationHolder.config.dialog.files.basePath
 		def name=dc.getName();
 		name=name.replaceAll (".*\\.", "")
 		//return "${basePath}/${fileCategory}/${name}/${packedPath(id)}"
@@ -93,7 +90,7 @@ class FileService {
 	// TODO offer possibility to provide alternate location per category.
 
 	def fileUrl(dc,id,fileCategory) {
-		def baseUrl=ConfigurationHolder.config.bookstore.files.baseUrl
+		def baseUrl=ConfigurationHolder.config.dialog.files.baseUrl
 		def name=dc.getName();
 		name=name.replaceAll (".*\\.", "")
 		return "${baseUrl}/${fileCategory}/${name}/${packedPath(id)}"
@@ -120,6 +117,19 @@ class FileService {
 		}
 		def json = [sEcho:params.sEcho,iTotalRecords:aaData.size(),iTotalDisplayRecords:aaData.size(),aaData:aaData]
 	}
+	
+	def filemap(dc,params,fileCategory="images") {
+		def diUrl=fileUrl(dc,params.id,fileCategory)
+		def diPath=filePath(dc,params.id,fileCategory)
+		File dir = new File(diPath)
+
+		def map = dir.listFiles().collect { file ->
+			//[file:file,url:"${diUrl}/${file.name}"]
+			[file:file,url:"/catviz/f/${params.id}/${file.name}"]
+		}
+		return map
+	}
+	
 	
 	def imagelist(dc,params,fileCategory="images") {
 		def diUrl=fileUrl(dc,params.id,fileCategory)
@@ -156,16 +166,15 @@ class FileService {
 	
 	def submitFile(dc,id,fileupload,fileCategory="images") {
 	
-		println "Uploading ${fileupload}"
+		
 		def fileInfo=fileupload.split("\\|")
-		println "fileInfo=${fileInfo}"
+		
 		// create folder structure
 		def diPath=filePath(dc,id,fileCategory)
 		new File(diPath).mkdirs()
 		// upload the file
 		File file=new File(fileInfo[1])
 		if (file.exists()) {
-			println "SUBMITFILES: moving ${file} ${fileInfo[1]} to ${diPath}"
 			def destFile= new File("${diPath}/${fileInfo[0]}")
 			FileUtils.copyFile(file,destFile)
 			file.delete()
@@ -178,7 +187,7 @@ class FileService {
 	{
 		
 		if (params.fileupload) {
-			println "Uploading ${params.fileupload} class ${params.fileupload.class.name}"
+
 			if (params.fileupload.class.name=="java.lang.String") {
 				submitFile(dc,params.id,params.fileupload,fileCategory)
 			} else {

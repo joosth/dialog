@@ -87,7 +87,9 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		 modal:true,
 		 width:theWidth,
 		 buttons: { 
-		 	"OK": function(e) {
+		 	"OK": function(e,ui) {
+	        	$(this).trigger("dialog-submit",{event:e,ui:ui,this:this,id:id,controllerName:controllerName})
+
 		 		if (submitForm) {
 		 			theDialog.find("form").attr("action",dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId);
 		        	theDialog.find("form").submit();
@@ -99,7 +101,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 			 		{
 			 		var jsonResponse = data.result;
 			 		
-			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
+			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse})
 			 		$(".dialog-events").trigger("dialog-message",{message:jsonResponse.message})
 			 					 		
 			 		if(jsonResponse.success){
@@ -121,7 +123,10 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	        		$( this ).dialog( "close" );
 	        	}
        	},
-        open: function(event, ui) { 
+        open: function(event, ui) {
+        	
+        	$(this).trigger("dialog-open",{event:event,ui:ui,this:this,id:id,controllerName:controllerName});
+        	
         	/*
         	 * First attempt to have a default submit on <enter>
         	 $(this).find("form").first().unbind('submit');
@@ -142,33 +147,6 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         		});
         	
 
-        	 /*
-        	$(this).find("td.tinymce textarea").tinymce({theme : "advanced",
-                mode : "textareas",
-                plugins : "media",
-                media_external_list_url:dialog.baseUrl+"/js/medialist.js",               
-                external_image_list_url:dialog.baseUrl+"/"+controllerName+"/imagelist/"+id,
-                theme_advanced_buttons1_add : "media"
-        	});
-        	*/
-
-        	 
-        	$(this).find("td.tinymce textarea").each( function() {
-        		var curMatch = $(this);
-       			var theme = curMatch.attr('theme');
-       			var plugins=curMatch.attr('plugins');
-
-        		$(this).tinymce({theme : theme,
-                    //mode : "textareas",
-                    plugins : plugins,
-                    media_external_list_url:dialog.baseUrl+"/"+controllerName+"/medialist/"+id,               
-                    external_image_list_url:dialog.baseUrl+"/"+controllerName+"/imagelist/"+id,
-                    theme_advanced_buttons1_add : "media"
-            	});
-            	        		
-        	});
-        	
-        	
         	
          	// Initialize date picker input elements
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
@@ -360,25 +338,10 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		
          },
         close: function(event, ui) {
-        	//$(".tinymce").tinymce().remove();
-        
-       	 for(id in tinyMCE.editors){
-           tinyMCE.execCommand('mceRemoveControl', true, id);
-       		tinyMCE.remove(id);
+        	$(this).trigger("dialog-close",{event:event,ui:ui,this:this})       	
+            theDialog.dialog("destroy").remove();
          }
-        var test="test"
-        /*	$(this).find("td.tinymce textarea").each( function() {
-        		//tinyMCE.remove(this)
-        		tinyMCE.triggerSave();
-        		tinyMCE.execCommand('mceFocus', false,"#content");
-        		tinyMCE.execCommand('mceRemoveControl', false, "#content");
-        	});
-        	*/
-               theDialog.dialog("destroy").remove();
-               //dialogHTML=null;
-               //var test=dialogHTML;
-             }
-         });
+       });
 	 
 	 }
 }
@@ -402,7 +365,7 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
 			 		var result=data.result			 		
 
 			 		
-			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
+			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:result})
 			 		$(".dialog-events").trigger("dialog-message",{message:result.message})
 			 		
 			 		if(result.success){
@@ -538,9 +501,6 @@ jQuery.fn.hcenter = function () {
 }
 		
 $(function() {
-	// tinymce
-	$("td.tinymce textarea").tinymce({});
-
 	
 	// Initialize date picker input elements
  	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
@@ -562,6 +522,12 @@ $(function() {
 	
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);	
 	$("#statusmessage").addClass("dialog-events");
+	var test=function (e) {
+		alert ('test')
+		return false
+	}
+	//$("body").on("daialog-open",test)
+
     
 });
 

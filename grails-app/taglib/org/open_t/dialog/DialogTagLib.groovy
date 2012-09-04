@@ -95,17 +95,31 @@ class DialogTagLib {
 				</td>
 			</tr>"""
 		} else {
-			out <<"""<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">
-					<td valign="top" class="name">
+			int colspan=1
+			if (attrs.noLabel=="true") { colspan+=1 }
+			if (attrs.noHelp=="true") { colspan+=1 }
+			if (attrs.noErrors=="true") { colspan+=1 }
+			
+			out <<"""<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
+			if (attrs.noLabel!="true"){
+			out << """<td valign="top" class="name">
 					<label for="name">${g.message(code:"${domainPropertyName}.${propertyName}.label", default:"${naturalName}")}</label>
 					</td>
-					<td valign="top" class="value ${attrs.class}">"""
+					"""
+			}
+			out <<"""<td colspan="${colspan}" valign="top" class="value ${attrs.class}">"""
 			out << body()
 			
-			out << """</td><td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span>
-				</td><td>${errors}</td></tr>"""
+			out << """</td>"""
+			if (attrs.noHelp!="true"){
+				out << """<td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></td>"""
+			}
+			
+			if (attrs.noErrors!="true"){
+				out <<"""<td>${errors}</td>"""
+			}
+			out <<"""</tr>"""
 		}
-		
 	}
 	
 	def simplerow = { attrs,body ->		
@@ -296,7 +310,7 @@ class DialogTagLib {
 		def skipAttrs=['object','propertyName','mode','type','value']
 		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}			 
 		
-		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
+		out << row (attrs) {
 			switch(attrs.mode) {
 				case "show":
 					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
