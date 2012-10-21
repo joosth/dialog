@@ -35,10 +35,10 @@ public class BigDecimalEditor extends PropertyEditorSupport{
 	String getAsText() {
 		if( super.getValue()) {
 			def s = String.format("%01.2f",(BigDecimal) super.getValue())
-			s=s.replace( '.', ',')
+			s=s.replace( '.', ',')			
 			return s 
-		} else {
-			return ""
+		} else {			
+			return "0,00"
 		}
 	}
 	

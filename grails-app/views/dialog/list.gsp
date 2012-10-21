@@ -83,8 +83,13 @@
 					<thead>
 				
 						<tr>
-						<g:each in="${dc.listProperties}" var="property">						 
-					 	<th class="${new DefaultGrailsDomainClass(dc).hasPersistentProperty(property)?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>		
+						<g:each in="${dc.listProperties}" var="property">
+						<g:if test="${dc.declaredFields.findAll {it.name=='sortableProperties'}.size()>0}">						 
+					 	<th class="${dc.sortableProperties?.contains(property)?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
+					 	</g:if>
+					 	<g:else>
+					 	<th class="${new DefaultGrailsDomainClass(dc).hasPersistentProperty(property)?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
+					 	</g:else>		
 						</g:each>
 						<th width="50px"><g:message code="list.actions.label" default="Actions" /></th>
 				

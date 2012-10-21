@@ -27,9 +27,31 @@ dialog.ckeditor.open =function open (e,params) {
 	CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*>[.\s\S]*<\/c:[.\s\S]*>/gi );	 // Catviz Tags 
 	CKEDITOR.config.protectedSource.push( /<g:[.\s\S]*\/>/gi );	 // Grails Tags (Self-closing) 
 	CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*\/>/gi );	 // Catviz Tags (Self-closing)
+	
+	CKEDITOR.config.toolbar = 'Compact';
+	CKEDITOR.config.toolbar_Compact =
+		[
+		 	{ name: 'tools', items : [ 'Maximize', 'ShowBlocks' ] },
+			{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+			{ name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },	
+			{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
+			                   			'-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'] },
+   			'/',
+			{ name: 'basicstyles', items : [ 'Bold','Italic','Underline', 'TextColor','-','RemoveFormat' ] },			
+			{ name: 'styles', items : [ 'Format' ] },		
+			{ name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+			{ name: 'insert', items : [ 'Image','Table','HorizontalRule','Smiley','SpecialChar' ] },			
+			{ name: 'document', items : [ 'Source' , '-','About' ]},
+		];
+	
+	
 	$(e.target).find("td.ckeditor textarea").each( function() {
 		var curMatch = $(this);
-		CKEDITOR.replace( this.id );
+		var toolbar = $(this).attr("toolbar");
+		if (!toolbar) { toolbar="Basic" };
+		CKEDITOR.replace( this.id, {
+			toolbar:toolbar
+		});
 	});
 	return false
 

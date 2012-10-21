@@ -124,8 +124,8 @@ class FileService {
 		File dir = new File(diPath)
 
 		def map = dir.listFiles().collect { file ->
-			//[file:file,url:"${diUrl}/${file.name}"]
-			[file:file,url:"/catviz/f/${params.id}/${file.name}"]
+			[file:file,url:"${diUrl}/${file.name}"]
+			//[file:file,url:"/catviz/f/${params.id}/${file.name}"]
 		}
 		return map
 	}

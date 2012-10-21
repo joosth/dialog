@@ -28,6 +28,7 @@ package org.open_t.dialog
 import org.codehaus.groovy.grails.commons.*
 class DialogTagLib {
 	def dialogService
+	def grailsApplication
 	static namespace = 'dialog'
 	
 	/**
@@ -116,7 +117,7 @@ class DialogTagLib {
 			}
 			
 			if (attrs.noErrors!="true"){
-				out <<"""<td>${errors}</td>"""
+				out <<"""<td class="text-error">${errors}</td>"""
 			}
 			out <<"""</tr>"""
 		}
@@ -193,7 +194,7 @@ class DialogTagLib {
 					if (attrs.value) {
 						value=attrs.value
 					} else {
-						value=fieldValue(bean: attrs.object, field: attrs.propertyName)
+						value=fieldValue(bean: attrs.object, field: attrs.propertyName)						
 					}
 					
 					// Copy all extra attributes, skip the ones that are only meaningful for textField or are handled manually
@@ -337,16 +338,23 @@ class DialogTagLib {
 
 	
 	def xml = { attrs ->
-	out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
+		def skipAttrs=['object','propertyName','mode','type','value']
+		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}
+		newAttrs.cols=attrs.cols ?: 80
+		newAttrs.rows=attrs.rows ?: 20
+		def xmltext=attrs.object."${attrs.propertyName}"
+		newAttrs.value = xmltext ? dialogService.prettyPrint(xmltext) : ""
+		newAttrs.name=attrs.propertyName
+	
+	out << row (attrs) {
 		switch(attrs.mode) {
 			case "show":
-				def xmltext=attrs.object."${attrs.propertyName}"
 				String s = xmltext ? dialogService.prettyPrint(xmltext) : ""
 				return "<textarea cols=\"80\" rows=\"25\">"+s.encodeAsHTML()+"</textarea>"
 				break
 			
 			case "edit":
-				"""${g.textArea(name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5)}"""
+				"""${g.textArea(newAttrs)}"""
 				break
 		}
 	}
@@ -506,8 +514,8 @@ class DialogTagLib {
 					
 					if (property.isOptional()) {
 						// TODO: yes. ''  for strings, null for int's
-						//opts.put("noSelection",['': '-'])
-						opts.put("noSelection",['null': '-'])
+						opts.put("noSelection",['': '-'])
+						//opts.put("noSelection",['null': '-'])
 					}
 					"""${g.select(opts)}"""
 					break
@@ -584,7 +592,7 @@ class DialogTagLib {
 		<form class="ajaxdialogform" name="${name}" method="post" action="${attrs.action}" >"""
 		
 		if (attrs.error) {
-			out << """<div class="errors">${attrs.error?attrs.error:''}</div>"""
+			out << """<div class="errors text-error">${attrs.error?attrs.error:''}</div>"""
 		} else {
 			out << """<div class="errors" style="display:none;"></div>"""
 		}
@@ -620,11 +628,13 @@ class DialogTagLib {
 		def name = attrs.name ? attrs.name : "form"
 		def action = attrs.action ? attrs.action : "submit${name}"
 		def cssClass=attrs.class ? "pageform ${attrs.class}" : "pageform"
+		def formClass=attrs.formClass ? attrs.formClass:""
 				
-		out << """<div class="${cssClass}" id="${name}">
-			<h2>${g.message(code:"page.${name}.title", default:"${name}")}</h2>
+		out << """<div class="pageform row"><div class="${cssClass}" id="${name}">
+			<div><h3>${g.message(code:"page.${name}.title", default:"${name}")}</h3></div>
 			<p>${g.message(code:"page.${name}.help", default:"")}</p>
-		<form class="${cssClass}" name="${name}" method="post" action="${action}" >"""		
+
+		<form class="${formClass} form-horizontal" name="${name}" method="post" action="${action}" >"""		
 		if (attrs.error) {
 			out << """<div class="errors">${attrs.error?attrs.error:''}</div>"""
 		} else {
@@ -644,7 +654,7 @@ class DialogTagLib {
 		}
 		
 		out << body()
-		out << "</form></div>"
+		out << "</form></div></div>"
 		
 	}
 	/**
@@ -652,17 +662,26 @@ class DialogTagLib {
 	 */
 	
 	def navigation = {attrs,body ->
-		out << """<div class="navigation">
-			<ul class="clearfix">"""
-		def buttons=attrs.buttons.split(",")
-		buttons.each { name ->
-			out << """<li><button type="submit" name="${name}" class="${name}" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button></li>"""
+		if (grailsApplication.config.dialog?.bootstrap) {		
+			out << """<div class="navigation navigation-form-actions">"""
+			def buttons=attrs.buttons.split(",")
+			buttons.each { name ->			
+					out << """<button type="submit" name="${name}" class="${name} btn" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button>"""
+			}
+			out << """</div>"""		
+		} else {
+			out << """<div class="navigation">
+				<ul class="clearfix">"""
+		
+			def buttons=attrs.buttons.split(",")
+			buttons.each { name ->				
+				out << """<li><button type="submit" name="${name}" class="${name}" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button></li>"""
+			}
+		
+			out << """	</ul>
+			</div>"""
 		}
-		out << """	</ul>
-		</div>"""
-
 	}	
-	
 	
 	/**
 	* table tag - create a &lt;table&gt; to contain form rows
