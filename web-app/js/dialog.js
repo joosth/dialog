@@ -143,7 +143,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         
         	
         	 $(this).keyup(function(e) {
-        		    if (e.keyCode == 13) {
+        		    if (e.keyCode == 13 && e.target.nodeName!="TEXTAREA") {
         		    	$(this).parents('.ui-dialog').first().find('.ui-button').first().click();
                		 return false;
         		    }
