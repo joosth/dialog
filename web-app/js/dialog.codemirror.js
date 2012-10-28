@@ -40,6 +40,17 @@ dialog.codemirror.open =function open (e,params) {
 					}				
 		      });
 			}
+			//
+			if (mode=='text/x-groovy') {
+				dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
+					mode: 'text/x-groovy',
+					lineNumbers: true,
+					matchBrachets:true
+									
+		      });
+			}
+			
+			
 		}
 	});
 	return false
