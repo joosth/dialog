@@ -34,7 +34,7 @@ public class DateEditor extends PropertyEditorSupport{
 	String getAsText() {
 		//def locale = new Locale('nl')
 		Date d = (Date) super.getValue()
-		println "GetAsText: ${d}"
+		log.debug "GetAsText: ${d}"
 		if (d) {
 			return d.format("yyyy-MM-dd'T'HH:mm:ss")
 		} else {
@@ -43,7 +43,7 @@ public class DateEditor extends PropertyEditorSupport{
 	}
 	
 	void setAsText(String value) {
-		println "SetAsText: ${value}"
+		log.debug "SetAsText: ${value}"
 		if (value=="") {
 			setValue(null)
 		} else {
