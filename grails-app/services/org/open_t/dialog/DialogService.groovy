@@ -184,7 +184,11 @@ class DialogService {
         def theRefreshNodes=null
         def successFlag=true
         def resultMessage
-        def theName = domainClassInstance.toString()
+		def theName=""
+		try {
+			theName = domainClassInstance.toString()
+		} catch (Exception e) {
+		}
         try { 
         	domainClassInstance.delete()
         	resultMessage="${domainClassName} #${params.id} : ${theName} deleted"

@@ -105,14 +105,19 @@ class ListService {
 						def val=Eval.me("doc",doc,"doc.${it}")
 						inLine +=["${i}": val?val.toString():""]						
 					} else {
-						def val=doc."${it}"
+						def val=""
+						try {
+							val=doc."${it}"
+						} catch (Exception e) {
+							val="!!!"
+						}
         				inLine +=["${i}": val?val.toString():""]
 					}
 					i++
         		}	            		
         		def baseUrl=request.contextPath
         		if(!actions) {
-        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
         		}
         		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				aaData+=inLine
@@ -201,7 +206,7 @@ class ListService {
         		}	            		
         		def baseUrl=request.contextPath
         		if(!actions) {
-        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
         		}
         		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				aaData+=inLine
@@ -263,7 +268,7 @@ class ListService {
 				}
 				def baseUrl=request.contextPath
 				if(!actions) {
-					actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+					actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
 				}
 				inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				aaData+=inLine
