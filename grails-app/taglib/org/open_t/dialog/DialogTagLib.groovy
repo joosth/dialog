@@ -616,7 +616,7 @@ class DialogTagLib {
 	
 	/**
 	* pageform tag - create a &lt;pageform&gt;
-	* this one is ment to be on a full page rather than in a popup dialog
+	* this one is meant to be on a full page rather than in a popup dialog
 	*
 	* @param name The name of this tab
 	* @param object The domain object

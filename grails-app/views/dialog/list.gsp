@@ -3,13 +3,16 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="main" />
-		<jqui:resources theme="smoothness" />
+		
+		
         <title>
         	<g:if test="${title}">${title}</g:if>
 	        <g:else><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></g:else>
         </title>
         
-        <script type="text/javascript">
+        
+        <r:script>
+        // Dialog plugin -- list
         $(function() {
         
         //Create Id for the table
@@ -66,7 +69,8 @@
 		
 		       
 });
-        </script>
+        
+        </r:script>
                
     </head>    
     <body>
