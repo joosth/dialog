@@ -19,7 +19,7 @@ body {
 
 
 a:link, a:visited, a:hover {
-    color: #666;
+    /*color: #666;*/
     font-weight: bold;
     text-decoration: none;
 } 
@@ -110,7 +110,7 @@ table {
 }
 
 a:link, a:visited, a:hover {
-    color: #666;
+    /*color: #666; */
     font-weight: bold;
     text-decoration: none;
 }
@@ -206,7 +206,7 @@ span.logout {background: transparent url(theme/images/skin/system-log-out.png) 5
 div.itemlist {margin-top: 10px;}
 
 
-.nav {
+.xnav {
     border: 1px solid #ccc;
     margin-bottom: 5px;
     padding: 7px 0px;
@@ -227,8 +227,8 @@ div.body {width:auto;}
 .body {
     float: none;
     margin: 0px 15px 10px 15px;
-    width:800px;
-   margin-left:200px;
+    xwidth:800px;
+   xmargin-left:200px;
 }
 
 div.table-title { margin-bottom: 2px;}

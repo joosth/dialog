@@ -52,13 +52,14 @@ modules = {
 	
 	'dialog-dataTables' {
 		dependsOn 'dialog'
-		resource url:'/js/jquery/jquery.dataTables.min.js'
+		resource url:'/js/jquery/jquery.dataTables.js'
 		resource url:'/js/jquery/jquery.dataTables.rowReordering.js'
-		resource url:'/js/jquery/dataTables/jquery.dataTables.pagination.js'
+		resource url:'/js/jquery/dataTables/DT_bootstrap.js'
 		
 		resource url:'/css/datatables.css'
 		resource url:'/css/jquery.dataTables_themeroller.css'
 		resource url:'/css/jquery.dataTables.css'
+		resource url:'/css/DT_bootstrap.css'
 				
 		//resource url:'/js/jquery/dataTables/localisation/dataTables.en.txt'
 		//resource url:'/js/jquery/dataTables/localisation/dataTables.nl.txt'
