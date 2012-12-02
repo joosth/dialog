@@ -84,8 +84,8 @@ td.errors input {
 /* ex main.css tables */
 
 table {
-    border: 1px solid #ccc;
-    width: 100%
+    xborder: 1px solid #ccc;
+    xwidth: 100%
 }
 
 
@@ -94,6 +94,8 @@ table {
 
 .dialog table {
     padding: 5px 0;
+    border: 1px solid #ccc;
+    width: 100%
 }
 
 .prop {
@@ -165,7 +167,7 @@ div.dialog-menu ul ul li a {font-size:10px;}
 div.body {width:auto;}
 
 .home { background-image: url("theme/icons/actions/16/gohome.png" ) !important; background-position: 0px 0px !important; }
-.logout { background-image: url("theme/icons/actions/16/gnome-logout.png" ) !important; background-position: 0px 0px !important; }
+x.logout { background-image: url("theme/icons/actions/16/gnome-logout.png" ) !important; background-position: 0px 0px !important; }
 #main-toolbar {border:1px solid #888;background-color:#888;height:20px;margin-bottom:10px;}
 
 div.datatable {width:100%;float:left;}
@@ -173,7 +175,7 @@ div.datatable {width:100%;float:left;}
 .workflows { background-image: url("theme/icons/actions/16/document-properties.png"); }
 .tasks { background-image: url("theme/icons/actions/16/document-properties.png"); }
 
-.menu-icon { background-position: 0px 2px; background-repeat:no-repeat; padding:2px 2px 2px 24px;}
+x.menu-icon { background-position: 0px 2px; background-repeat:no-repeat; padding:2px 2px 2px 24px;}
 
 /* below is one line per menu item that just adds the appropriate icons for the menu item */
 .menu-demo { background-image: url("theme/icons/actions/16/document-properties.png"); }
