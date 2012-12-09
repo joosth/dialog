@@ -353,13 +353,14 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
 	 
-	 var dialogHTML = '<div "title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerName+' '+id+' ?</div></form></div>'	 
+	 var dialogHTML = '<div title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerName+' '+id+' ?</div></form></div>'
+
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
 	 var theDialog=$(dialogHTML).dialog({ 
-		 modal:false,
+		 modal:true,
 		 width:400,
-		 height:100,
+		 height:170,
 		 buttons: { 
 		 	"Delete": function(e) {
 			 	var formData=theDialog.find("form").serialize();
@@ -441,8 +442,10 @@ dialog.obj2ParamStr = function obj2ParamStr(params) {
 }
 
 dialog.statusMessage = function statusMessage(event,eventData) {
-	if (eventData.message) {	
-		$("#statusmessage").html(eventData.message);
+	if (eventData.message) {
+		var msg='<div id="alertmessage" class="statusmessage alert alert-success fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>'
+		$("#statusmessage").html(msg);
+		$("#alertmessage").addClass("in");
 	}
 }
 
@@ -502,6 +505,8 @@ jQuery.fn.hcenter = function () {
     this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
     return this;
 }
+
+
 		
 $(function() {
 	
@@ -513,7 +518,7 @@ $(function() {
   	});
   	
   	if($.cluetip) {
-	$(".help").cluetip({splitTitle: '|',cluezIndex:10000});
+  		$(".help").cluetip({splitTitle: '|',cluezIndex:10000});
   	}
 	/* Helper for the left menu, when clicking a li the enclosed a's href  will be called */
 

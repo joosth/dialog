@@ -1,6 +1,8 @@
 modules = {
 	dialog {
-		dependsOn 'jquery, jquery-ui'
+		dependsOn 'jquery'
+		resource url:'/js/jquery/jquery-ui-1.9.2.custom.min.js'
+		resource url: 'css/bootstrap-theme/jquery-ui-1.9.2.custom.css'		
 		resource url:'/js/dialog.js'
 		resource url:'/css/dialog.css'
 		
@@ -15,6 +17,7 @@ modules = {
 	'dialog-cluetip' {
 		dependsOn 'dialog'
 		resource url:'/js/jquery/jquery.cluetip-patched.js'
+		resource url:'/css/jquery.cluetip.css'
 	}
 	
 	'dialog-tinymce' {		
@@ -35,7 +38,6 @@ modules = {
 		resource url:'/css/dialog.codemirror.css'
 		resource url:'js/codemirror/lib/codemirror.css'		
 		resource url:'/js/codemirror/lib/codemirror.js'
-		//resource url:'/js/codemirror/lib/util/searchcursor.js'
 		resource url:'/js/codemirror/lib/util/closetag.js'
 		resource url:'/js/codemirror/mode/xml/xml.js'
 		resource url:'/js/codemirror/mode/javascript/javascript.js'
@@ -55,15 +57,13 @@ modules = {
 		resource url:'/js/jquery/jquery.dataTables.js'
 		resource url:'/js/jquery/jquery.dataTables.rowReordering.js'
 		resource url:'/js/jquery/dataTables/DT_bootstrap.js'
-		
-		resource url:'/css/datatables.css'
-		resource url:'/css/jquery.dataTables_themeroller.css'
-		resource url:'/css/jquery.dataTables.css'
-		resource url:'/css/DT_bootstrap.css'
-				
-		//resource url:'/js/jquery/dataTables/localisation/dataTables.en.txt'
-		//resource url:'/js/jquery/dataTables/localisation/dataTables.nl.txt'
-		
+		resource url:'/css/DT_bootstrap.css'						
+	}
+	'dialog-bootstrap' {
+		dependsOn 'dialog'
+	}
+	'dialog-demo' {
+		dependsOn 'dialog,dialog-cluetip,dialog-altselect,dialog-dataTables,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal,dialog-bootstrap'
 	}
 	
 }

@@ -16,7 +16,7 @@
 			o.selecthide ? el.hide() : el.show();
 			
 			self.container = $("<div></div>")
-			.addClass("ui-altselect ui-helper-clearfix ui-widget")
+			.addClass("ui-altselect xui-helper-clearfix xui-widget")
 			.css({
 				width: o.width,
 				height: o.height
@@ -25,14 +25,14 @@
 			
 			self.fltAutoComplete = $("<input type='text'/>");
 			var header = $("<div></div>")
-			.addClass("ui-widget-header ui-helper-clearfix")
+			.addClass("xui-widget-header ui-helper-clearfix")
 			.append(self.fltAutoComplete)
 			.appendTo(self.container);
 			
 			self.selectionList = $("<ul></ul>")
 			.addClass("list");
 			var list = $("<div></div>")
-			.addClass("ui-widget-content")
+			.addClass("xui-widget-content")
 			.append(self.selectionList)
 			.appendTo(self.container);
 			
@@ -71,7 +71,7 @@
 			o  = self.options,
 			el = self.element;
 			
-			$("<li class='ui-state-default ui-element' style='display: block;' id='select-"+item.value+"'>"+item.text+"</li>")
+			$("<li class='xui-state-default xui-element' style='display: block;' id='select-"+item.value+"'>"+item.text+"</li>")
 			.append(
 				$("<a style='position: absolute; right: 0px;' href='#'><span class='ui-icon ui-icon-trash'></span></a>")
 				.click(function() {

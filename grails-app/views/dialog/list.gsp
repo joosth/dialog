@@ -17,18 +17,39 @@
         
         //Create Id for the table
         var tableId="detailTable_" + "${dc.getName().replace(".","_").replace("class ","")}";
+        var wrapperId="tableWrapper_${dc.getName().replace(".","_").replace("class ","")}";
         var domainClass="${dc.name.substring(dc.name.lastIndexOf('.')+1)}"
 
 		dialog.dataTableHashList[tableId]=$("#"+tableId).dataTable( {
 		//"sDom": '<"H"lfr>t<"F"ip>',
 		//	"sDom": '<"toolbar"><"H"lfr>t<"F"ip>',
-		//"sDom": '<"toolbar">frtip',
+		
+		/*
+		    sDom explanation:
+		    l - Length changing
+		    f - Filtering input
+		    t - The table!
+		    i - Information
+		    p - Pagination
+		    r - pRocessing
+		    < and > - div elements
+		    <"class" and > - div with a class
+		    Examples: <"wrapper"flipt>, <lf<t>ip>
+		*/
+		
+		"sDom": '<"toolbar"lf>rtip',
 		"bProcessing": true,
 		"bServerSide": true,		
 		"sAjaxSource": "${createLink(controller:controllerName,action: jsonlist ? jsonlist :'jsonlist',params:jsonlistparams?jsonlistparams:[:])}",
-		"sPaginationType": "full_numbers",
+		<g:if test="${sPaginationType}" >	
+			"sPaginationType": "${sPaginationType}",
+		</g:if>
+		<g:else>
+		"sPaginationType": "bootstrap",
+		</g:else>
+		
 		"bFilter": ${bFilter ? true : false},
-		"bJQueryUI": true,
+		"bJQueryUI": false,
 		"aoColumnDefs": [ 
 			{ "bSortable": false, "aTargets": [ ${dc.listProperties.size()} ,"nonsortable"] }
 		] ,
@@ -39,10 +60,10 @@
     	"fnInitComplete": function() {
     		 
    		<g:if test="${toolbar}" >	
-			$("div.datatable div.fg-toolbar div.dataTables_length").prepend('${toolbar}');
+			$('#'+wrapperId).find('.toolbar').prepend('${toolbar}');
 		</g:if>
-		<g:else>
-    		$("div.datatable div.fg-toolbar div.dataTables_length").prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\'${controllerName}\',{ domainclass : \''+domainClass+'\'}, null)"><g:message code="list.new" default="New" /></span></span>&nbsp;');			    		    							    							
+		<g:else>					    		    							    							
+    		$('#'+wrapperId).find('.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\'${controllerName}\',{ domainclass : \''+domainClass+'\'}, null)"><g:message code="list.new" default="New" /></span></div>');
 		</g:else>
 		<g:if test="${rowreordering}">
 			dialog.dataTableHashList[tableId].rowReordering(       				
@@ -74,16 +95,14 @@
                
     </head>    
     <body>
-    	<div class="body">
-    		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr table-title" >    	
-    			<h1>
+    	
+    			<h3>
     				<g:if test="${title}">${title}</g:if>
     				<g:else><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></g:else>
-    			</h1>
-   			</div>
-	      	<div class="datatable">
+    			</h3>
+   		  	<div class="datatable" id="tableWrapper_${dc.getName().replace(".","_").replace("class ","")}">
 	      
-	   			<table cellpadding="0" cellspacing="0" border="0" class="display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace(".","_").replace("class ","")}">
+	   			<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace(".","_").replace("class ","")}">
 					<thead>
 				
 						<tr>
@@ -115,7 +134,10 @@
 					</tfoot>
 				</table>
 			</div>   
-   			<div id="statusmessage" style="margin:auto;text-align:center;">...</div>    
-   		</div>
+   		
+ 		
+ 		
+ 		    
+   		
     </body>
 </html>

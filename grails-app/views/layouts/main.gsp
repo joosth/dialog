@@ -5,64 +5,42 @@
     <head>
     	<!-- This is main.gsp in the dialog plugin demo -->
         <title><g:layoutTitle default="Dialog plugin demo" /></title>
-                
-        <%-- css from used modules --%>
-        <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'jquery.cluetip.css',plugin:'dialog')}" />
-    	<link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'datatables.css',plugin:'dialog')}" />
-	    
-		<%-- Theme style --%>
-		<link rel="stylesheet" type="text/css" href="${resource(dir:'css/theme',file:'roller-theme.css',plugin:'dialog')}" />
-        <link rel="stylesheet" type="text/css" href="${resource(dir:'css/theme',file:'theme.css',plugin:'dialog')}" />
-        
-        <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'dialog.css',plugin:'dialog')}" />              
-        <link rel="shortcut icon" href="${createLinkTo(dir:'images',file:'favicon.ico',plugin:'dialog')}" type="image/x-icon" />
-        
-        <g:javascript src="jquery/jquery-1.4.2.js" plugin="dialog" />
-        <g:javascript>
-        	var dialog={};
-        	var dialog.dataTableHashList = {};
-        	dialog.baseUrl="${request.contextPath}";
-        </g:javascript>
         
         
-        <g:javascript src="jquery/jquery-ui-1.8.custom.min.js" plugin="dialog" />
-        <g:javascript src="jquery/jquery.cluetip-patched.js"  plugin="dialog" />
-        <g:javascript src="jquery/jquery.dataTables.js"  plugin='dialog'/>
-                        
-        <g:javascript src="dialog.js"  plugin="dialog" />
-        
-		<g:layoutHead />
+		<r:require modules="dialog-demo"/>
+        <g:layoutHead />
+		<r:layoutResources/>		
+		<dialog:head />   
 		
 	</head>
     <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+        		<div class="container">          
+        		<a href="/demo" title="${message(code:'brand')}|${message(code:'brand')}" class="brand" >&nbsp;</a>
+          			<div class="nav-collapse collapse">
+	            		<ul class="nav">            
+		              		<li class="">                
+		                		<a href="/dialog/demo" class="brand" >Dialog demo</a>
+		              		</li>
+		              
+		             		 <li class="dropdown">
+		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+					 			<g:message code="demo" />
+								<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li class="menu-icon formicon" ><g:link controller="demo" action="list">Demo</g:link></li>
+								    <li class="menu-icon mytasks" ><g:link controller="demoItem" action="list" >Demo items</g:link></li>
+								</ul>                    
+              		 		</li>
+             		 	</ul>
+            		 </div>
+           		 </div>
+         	</div>
     
-     <div id="main-toolbar" >
-    	<span id="menu-toolbar">
-    		<a href="/dialog/demo" title="Home|Go to the home screen" class="action home help" >&nbsp;</a>
-    	</span>
-    	
-    	<span id="user-toolbar" style="float:right;">    		    		
-    		<sec:ifLoggedIn><sec:loggedInUserInfo field="username"/><g:link title="logout" class="logout action" controller="logout">&nbsp;</g:link></sec:ifLoggedIn>
-    	</span>
-    
-    	</div>
-		
-		<div class="page-body" >
-     	          
-	    <div class="dialog-menu">
-	    <div id="topleft-logo" class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr table-title">
-	    <h1>Dialog demo</h1></div>
-	      <ul>		            
-	        <li>Demo</li>	        	        
-	        <ul>	        
-	          <li class="menu-icon menu-demo"><g:link controller="demo" action="list">Demo</g:link></li>
-	          <li class="menu-icon menu-demo-items"><g:link controller="demoItem" action="list">Demo items</g:link></li>
-          	</ul>
-            
-	      </ul>	      
-	    </div>
-
-    	 <g:layoutBody />
+    	 	<g:layoutBody />
+	    			<r:layoutResources />
     	 	    </div>
     </body>	
 </html>

@@ -8,10 +8,10 @@
   "sInfoPostFix":  "",
   "sSearch":       "Zoek:",
   "sUrl":          "",
-  "oPaginate": {
-    "sFirst":    "Eerste",
-    "sPrevious": "Vorige",
-    "sNext":     "Volgende",
-    "sLast":     "Laatste"
+ "oPaginate": {
+    "sFirst":    "&laquo;",
+    "sPrevious": "&lsaquo;",
+    "sNext":     "&rsaquo;",
+    "sLast":     "&raquo;"
   }
 }

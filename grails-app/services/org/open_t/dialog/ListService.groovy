@@ -117,7 +117,7 @@ class ListService {
         		}	            		
         		def baseUrl=request.contextPath
         		if(!actions) {
-        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+        			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
         		}
         		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				aaData+=inLine
@@ -206,7 +206,7 @@ class ListService {
         		}	            		
         		def baseUrl=request.contextPath
         		if(!actions) {
-        			actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+        			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small  xlist-action-button xui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
         		}
         		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				aaData+=inLine
@@ -268,7 +268,7 @@ class ListService {
 				}
 				def baseUrl=request.contextPath
 				if(!actions) {
-					actions= { dok, env -> """<span class="list-action-button ui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span>&nbsp;<span class="list-action-button ui-state-default" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span>""" }
+					actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
 				}
 				inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				aaData+=inLine

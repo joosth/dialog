@@ -27,5 +27,5 @@ grails.views.gsp.encoding="UTF-8"
 grails.resources.adhoc.excludes = ['/js/tiny_mce/**/*.*']
 
 dialog {
-	bootstrap=false	
+	bootstrap=true	
 }

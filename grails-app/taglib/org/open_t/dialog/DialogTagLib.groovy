@@ -242,7 +242,7 @@ class DialogTagLib {
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
 					
-				
+					
 					def dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd")
 					out << g.textField(name:attrs.propertyName+'_date',value:dateValue,class:'datepicker')
 					break
@@ -280,10 +280,11 @@ class DialogTagLib {
 					
 					
 					def dateAttrs=[name:attrs.propertyName+'_date',value:g.formatDate([date:dateValue,format:"yyyy-MM-dd"]),class:'datepicker']
-					out << g.field(dateAttrs)
+					out << g.textField(dateAttrs)
 					
+					out << "&nbsp;"
 					def timeAttrs=[name:attrs.propertyName+'_time',value:g.formatDate([date:dateValue,format:"HH:mm"]),class:'time']
-					out << g.field(timeAttrs)
+					out << g.textField(timeAttrs)
 					
 					
 					break
@@ -811,5 +812,36 @@ class DialogTagLib {
 		
 	}
 	*/
+	
+	
+	def dropdown = { attrs,body ->
+		out << """ <li class="dropdown">
+		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+					 			${g.message(code:'dropdown.'+attrs.code)}
+								<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+		"""
+		out << body()
+		out <<"""</ul></li>"""
+	}
+	
+	def menuitem = { attrs,body ->
+		def icon=""
+		if (attrs.icon) {
+			icon="""<i class="${attrs.icon}"></i> """
+		}
+		def onclick=""
+		def link=""
+		if (attrs.onclick) {
+			onclick="""onclick="${attrs.onclick}" """
+			link="""<a href="#">${icon}${g.message(code:'menu.'+attrs.code)}</a>"""
+		} else {
+			link=g.link(controller:attrs.controller,action:attrs.action) {icon+ g.message(code:'menu.'+attrs.controller+'.'+attrs.action) }
+		}
+		
+		out << """<li ${onclick}class="menu-item" >  ${link}</li>"""	
+	}
+	
 }
 
