@@ -113,7 +113,9 @@ class DialogTagLib {
 			
 			out << """</td>"""
 			if (attrs.noHelp!="true"){
-				out << """<td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></td>"""
+				if (g.message(code:"${domainPropertyName}.${propertyName}.help",default:'')) {
+					out << """<td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></td>"""
+				}
 			}
 			
 			if (attrs.noErrors!="true"){
@@ -157,8 +159,11 @@ class DialogTagLib {
 					<td valign="top" class="value ${attrs.class}">"""
 			out << body()
 			
-			out << """</td><td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span>
-				</td><td>${error}</td></tr>"""
+			def helptext="&nbsp;"
+			if (g.message(code:"${attrs.name}.help",default:'UNKNOWN')!='UNKNOWN') {
+				helptext="""<span class="help-icon help action" title="${g.message(code:"${attrs.name}.help")}" href="#">&nbsp;</span>"""
+			}			
+			out << """</td><td>${helptext}</td><td>${error}</td></tr>"""
 		}
 		
 	}
@@ -590,13 +595,19 @@ class DialogTagLib {
 		
 		
 		out << """<div aid="dialog" style="width:${width};" title="${title}" id="${name}">
-		<form class="ajaxdialogform" name="${name}" method="post" action="${attrs.action}" >"""
+		<form class="ajaxdialogform" name="${name}" method="post" action="${attrs.action}" test="test" >"""
 		
 		if (attrs.error) {
 			out << """<div class="errors text-error">${attrs.error?attrs.error:''}</div>"""
 		} else {
 			out << """<div class="errors" style="display:none;"></div>"""
 		}
+		
+		def message=g.message(code:"form.${name}.message",default:'')
+		if (message) {
+			out << """<div class="dialog-message">${message}</div>"""
+		}
+		
 
 		// Add Hidden field with the id of the parent DomainObject (belongsTo)
 		// REMARK: Currently it will only work if belongto has only 1 relation
