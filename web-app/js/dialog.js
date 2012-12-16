@@ -62,8 +62,15 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	
 	var dialogName = (options != null && options["dialogname"] != null) ? options["dialogname"] : "dialog";
 	var submitName = (options != null && options["submitname"] != null) ? options["submitname"] : "submit"+dialogName;
+	
+	
 	var refreshTableKey = (options != null && options["refresh"] != null) ? options["refresh"] : "NO_REFRESH";
+	
+	// if true, form submit will be used instead of AJAX
 	var submitForm = (options != null && options["submitform"] != null) ? options["submitform"] : false;
+	
+	// if true, form will not be submitted at all
+	var noSubmit = (options != null && options["nosubmit"] != null) ? options["nosubmit"] : false;
 	
 	var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 	
@@ -95,30 +102,34 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		        	theDialog.find("form").submit();
 		        	$( this ).dialog( "close" );
 		 		} else {
+		 		if (!noSubmit) {
+				 	var formData=theDialog.find("form").serialize();
+				 	$.post(dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId,formData, function(data) 
+				 		{
+				 		var jsonResponse = data.result;
+				 		
+				 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse})
+				 		$(".dialog-events").trigger("dialog-message",{message:jsonResponse.message})
+				 					 		
+				 		if(jsonResponse.success){
+					 		theDialog.dialog("close");
+					 		if (jsonResponse.nextDialog) {
+					 			dialog.formDialog(jsonResponse.nextDialog.id,jsonResponse.nextDialog.controllerName,jsonResponse.nextDialog.options,jsonResponse.nextDialog.urlParams)
+					 		}
+					 	} else  {
+					 		for (key in jsonResponse.errorFields) {
+					 			var errorField=jsonResponse.errorFields[key]
+					 			$("#"+errorField).parent().addClass("errors")				 			
+					 		}
+					 		theDialog.find("div.errors").html(jsonResponse.message)
+					 		theDialog.find("div.errors").show();				 		
+					 	
+				 		}
+				 	});
 		 		
-			 	var formData=theDialog.find("form").serialize();
-			 	$.post(dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId,formData, function(data) 
-			 		{
-			 		var jsonResponse = data.result;
-			 		
-			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse})
-			 		$(".dialog-events").trigger("dialog-message",{message:jsonResponse.message})
-			 					 		
-			 		if(jsonResponse.success){
-				 		theDialog.dialog("close");
-				 		if (jsonResponse.nextDialog) {
-				 			dialog.formDialog(jsonResponse.nextDialog.id,jsonResponse.nextDialog.controllerName,jsonResponse.nextDialog.options,jsonResponse.nextDialog.urlParams)
-				 		}
-				 	} else  {
-				 		for (key in jsonResponse.errorFields) {
-				 			var errorField=jsonResponse.errorFields[key]
-				 			$("#"+errorField).parent().addClass("errors")				 			
-				 		}
-				 		theDialog.find("div.errors").html(jsonResponse.message)
-				 		theDialog.find("div.errors").show();				 		
-				 	
-			 		}
-			 	});	
+		 		} else {
+		 			$( this ).dialog( "close" );
+		 		}
 		 		}
         	},
 
