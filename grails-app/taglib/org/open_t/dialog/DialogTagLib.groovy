@@ -845,10 +845,22 @@ class DialogTagLib {
 		def onclick=""
 		def link=""
 		if (attrs.onclick) {
-			onclick="""onclick="${attrs.onclick}" """
+			if (attrs.onclick=="dialog") {
+				def nosubmit=attrs.nosubmit?true:false
+				def params=""
+				if (attrs.params) {
+				 params=attrs.params.collect {key,value -> "'${key}':'${value}'"}.join(',')
+				}
+				onclick="""onclick="dialog.formDialog('null','${attrs.controller}', {'dialogname':'${attrs.action}','nosubmit':${nosubmit}},{${params}} ,null)" """
+
+			} else {
+				onclick="""onclick="${attrs.onclick}" """
+			}
+			
 			link="""<a href="#">${icon}${g.message(code:'menu.'+attrs.code)}</a>"""
 		} else {
-			link=g.link(controller:attrs.controller,action:attrs.action) {icon+ g.message(code:'menu.'+attrs.controller+'.'+attrs.action) }
+			link=g.link(controller:attrs.controller,action:attrs.action,params:attrs.params) {icon+ g.message(code:'menu.'+attrs.controller+'.'+attrs.action) }
+			
 		}
 		
 		out << """<li ${onclick}class="menu-item" >  ${link}</li>"""	
