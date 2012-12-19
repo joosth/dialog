@@ -842,6 +842,16 @@ class DialogTagLib {
 		if (attrs.icon) {
 			icon="""<i class="${attrs.icon}"></i> """
 		}
+		def code=null
+		if (attrs.code) {
+			code='menu.'+attrs.code
+		} else {
+			code='menu.'+attrs.controller+'.'+attrs.action
+		}
+		def label=g.message(code:code+'.label')
+		def help=g.message(code:code+'.help',default:'')
+		
+		
 		def onclick=""
 		def link=""
 		if (attrs.onclick) {
@@ -857,9 +867,9 @@ class DialogTagLib {
 				onclick="""onclick="${attrs.onclick}" """
 			}
 			
-			link="""<a href="#">${icon}${g.message(code:'menu.'+attrs.code)}</a>"""
+			link="""<a href="#" title="${help}">${icon}${label}</a>"""
 		} else {
-			link=g.link(controller:attrs.controller,action:attrs.action,params:attrs.params) {icon+ g.message(code:'menu.'+attrs.controller+'.'+attrs.action) }
+			link=g.link(controller:attrs.controller,action:attrs.action,params:attrs.params,title:help) {icon+ label }
 			
 		}
 		

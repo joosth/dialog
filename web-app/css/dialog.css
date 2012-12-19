@@ -23,7 +23,7 @@ td.tinymce textarea {width:100%;}
 
 table.rowreordering tr { cursor:pointer;}
 div.errors {color:red;}
-.help-icon { background-image: url(../images/help-16x16.png);width:16px;height:16px;cursor:help;}
+.help-icon,.help { background-image: url(../images/help-16x16.png);width:16px;height:16px;cursor:help;}
 div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;width:100%;}
 
 
