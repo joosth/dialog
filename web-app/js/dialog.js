@@ -178,7 +178,19 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        			    onProgress:function(id, fileName, loaded, total){
        			    	$(".qq-upload-list").show();       			    	
        			    },
-       				
+       			    
+       			 template: '<div class="qq-uploader well">' + 
+                 '<div class="qq-upload-drop-area well"><span>Drop files here to upload</span></div>' +
+                 '<div class="qq-upload-button btn btn-primary">Upload a file</div>' +
+                 '<ul class="qq-upload-list nav nav-list"></ul>' + 
+              '</div>',
+              fileTemplate: '<li>' +
+              '<span class="qq-upload-file"></span>' +
+              '<span class="qq-upload-spinner"></span>' +
+              '<span class="qq-upload-size"></span>' +
+              '<a class="qq-upload-cancel" href="#">Cancel</a>' +
+              '<span class="qq-upload-failed-text">Failed</span>' +
+          '</li>',        
        				onComplete: function(id, fileName, responseJSON){
        					var upload=fileName+"|"+responseJSON.path+"|"+responseJSON.mimetype+"|"+responseJSON.identifier+"|"+responseJSON.fileCategory+"|"+responseJSON.direct+"|"+responseJSON.sFileName;
        					// Preventing the submit-time copy is a bad idea for new entries
@@ -186,7 +198,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        						$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
        					//}
        					$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id});
-       					$(".qq-upload-list").hide();
+       					//$(".qq-upload-list").hide();
        				}
        			});       			
        		});

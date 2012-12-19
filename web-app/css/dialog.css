@@ -55,3 +55,5 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
 
 .error {color: red;}
 .action {min-height:16px; padding:2px 0 2px 13px;background-repeat:no-repeat;}
+
+.btn:focus {outline:none;}

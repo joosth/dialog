@@ -50,6 +50,9 @@ modules = {
 	'dialog-fileuploader' {
 		dependsOn 'dialog'
 		resource url:'/css/fileuploader.css'
+	    resource url:'/js/uploader/fileuploader.js'
+
+		
 	}
 	
 	'dialog-dataTables' {
