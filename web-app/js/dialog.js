@@ -80,7 +80,9 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		  url: theUrl,
 		  async: false,
 		  cache: false
-		 }).responseText;
+		 }).error(function(event, jqXHR, ajaxSettings, thrownError) { 
+				window.location.reload();
+			}).responseText;
 	 
 	 var formelements=$(dialogHTML).find('form')
 	 if (formelements.length==0) {
@@ -266,10 +268,14 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		// get z-index of dialog so we can put cluetips above it
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
        		
-       		$(this).find(".help").cluetip({
+       		/*$(this).find(".help").cluetip({
        			splitTitle: '|',  
        			cluezIndex: parentZIndex+1
       	    	});
+       		*/
+       		$(this).find(".help").tooltip({});
+       		
+       		
        		
        		//$(".autocomplete").autocomplete({source:"/boekhouding/rekening/autocomplete"})
        		
@@ -466,7 +472,7 @@ dialog.obj2ParamStr = function obj2ParamStr(params) {
 
 dialog.statusMessage = function statusMessage(event,eventData) {
 	if (eventData.message) {
-		var msg='<div id="alertmessage" class="statusmessage alert alert-success fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>'
+		var msg='<div id="alertmessage" class="alert alert-success fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>'
 		$("#statusmessage").html(msg);
 		$("#alertmessage").addClass("in");
 	}

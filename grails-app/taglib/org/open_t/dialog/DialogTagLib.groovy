@@ -828,7 +828,7 @@ class DialogTagLib {
 	def dropdown = { attrs,body ->
 		out << """ <li class="dropdown">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-					 			${g.message(code:'dropdown.'+attrs.code)}
+					 			${g.message(code:'dropdown.'+attrs.code+'.label')}
 								<b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
