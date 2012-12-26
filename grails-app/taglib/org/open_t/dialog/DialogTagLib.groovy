@@ -46,7 +46,13 @@ class DialogTagLib {
 			};
         	dialog.baseUrl="${request.contextPath}";
 			dialog.pluginUrl="${resource(plugin:'dialog')}";
-			dialog.dataTablesLanguageUrl="${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'datatables.language',default:'en')}.txt";
+			dialog.language="${g.message(code:'language.code',default:'en')}";
+			dialog.dataTablesLanguageUrl="${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'language.code',default:'en')}.txt";
+			
+			var uploader={}
+  			uploader.uploadMessage="${message(code:'dialog.uploader.uploadafile')}";
+  			uploader.dropfilesMessage="${message(code:'dialog.uploader.dropfileshere')}"; 	
+
         </script>        
 		"""
 	}
@@ -794,7 +800,8 @@ class DialogTagLib {
 		out << body()
 		out << """</div>"""
 	}
-	/*
+	
+	// Only needed for full-page dialogs containing an upload.
 	def uploadHead = { attrs ->
 		
 		def html="""
@@ -822,7 +829,7 @@ class DialogTagLib {
 		out << html
 		
 	}
-	*/
+	
 	
 	
 	def dropdown = { attrs,body ->

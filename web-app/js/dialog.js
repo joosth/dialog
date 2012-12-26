@@ -376,6 +376,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        });
 	 
 	 }
+	 return false;
 }
 
 
