@@ -588,6 +588,7 @@ class DialogTagLib {
 	
 	def form = { attrs,body ->
 		def width = attrs.width ? attrs.width : "600px";
+		def height = attrs.height ? attrs.height : "auto";
 		
 		def defaultName="form"
 		if (attrs.object) {
@@ -600,7 +601,7 @@ class DialogTagLib {
 		
 		
 		
-		out << """<div aid="dialog" style="width:${width};" title="${title}" id="${name}">
+		out << """<div aid="dialog" style="width:${width};height:${height};" title="${title}" id="${name}">
 		<form class="ajaxdialogform" name="${name}" method="post" action="${attrs.action}" test="test" >"""
 		
 		if (attrs.error) {
@@ -739,8 +740,8 @@ class DialogTagLib {
 			cssClass+=" rowreordering"
 		}
 		
-		out << """<div>
-					<table id="${prefix}" class="${cssClass}" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
+		out << """<div class="datatable">
+					<table id="${prefix}" class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
 			attrs.domainClass.listProperties.each { propertyName ->
 				
 				// Removed because this does not work for 'fake' properties like book.isbn
@@ -844,6 +845,17 @@ class DialogTagLib {
 		out <<"""</ul></li>"""
 	}
 	
+	def submenu = { attrs,body ->
+		out << """ <li class="dropdown-submenu">
+		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+					 			${g.message(code:'dropdown.'+attrs.code+'.label')}
+								</a>
+								<ul class="dropdown-menu">
+		"""
+		out << body()
+		out <<"""</ul></li>"""
+	}
+	
 	def menuitem = { attrs,body ->
 		def icon=""
 		if (attrs.icon) {
@@ -857,7 +869,6 @@ class DialogTagLib {
 		}
 		def label=g.message(code:code+'.label')
 		def help=g.message(code:code+'.help',default:'')
-		
 		
 		def onclick=""
 		def link=""

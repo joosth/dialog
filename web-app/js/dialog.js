@@ -89,12 +89,16 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		 window.location.reload()
 	 } else {
 	 
-	 var theWidth=$(dialogHTML).css("width");
+	 var theWidth=$(dialogHTML).css("width").replace("px","");
+	 var theHeight=$(dialogHTML).css("height").replace("px","");
+	 if (theHeight=="0") theHeight="auto";
+	 
      //var theWidth=600;
 	 
 	 var theDialog=$(dialogHTML).dialog({ 
 		 modal:true,
 		 width:theWidth,
+		 height:theHeight,
 		 buttons: { 
 		 	"OK": function(e,ui) {
 	        	$(this).trigger("dialog-submit",{event:e,ui:ui,'this':this,id:id,controllerName:controllerName});
@@ -222,9 +226,23 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     				"bProcessing": true,
     				"bServerSide": true,
     				"sAjaxSource": dialog.baseUrl+jsonUrl,
-    				"sPaginationType": "full_numbers",
+    				"sPaginationType": "bootstrap",
     				"bFilter": false,
-    				"bJQueryUI": true,
+    				"bJQueryUI": false,
+    				/*
+    			    sDom explanation:
+    			    l - Length changing
+    			    f - Filtering input
+    			    t - The table!
+    			    i - Information
+    			    p - Pagination
+    			    r - pRocessing
+    			    < and > - div elements
+    			    <"class" and > - div with a class
+    			    Examples: <"wrapper"flipt>, <lf<t>ip>
+    			*/
+    			
+    			"sDom": '<"toolbar"lf>rtip',
     				
     				"oLanguage": {
     			     	 "sUrl": dialog.dataTablesLanguageUrl, 
@@ -240,7 +258,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		       			};
 		       			// Add NEW button ("parent()" is the div with class dataTables_wrapper)		       			
 		       			if (id != null && (!newButton || newButton!="false")) {
-		       				curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
+		       				//curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
+		       				curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
 		       			}
     			    		
 			    	}
