@@ -88,7 +88,7 @@ class DialogService {
 	* @return a map that is ready to be rendered as a JSON message
 	*/
     	
-	def submit(domainClass,params,instance=null) {
+	def submit(domainClass,params,instance=null,Closure after={}) {
 			def g=grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
 			def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
 			def domainPropertyName=defaultDomainClass.propertyName		
@@ -154,8 +154,11 @@ class DialogService {
 							id: domainClassInstance.id,
     		              	name: domainClassInstance.toString(),	
     		              	errorFields:theErrorFields
-    		              ]              
+    		              ]
              def res=[result:result]
+			 after.setResolveStrategy(Closure.DELEGATE_FIRST)
+			 after.setDelegate([domainClassInstance:domainClassInstance,res:res])
+			 after()
              return res    		
     	}
 	
@@ -335,6 +338,16 @@ class DialogService {
 			} 
 			return json
 		}
+	
+	def check(condition,code,args=[]) {
+		if (!condition) {
+			throw new DialogException(code,args)
+		}
+	}
+	
+	def error(code,args=[]) {		
+		throw new DialogException(code,args)
+	}
 	
 	
 }
