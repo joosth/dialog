@@ -111,7 +111,7 @@
 					 	<th class="${dc.sortableProperties?.contains(property)?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
 					 	</g:if>
 					 	<g:else>
-					 	<th class="${new DefaultGrailsDomainClass(dc).hasPersistentProperty(property)?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
+					 	<th class="${(property=='id' || new DefaultGrailsDomainClass(dc).hasPersistentProperty(property))?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
 					 	</g:else>		
 						</g:each>
 						<th width="50px"><g:message code="list.actions.label" default="Actions" /></th>

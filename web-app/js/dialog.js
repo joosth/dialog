@@ -498,8 +498,8 @@ dialog.statusMessage = function statusMessage(event,eventData) {
 	}
 }
 
-
-dialog.deleteFile = function deleteDialog(id,controllerName, filename,options) {
+// TODO this seems to double deleteDialog ??
+dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 	
 	 
 	 var dialogHTML = '<div "title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
@@ -539,25 +539,23 @@ dialog.deleteFile = function deleteDialog(id,controllerName, filename,options) {
         });
 }
 
-
-
-
-jQuery.fn.center = function () {
-    this.css("position","absolute");
-    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
-    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
-    return this;
-}
-
-jQuery.fn.hcenter = function () {
-    this.css("position","absolute");
-    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
-    return this;
-}
-
-
 		
 $(function() {
+	
+	jQuery.fn.center = function () {
+	    this.css("position","absolute");
+	    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
+	    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+	    return this;
+	}
+
+	jQuery.fn.hcenter = function () {
+	    this.css("position","absolute");
+	    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+	    return this;
+	}
+
+	
 	
 	// Initialize date picker input elements
  	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
