@@ -89,6 +89,8 @@ class DialogService {
 	*/
     	
 	def submit(domainClass,params,instance=null,Closure after={}) {
+		def res=[:]
+		try {
 			def g=grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
 			def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
 			def domainPropertyName=defaultDomainClass.propertyName		
@@ -147,7 +149,7 @@ class DialogService {
 				}
             	resultMessage=g.renderErrors(bean:domainClassInstance)
             }
-    		
+			
     		def result = [
     		              	success:successFlag,
     		              	message:resultMessage,
@@ -155,12 +157,24 @@ class DialogService {
     		              	name: domainClassInstance.toString(),	
     		              	errorFields:theErrorFields
     		              ]
-             def res=[result:result]
-			 after.setResolveStrategy(Closure.DELEGATE_FIRST)
-			 after.setDelegate([domainClassInstance:domainClassInstance,res:res])
-			 after()
-             return res    		
-    	}
+			res=[result:result]
+			 
+			after.setResolveStrategy(Closure.DELEGATE_FIRST)
+			after.setDelegate([domainClassInstance:domainClassInstance,res:res])
+			after()
+			
+		} catch (Exception e) {
+			def result = [
+				success:false,
+				message:e.message,
+				id: null,
+				name: "",
+				errorFields:[]
+			]
+			res=[result:result]
+		}		
+		return res    		
+	}
 	
 	/**
 	* Delete a domain object
@@ -193,12 +207,12 @@ class DialogService {
 		} catch (Exception e) {
 		}
         try { 
-        	domainClassInstance.delete()
+        	domainClassInstance.delete(failOnError:true,flush:true)
         	resultMessage="${domainClassName} #${params.id} : ${theName} deleted"
         	
         } catch (Exception e ){
         	successFlag=false
-        	resultMessage="${domainClassName} #${params.id} : ${theName} not deleted"
+        	resultMessage="${domainClassName} #${params.id} : ${theName} not deleted: ${e.message}"
         }
 		
 		

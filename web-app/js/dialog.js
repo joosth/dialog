@@ -502,7 +502,7 @@ dialog.statusMessage = function statusMessage(event,eventData) {
 dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 	
 	 
-	 var dialogHTML = '<div "title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
+	 var dialogHTML = '<div title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
 	 var theDialog=$(dialogHTML).dialog({ 
@@ -539,7 +539,6 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
         });
 }
 
-		
 $(function() {
 	
 	jQuery.fn.center = function () {

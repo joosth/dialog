@@ -50,7 +50,7 @@ modules = {
 	'dialog-fileuploader' {
 		dependsOn 'dialog'
 		resource url:'/css/fileuploader.css'
-	    resource url:'/js/uploader/fileuploader.js'
+	    resource url:'/js/fileuploader.js'
 
 		
 	}
@@ -62,11 +62,26 @@ modules = {
 		resource url:'/js/jquery/dataTables/DT_bootstrap.js'
 		resource url:'/css/DT_bootstrap.css'						
 	}
+	
+	'dialog-tree' {
+		dependsOn 'dialog-bootstrap'
+		resource url:'js/jquery/jquery.jstree.js'
+		resource url:'js/dialog.tree.js'
+		resource url:'/css/jquery.jstree.css'
+		
+	}
+	
 	'dialog-bootstrap' {
 		dependsOn 'dialog'
+		resource url:'/js/jquery/jquery.dataTables.js'
 	}
 	'dialog-demo' {
 		dependsOn 'dialog,dialog-cluetip,dialog-altselect,dialog-dataTables,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal,dialog-bootstrap'
+	}
+	
+	'dialog-bootbox' {
+		dependsOn 'jquery'
+		resource url:'/js/bootbox.js'				
 	}
 	
 }

@@ -894,5 +894,32 @@ class DialogTagLib {
 		out << """<li ${onclick}class="menu-item" >  ${link}</li>"""	
 	}
 	
+	def treeselect = { attrs, body -> 
+		out << row ("class":attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
+			def action=attrs.action?:"treeJSON"			
+			def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
+			def property=domainClass.getPropertyByName(attrs.propertyName)			
+			def dc = new DefaultGrailsDomainClass( property.getType())
+			def domainPropertyName=dc.getPropertyName()			
+			def url=attrs.url?:"${request.contextPath}/${domainPropertyName}/${action}"
+			def attributes=""
+			if (attrs.width) { attributes+=""" treeDialogWidth="${attrs.width}" """	}		
+			if (attrs.height) { attributes+=""" treeDialogHeight="${attrs.height}" """ }
+			if (attrs.root) { attributes+=""" treeRoot="${attrs.root}" """ }
+						
+			def value=attrs.object."${attrs.propertyName}"
+			
+			
+			"""<span id="treeselect-${attrs.propertyName}-span" treeUrl="${url}" ${attributes} >
+				<span>${value}</span>
+					<a href="#" onclick="dialog.tree.treeSelect('treeselect-${attrs.propertyName}');" class="btn btn-small">...</a>
+				<input id="treeselect-field-input" type="hidden" name="${attrs.propertyName}.id" value="${value?.id}" />
+			</span>"""
+			
+			
+		}
+		
+	}
+	
 }
 
