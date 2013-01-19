@@ -9,6 +9,7 @@ Brief description of the plugin.
   <resources>
     <resource>DialogResources</resource>
     <resource>spring.resources</resource>
+    <resource>org.open_t.dialog.DialogExceptionController</resource>
     <resource>org.open_t.dialog.demo.DemoController</resource>
     <resource>org.open_t.dialog.demo.DemoItemController</resource>
     <resource>org.open_t.dialog.demo.Demo</resource>
@@ -21,20 +22,13 @@ Brief description of the plugin.
   <repositories>
     <repository name='grailsCentral' url='http://grails.org/plugins' />
     <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
+    <repository name='ebrRelease' url='http://repository.springsource.com/maven/bundles/release/' />
+    <repository name='ebrExternal' url='http://repository.springsource.com/maven/bundles/external/' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
     <repository name='http://download.java.net/maven/2/' url='http://download.java.net/maven/2/' />
   </repositories>
   <dependencies />
   <plugins>
-    <runtime>
-      <plugin group='org.grails.plugins' name='resources' version='1.1.5' />
-      <plugin group='org.grails.plugins' name='hibernate' version='2.1.1' />
-      <plugin group='org.grails.plugins' name='spring-security-core' version='1.2.6' />
-      <plugin group='org.grails.plugins' name='jquery-ui' version='1.8.24' />
-      <plugin group='org.grails.plugins' name='twitter-bootstrap' version='2.2.1' />
-      <plugin group='org.grails.plugins' name='jquery' version='1.7.1' />
-      <plugin group='org.grails.plugins' name='rendering' version='0.4' />
-    </runtime>
     <build>
       <plugin group='org.grails.plugins' name='tomcat' version='2.1.1' />
     </build>

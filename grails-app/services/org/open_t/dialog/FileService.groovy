@@ -55,7 +55,7 @@ class FileService {
 	
 	def pack(n) {
 		String s= Long.toString(new Long(n),36)
-		return String.format("%1\$#8s", s).replace(' ', '0')
+		return String.format("%1\$8s", s).replace(' ', '0')
 	}
 	
 	def packedPath(n) {
@@ -108,7 +108,9 @@ class FileService {
 				[0:file.name,
 				 1:file.length(),
 				 2:format.format(file.lastModified()),
-				 3:"""<span class="list-action-button ui-state-default" onclick="dialog.deleteFile(${params.id},'${params.controller}','${file.name}',null)">&times;</span>"""]
+
+
+				 3:"""<div class="btn-group"><span class="btn btn-small" onclick="dialog.deleteFile(${params.id},'${params.controller}','${file.name}',null)">&times;</span></div>"""]
 			}.sort { file -> file[new Integer(params.iSortCol_0)] }
 		
 			if (params.sSortDir_0=="desc") {

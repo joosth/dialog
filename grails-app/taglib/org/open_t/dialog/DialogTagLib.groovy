@@ -776,7 +776,7 @@ class DialogTagLib {
 		def cssClass="detailTable"
 		
 		out << """<div>
-					<table id="${prefix}" class="${cssClass}" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
+					<table id="${prefix}" class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
 		out << """<th>${g.message(code:"filestable.filename.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.size.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.date.label")}</th>"""
