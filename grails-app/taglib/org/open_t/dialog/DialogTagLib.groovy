@@ -724,6 +724,15 @@ class DialogTagLib {
 	
 	def detailTable = { attrs ->
 		
+		def copiedAttrs=""
+		def skipAttrs=['object','propertyName','mode','class','type','value']
+		attrs.each { attrKey, attrValue ->
+			 if (!skipAttrs.contains(attrKey))
+			 {
+				 copiedAttrs+=""" ${attrKey}="${attrValue}" """
+						 }
+		}
+		
 		def domainClass = new DefaultGrailsDomainClass( attrs.domainClass)
 
 		def domainPropertyName=domainClass.getPropertyName()
@@ -741,7 +750,7 @@ class DialogTagLib {
 		}
 		
 		out << """<div class="datatable">
-					<table id="${prefix}" class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
+					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
 			attrs.domainClass.listProperties.each { propertyName ->
 				
 				// Removed because this does not work for 'fake' properties like book.isbn

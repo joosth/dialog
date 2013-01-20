@@ -17,7 +17,7 @@
 		      		<div class="images">
 						<div class="item" style="wwidth:128px;border:1px solid #CCC;margin:5px;padding:5px;float:left;">
 		            		<div class="thumbnail">
-								<a href="${f.url}" onclick="window.opener.CKEDITOR.tools.callFunction( ${CKEditorFuncNum}, '${f.url}');window.close();" title="${f.file.name}"><img wwidth="64" wheight="64" src="${f.url}"/></a>              
+								<a href="${f.url}" onclick="window.opener.CKEDITOR.tools.callFunction( ${CKEditorFuncNum}, '${f.url}');window.close();" title="${f.file.name}"><img width="128" height="128" src="${f.url}"/></a>              
 		            		</div>
 		            		<div class="details">
 			            		<a onclick="window.opener.CKEDITOR.tools.callFunction( ${CKEditorFuncNum}, '${f.url}');window.close();" href="#">${f.file.name}</a>
