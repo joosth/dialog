@@ -464,9 +464,12 @@ class DialogTagLib {
 					}
 					def containerClass = value ? "ac-selected" : "ac-idle"
 					// input+hidden field
-					"""<span class="autocomplete-container ${containerClass}" id="${attrs.propertyName}-container"><input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete" jsonUrl="${jsonUrl}" />
-					   ${descriptionText}
-					   <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}"/><span id="${attrs.propertyName}-icon" class="ac-icon ui-icon ui-icon-triangle-1-w">&nbsp;</span></span>"""
+					"""<input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete" jsonUrl="${jsonUrl}" />
+						${descriptionText}
+						<input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}"/>"""
+//					"""<span class="autocomplete-container ${containerClass}" id="${attrs.propertyName}-container"><input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete" jsonUrl="${jsonUrl}" />
+//					   ${descriptionText}
+//					   <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}"/><span id="${attrs.propertyName}-icon" class="ac-icon ui-icon ui-icon-triangle-1-w">&nbsp;</span></span>"""
 					break
 			
 			}
