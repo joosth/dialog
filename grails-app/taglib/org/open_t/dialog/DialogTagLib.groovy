@@ -138,12 +138,13 @@ class DialogTagLib {
 		if (attrs.error) {
 				cssClass+=" error"
 			}
+		def label=attrs.label?:g.message(code:"${attrs.name}.label", default:"${attrs.name}")
 		
 		if (attrs.vertical == "true") {
 			out <<"""
 			<tr class="prop ${cssClass}">
 				<td valign="top" class="name">
-					<label for="name">${g.message(code:"${attrs.name}.label", default:"${attrs.name}")}</label>
+					<label for="name">${label}</label>
 				</td>
 				<td>&nbsp;
 				</td>
@@ -160,14 +161,15 @@ class DialogTagLib {
 		} else {
 			out <<"""<tr class="prop ${cssClass}">
 					<td valign="top" class="name">
-					<label for="name">${g.message(code:"${attrs.name}.label", default:"${attrs.name}")}</label>
+					<label for="name">${label}</label>
 					</td>
 					<td valign="top" class="value ${attrs.class}">"""
 			out << body()
 			
 			def helptext="&nbsp;"
-			if (g.message(code:"${attrs.name}.help",default:'UNKNOWN')!='UNKNOWN') {
-				helptext="""<span class="help-icon help action" title="${g.message(code:"${attrs.name}.help")}" href="#">&nbsp;</span>"""
+			def helpTitle=attrs.help?:g.message(code:"${attrs.name}.help")
+			if (attrs.help || g.message(code:"${attrs.name}.help",default:'UNKNOWN')!='UNKNOWN') {
+				helptext="""<span class="help-icon help action" title="${helpTitle}" href="#">&nbsp;</span>"""
 			}			
 			out << """</td><td>${helptext}</td><td>${error}</td></tr>"""
 		}
