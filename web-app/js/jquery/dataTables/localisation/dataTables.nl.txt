@@ -6,7 +6,7 @@
   "sInfoEmpty":    "Er zijn geen records om te tonen",
   "sInfoFiltered": "(gefilterd uit _MAX_ rijen)",
   "sInfoPostFix":  "",
-  "sSearch":       "Zoek:",
+  "sSearch":       "Filter:",
   "sUrl":          "",
  "oPaginate": {
     "sFirst":    "&laquo;",
