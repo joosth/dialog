@@ -6,7 +6,7 @@
     </head>    
     <body>
 		<div class="body">			
-			<div class="row">
+			<div class="row-fluid">
 				<div class="span12">
 					<div class="alert alert-error">
 						<strong>${title}</strong><br/>
