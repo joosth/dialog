@@ -196,7 +196,7 @@ class DialogService {
 	
 		def id=params.id
 		def domainClassInstance = domainClass.get(params.id )
-		domainClassInstance.properties = params
+		//domainClassInstance.properties = params
         
         def theRefreshNodes=null
         def successFlag=true
