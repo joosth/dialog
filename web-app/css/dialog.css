@@ -15,7 +15,7 @@ input:required:valid { background-image: url(/dialog/css/theme/images/validation
 .ac-selected input { border: 0px solid #ddd;padding:0px;background-color: transparent;}
 .ac-selecting { border: 0px solid #223311;padding:1px;}
 .ac-icon {display: inline-block;vertical-align:middle;}
-td.name { padding-top:4px;font-size:14px;}
+td.name { padding-top:4px;font-size:14px;padding-right:4px;}
 td.value { padding-top:4px;;font-size:14px;}
 div.dialog-message {margin-bottom:10px;font-style:italic}
 
@@ -43,13 +43,10 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
     padding: 5px;
 }
 .prop .name {
-    text-align: left;
-    width: 15%;
-    white-space: nowrap;
+    text-align: left;    
 }
 .prop .value {
-    text-align: left;
-    width: 85%;
+    text-align: left;    
 }
 
 

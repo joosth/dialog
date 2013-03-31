@@ -98,6 +98,8 @@ class FileService {
 	
 	def filelist(dc,params,fileCategory="images") {		
 		def format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",new Locale('nl'))
+		def diUrl=fileUrl(dc,params.id,fileCategory)
+
 		
 		def aaData=[:]
 		//def baseUrl=request.contextPath
@@ -105,7 +107,7 @@ class FileService {
 			File dir = new File(filePath(dc,params.id,fileCategory))
 			aaData=dir.listFiles().collect { file ->
 
-				[0:file.name,
+				[0:"""<a href="${diUrl}/${file.name}">${file.name}</a>""",
 				 1:file.length(),
 				 2:format.format(file.lastModified()),
 
