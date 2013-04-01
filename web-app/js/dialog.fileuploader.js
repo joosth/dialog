@@ -52,7 +52,7 @@ dialog.fileuploader.open =function open (e,params) {
 					//if (!$(this).attr("direct") || $(this).attr("direct")=="false") {
 						$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
 					//}
-					$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id});
+					$(".dialog-events").trigger("dialog-refresh",{dc:"ALL",id:id});
 					//$(".qq-upload-list").hide();
 				}
 			});       			

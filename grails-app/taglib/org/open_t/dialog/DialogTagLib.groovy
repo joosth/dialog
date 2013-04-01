@@ -737,18 +737,34 @@ class DialogTagLib {
 				 copiedAttrs+=""" ${attrKey}="${attrValue}" """
 						 }
 		}
+		def controllerName
+		def listProperties
+		def prefix
+		def listConfig
+		if (attrs.domainClass) {
+			def domainClass = new DefaultGrailsDomainClass( attrs.domainClass)
+			if (domainClass.hasProperty('listConfig')) {
+				listConfig=attrs.listConfig?:attrs.domainClass?.listConfig
+			}
+		}
+		if (listConfig) {			
+			controllerName=listConfig.controller
+			listProperties=	listConfig.columns.collect { it.name }
+			prefix="detailTable_"+listConfig.name			
+		} else {
 		
-		def domainClass = new DefaultGrailsDomainClass( attrs.domainClass)
+			def domainClass = new DefaultGrailsDomainClass( attrs.domainClass)
 
-		def domainPropertyName=domainClass.getPropertyName()
-		
-		def prefix="detailTable_"+attrs.domainClass
-		prefix=prefix.replace(".","_")
-		prefix=prefix.replace("class ","")
+			controllerName=attrs.controllerName?:domainClass.getPropertyName()
+			listProperties=attrs.domainClass.listProperties		
+			prefix="detailTable_"+attrs.domainClass		
+			prefix=prefix.replace(".","_")
+			prefix=prefix.replace("class ","")
+		}
 		
 		def optionalParams = '?objectId='+attrs.object.id+'&objectClass='+attrs.object.getClass().getName()+'&property='+attrs.property
-		def jsonUrl='/'+domainPropertyName+'/jsonlist'+optionalParams
-		def positionUrl='/'+domainPropertyName+'/position'+optionalParams
+		def jsonUrl='/'+controllerName+'/jsonlist'+optionalParams
+		def positionUrl='/'+controllerName+'/position'+optionalParams
 		def cssClass="detailTable"
 		if (attrs.rowreordering) {
 			cssClass+=" rowreordering"
@@ -756,13 +772,13 @@ class DialogTagLib {
 		
 		out << """<div class="datatable">
 					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
-			attrs.domainClass.listProperties.each { propertyName ->
+			listProperties.each { propertyName ->
 				
 				// Removed because this does not work for 'fake' properties like book.isbn
 				//def property=domainClass.getPropertyByName(propertyName)
 				//def naturalName=property.naturalName;
 			
-				out << """<th>${g.message(code:"${domainPropertyName}.${propertyName}.label", default:"${propertyName}")}</th>"""
+				out << """<th>${g.message(code:"${controllerName}.${propertyName}.label", default:"${propertyName}")}</th>"""
 			}
 		out << "<th>Actions</th></tr></thead><tbody>"
 		out <<"""</tbody></table>"""

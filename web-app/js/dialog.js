@@ -414,7 +414,7 @@ dialog.refreshDatatableEvent = function refreshDatatableEvent(event,eventData) {
 	        for(key in dialog.dataTableHashList) {
 	        	// TODO this is a crude measure. All datatables will refresh. 
 	        	// The logic between messages, dialogs and datatables needs to be fixed
-	        	if (key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
+	        	if (eventData.dc=="ALL" || key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
 	        		dialog.refreshDataTable(key,dialog.dataTableHashList,lastPage)		
 	        	}        	
 	        }
