@@ -11,7 +11,9 @@ class Command  {
 		DefaultGrailsDomainClass defaultDomainClass = new DefaultGrailsDomainClass( this.class )
 		def props=defaultDomainClass.getProperties()		
 		props.each { property ->
-			if (list."${property.name}" && (property.name !="id") && (property.name !="version")) {
+			//println "Properties: ${list.properties}"
+			//if ((property.name !="id") && (property.name !="version") && list."${property.name}") {
+			if ((property.name !="id") && (property.name !="version") && list.properties.containsKey(property.name)) {
 				this."${property.name}"=list."${property.name}"
 			}
 		}
