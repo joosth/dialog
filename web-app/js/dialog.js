@@ -192,6 +192,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     				"sPaginationType": "bootstrap",
     				"bFilter": false,
     				"bJQueryUI": false,
+    				"iDisplayLength":5,
+    				"aLengthMenu": [[5,10, 25, 50], [5,10, 25, 50 ]],
     				/*
     			    sDom explanation:
     			    l - Length changing

@@ -786,7 +786,7 @@ class DialogTagLib {
 	}
 	
 	/**
-	* detailTable tag - create a detail table in master/detail view
+	* filesTable tag 
 	* @param domainClass detail class name
 	* @param object master object
 	* @param property property that links detail with the master
