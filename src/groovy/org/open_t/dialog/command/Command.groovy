@@ -17,6 +17,23 @@ class Command  {
 				this."${property.name}"=list."${property.name}"
 			}
 		}
+		return this
+	}
+	
+	def getAllFrom (list) {
+		DefaultGrailsDomainClass defaultDomainClass = new DefaultGrailsDomainClass( this.class )
+		def props=defaultDomainClass.getProperties()
+		props.each { property ->
+			try {
+				if (list."${property.name}") {			
+					this."${property.name}"=list."${property.name}"
+				}
+			}
+			catch (Exception e) {
+				// If the property does not exist in list we silently ignore it.
+			}
+		}
+		return this
 	}
 	
 	def storeTo(list) {
