@@ -58,3 +58,12 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
 .action {min-height:16px; padding:2px 0 2px 13px;background-repeat:no-repeat;display:inline-block;}
 
 .btn:focus {outline:none;}
+
+.processing { 
+	float:right; color:#888;
+	font-size: 14px;
+    line-height: 20px;
+    margin-right:10px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin-top:4px;
+}

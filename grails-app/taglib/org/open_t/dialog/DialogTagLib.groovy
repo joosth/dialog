@@ -771,16 +771,17 @@ class DialogTagLib {
 		}
 		
 		out << """<div class="datatable">
-					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
-			listProperties.each { propertyName ->
-				
-				// Removed because this does not work for 'fake' properties like book.isbn
-				//def property=domainClass.getPropertyByName(propertyName)
-				//def naturalName=property.naturalName;
-			
-				out << """<th>${g.message(code:"${controllerName}.${propertyName}.label", default:"${propertyName}")}</th>"""
+					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""			
+			if (listConfig) {
+				listConfig.columns.each { column ->
+					out << """<th class="${column.sortable?'sortable':'nonsortable'}">${g.message(code:"list.${listConfig.name}.${column.name}.label")}</th>"""
+				}
+			} else {		
+				listProperties.each { propertyName ->
+					out << """<th>${g.message(code:"${controllerName}.${propertyName}.label", default:"${propertyName}")}</th>"""
+				}
 			}
-		out << "<th>Actions</th></tr></thead><tbody>"
+		out << "<th class='nonsortable'>Actions</th></tr></thead><tbody>"
 		out <<"""</tbody></table>"""
 	
 	}

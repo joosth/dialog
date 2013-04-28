@@ -192,6 +192,9 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     				"sPaginationType": "bootstrap",
     				"bFilter": false,
     				"bJQueryUI": false,
+    				"aoColumnDefs": [ 
+    									{ "bSortable": false, "aTargets": ["nonsortable"] }
+    								] ,
     				"iDisplayLength":5,
     				"aLengthMenu": [[5,10, 25, 50], [5,10, 25, 50 ]],
     				/*
@@ -207,7 +210,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     			    Examples: <"wrapper"flipt>, <lf<t>ip>
     			*/
     			
-    			"sDom": '<"toolbar"lf>rtip',
+    			"sDom": '<"toolbar"lf><"processing"r>tip',
     				
     				"oLanguage": {
     			     	 "sUrl": dialog.dataTablesLanguageUrl, 
