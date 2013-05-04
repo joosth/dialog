@@ -577,7 +577,7 @@ class DialogTagLib {
 		def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
 		prefix=prefix.replace(".","_")
 		out << """<div id="${prefix}${attrs.name}">
-				<table ><tbody>"""		
+				<table class="dialog-form-table"><tbody>"""		
 				out << body()
 				out << "</tbody></table></div>"
 		}
@@ -715,7 +715,7 @@ class DialogTagLib {
 
 	def table = { attrs,body ->
 	
-		out << """<table><tbody>"""
+		out << """<table class="dialog-form-table"><tbody>"""
 		out << body()
 		out << "</tbody></table>"
 	}

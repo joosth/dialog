@@ -463,6 +463,8 @@ dialog.statusMessage = function statusMessage(event,eventData) {
 		var msg='<div id="alertmessage" class="alert alert-success fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>'
 		$("#statusmessage").html(msg);
 		$("#alertmessage").addClass("in");
+		
+		setTimeout( function() {$("#alertmessage").alert("close")}, 2000 );
 	}
 }
 

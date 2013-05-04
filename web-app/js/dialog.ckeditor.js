@@ -49,7 +49,7 @@ dialog.ckeditor.open =function open (e,params) {
 	$(e.target).find(".ckeditor textarea").each( function() {
 		var curMatch = $(this);
 		var toolbar = $(this).attr("toolbar");
-		if (!toolbar) { toolbar="Basic" };
+		if (!toolbar) { toolbar="Compact" };
 		CKEDITOR.replace( this.id, {
 			toolbar:toolbar
 		});
