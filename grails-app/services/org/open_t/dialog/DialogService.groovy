@@ -85,6 +85,7 @@ class DialogService {
 	* @param domainClass The domain class to be used
 	* @param params The parameters from the http request
 	* @param instance The domain object to be used (in lieu of creating one from params)
+	* @param after A closure to call after the submit
 	* @return a map that is ready to be rendered as a JSON message
 	*/
     	
