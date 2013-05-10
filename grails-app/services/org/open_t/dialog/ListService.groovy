@@ -35,7 +35,6 @@ class ListService {
 	def grailsApplication
     boolean transactional = true
 	
-
 	/**
 	* Generates a JSON response to feed the datalist
 	* @param dc The domain class to be used
@@ -137,10 +136,6 @@ class ListService {
         	return json
         }
 	
-	/*
-	 * JSON service that allows for an arbitrary HQL query to be the source of the list 
-	 */
-	
 	/**
 	* Generates a JSON response to feed the datalist from an arbitrary HQL query
 	* @param dc The domain class to be used
@@ -236,6 +231,7 @@ class ListService {
 	}
 	
 	/**
+	* DEPRECATED 
 	* Generates a JSON response to feed the datalist from a searchable query
 	* @param dc The domain class to be used
 	* @param params The parameters from the http request
@@ -297,7 +293,9 @@ class ListService {
 		return json
 	}
 	
-	
+	/*
+	 * Move position of an item in a sortable list
+	 */
 	
 	def position(dc,params) {
 		def defaultDomainClass = new DefaultGrailsDomainClass( dc )		
@@ -336,9 +334,4 @@ class ListService {
 		}
 		return ['succes':true]
 	}
-	
-	
-	
-    
-    
 }
