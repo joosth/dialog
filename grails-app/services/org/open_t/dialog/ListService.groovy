@@ -51,7 +51,17 @@ class ListService {
         	title=title.replaceAll (".*\\.", "")
         	def propName=title[0].toLowerCase()+title.substring(1)
         	
-            def columns=dc.listProperties
+            
+			
+			def columns
+			
+			if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
+				columns=dc.listConfig.columns.collect { it.name }
+			} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
+				columns=dc.listProperties
+			}
+			
+			
             def sortName=columns[new Integer(params.iSortCol_0)]
      		sortName=sortName? sortName:columns[0]
 			 
@@ -152,8 +162,17 @@ class ListService {
 			countQuery="select count(*) ${query}"
 		}
 		
+		def columns
+		if (listProperties) {
+			columns=listProperties
+		} else if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
+			columns=dc.listConfig.columns.collect { it.name }
+		} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
+			columns=dc.listProperties
+		}
 		
-		def columns=listProperties ? listProperties : dc.listProperties
+		
+		//def columns=listProperties ? listProperties : dc.listProperties
 		//def columns= dc.listProperties
 		def sortName=columns[new Integer(params.iSortCol_0)]
 		sortName=sortName? sortName:columns[0]

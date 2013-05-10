@@ -90,4 +90,5 @@ $(function() {
 	$("td.codemirror textarea").each({
 		
 	});
+	CodeMirror.colorize();
 });

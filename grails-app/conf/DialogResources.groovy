@@ -38,11 +38,18 @@ modules = {
 		resource url:'/css/dialog.codemirror.css'
 		resource url:'js/codemirror/lib/codemirror.css'		
 		resource url:'/js/codemirror/lib/codemirror.js'
-		resource url:'/js/codemirror/lib/util/closetag.js'
+		//resource url:'/js/codemirror/lib/util/closetag.js'
+		
+		resource url: '/js/codemirror/addon/runmode/runmode.js'
+		resource url: '/js/codemirror/addon/runmode/colorize.js'		
 		resource url:'/js/codemirror/mode/xml/xml.js'
 		resource url:'/js/codemirror/mode/javascript/javascript.js'
 		resource url:'/js/codemirror/mode/css/css.js'
 		resource url:'/js/codemirror/mode/htmlmixed/htmlmixed.js'
+		
+		resource url:'/js/codemirror/mode/groovy/groovy.js'
+		resource url:'/js/codemirror/mode/shell/shell.js'
+		resource url:'/js/codemirror/mode/clike/clike.js'
 		resource url:'/js/dialog.codemirror.js'
 		
 	}
