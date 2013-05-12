@@ -69,3 +69,5 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
 }
 .dialog-form-table { width:100%;}
 #progressbar { width:800px;}
+input.cke_dialog_ui_input_text { height: 26px !important; }
+za.cke_dialog_ui_button { height: 18px !important; }

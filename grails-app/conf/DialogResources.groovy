@@ -48,6 +48,7 @@ modules = {
 		resource url:'/js/codemirror/mode/htmlmixed/htmlmixed.js'
 		
 		resource url:'/js/codemirror/mode/groovy/groovy.js'
+		resource url:'/js/codemirror/mode/less/less.js'
 		resource url:'/js/codemirror/mode/shell/shell.js'
 		resource url:'/js/codemirror/mode/clike/clike.js'
 		resource url:'/js/dialog.codemirror.js'
