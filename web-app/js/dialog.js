@@ -21,12 +21,9 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-/*
+/**
  * Modal JQuery UI confirmation dialog
  */
-
-
-
 dialog.confirm = function confirm(message,title,url) {
 	var htmlMessage='<div id="dialog-confirm" title="'+title+'"><p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>'+message+'</p></div>';
 	
@@ -92,9 +89,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	 var theWidth=$(dialogHTML).css("width").replace("px","");
 	 var theHeight=$(dialogHTML).css("height").replace("px","");
 	 if (theHeight=="0") theHeight="auto";
-	 
-     //var theWidth=600;
-	 
+	 	 
 	 var theDialog=$(dialogHTML).dialog({ 
 		 modal:true,
 		 width:theWidth,
@@ -147,19 +142,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         	
         	$(this).trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
         	
-        	/*
-        	 * First attempt to have a default submit on <enter>
-        	 $(this).find("form").first().unbind('submit');
-        	 $(this).find("form").first().submit(function(){
-             //simulate click on create button
-        		 $(this).parents('.ui-dialog').first().find('.ui-button').first().click();
-        		 return false;
-        	 });
-        	 */
-        	
-        
-        	
-        	 $(this).keyup(function(e) {
+        		 $(this).keyup(function(e) {
         		    if (e.keyCode == 13 && e.target.nodeName!="TEXTAREA") {
         		    	$(this).parents('.ui-dialog').first().find('.ui-button').first().click();
                		 return false;
@@ -172,7 +155,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
        		$(this).find(".dialogtabs").tabs();
        		$(this).find(".altselect").altselect();       	
-       		//$(".refresh-image").bind("dialog-refresh",dialog.refreshImageEvent);
+
        		
        		
        		var dataTable = $(this).find('.detailTable');
@@ -236,39 +219,17 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     			});
        			// refresh dialog on event
        			$("#"+tableId).bind("dialog-refresh",dialog.refreshDatatableEvent);
-       			$("#"+tableId).addClass("dialog-events");
-       			
-       			/*
-       			if ( $(this).hasClass("rowreordering")) {
-       				dialog.dataTableHashList[tableId].rowReordering(       				
-       				{
-       					 sURL:dialog.baseUrl+positionUrl,
-                         sRequestType: "POST"
-		
-       				});       				
-       			}
-       			
-       			
-       			// Add NEW button ("parent()" is the div with class dataTables_wrapper)
-       			if (id != null && (!newButton || newButton!="false")) {
-       				curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
-       			}
-       			*/
+       			$("#"+tableId).addClass("dialog-events");       			
        		});
        		
        		// get z-index of dialog so we can put cluetips above it
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
        		
-       		/*$(this).find(".help").cluetip({
-       			splitTitle: '|',  
-       			cluezIndex: parentZIndex+1
-      	    	});
-       		*/
        		$(this).find(".help").tooltip({});
        		
        		
        		
-       		//$(".autocomplete").autocomplete({source:"/boekhouding/rekening/autocomplete"})
+       		
        		
        		$("input.autocomplete").each(function (index) {
        			var curMatch = $(this);
@@ -293,25 +254,12 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        					return false;
        				},
        			   change: function(event, ui) {
-       				  // var value=this.attributes["value"];
-       				   //$( this ).val( value.nodeValue );
        				   
        				   var name=$( this ).attr("name");       					
        				   var currentValue=$( this ).val();
        				   
        				   name=name.replace("-entry","");       				   
        				   var label=$('[name="'+ name+'.id"]' ).attr("label");
-       				   /*
-       				   if (currentValue=="" || currentValue=="-") {
-       					$('[name='+ name+'.id]' ).val("null");
-       				   } else {
-       					   $( this ).val( label );
-       				   }
-       				   
-       				   $('#'+name+'-container' ).addClass("ac-selected");
-       				   $('#'+name+'-container' ).removeClass("ac-idle");
-       				   $('#'+name+'-container' ).removeClass("ac-selecting");
-       				   */
        				   $(this).trigger("change");
        				   $('[name="'+ name+'.id"]' ).trigger("change",this);
        				   return false;
@@ -370,11 +318,18 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	 return false;
 }
 
+/**
+ * Delete a domain object
+ * @param id
+ * @param controllerName
+ * @param options
+ * @param urlParams
+ */
 
 dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
-	 
-	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerName+' '+id+' ?</div></form></div>'
+	var controllerTitle=controllerName.charAt(0).toUpperCase() + controllerName.slice(1); 
+	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerTitle+' '+id+' ?</div></form></div>'
 
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
@@ -411,6 +366,12 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
         });
 }
 
+/**
+ * Respond to refresh event for a datatable
+ * @param event
+ * @param eventData
+ */
+
 dialog.refreshDatatableEvent = function refreshDatatableEvent(event,eventData) {
 	if (dialog.options.refreshPage) {
 		window.location.reload();
@@ -443,12 +404,7 @@ dialog.refreshDataTable = function refreshDataTable(key, list, lastPage) {
 		}
 	}
 }
-/*
-dialog.refreshImageEvent=function refreshImageEvent(event,eventData){
-	//alert("we need a refresh!")
-	this.src=this.src+"&amp;nocache="+new Date().getTime();
-}
-*/
+
 
 dialog.obj2ParamStr = function obj2ParamStr(params) {
 	var paramStr="";
@@ -472,10 +428,15 @@ dialog.statusMessage = function statusMessage(event,eventData) {
 	}
 }
 
-// TODO this seems to double deleteDialog ??
+/**
+ * Delete a file
+ * @param id
+ * @param controllerName
+ * @param filename
+ * @param options
+ */
 dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
-	
-	 
+		 
 	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 

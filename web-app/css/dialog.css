@@ -73,3 +73,9 @@ input.cke_dialog_ui_input_text { height: 26px !important; }
 za.cke_dialog_ui_button { height: 18px !important; }
 
 .delete-dialog { height:200px;}
+
+/* A few corrections for the dialog box (fix padding) and add shadow */
+div.ui-dialog div.ui-dialog-titlebar span.ui-dialog-title { padding: 0px !important;}
+div.ui-dialog div.ui-dialog-content { padding: 5px 15px; }
+div.ui-dialog { padding: 0px; box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3); }
+

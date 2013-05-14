@@ -39,7 +39,8 @@ class ${shortName} {
 }
 """
 		new File(artifactFile).write(dcText)
-
+		grailsConsole.addStatus "Domain class ${artifactFile} generated."
+		
 		createUnitTest(name: name, suffix: "")
 	}
 }

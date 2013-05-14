@@ -46,6 +46,10 @@ target ('default': "Generates dialog messages") {
 		def dcname=defaultDomainClass.propertyName
 				
 		if (!labelExists("list.${dcname}.title")) {
+			msgText+="\nlist.${dcname}.title=${defaultDomainClass.naturalName} List"
+		}
+	
+		if (!labelExists("form.${dcname}.title")) {
 			msgText+="\nlist.${dcname}.title=${defaultDomainClass.naturalName}"
 		}
 		
@@ -97,6 +101,10 @@ target ('default': "Generates dialog messages") {
 		}
 	}	
 	
+	if (!labelExists("dropdown.${grailsAppName}.label")) {
+		def appplicationTitle=grailsAppName[0].toUpperCase()+grailsAppName.substring(1).replaceAll("(\\w)([A-Z])",'$1 $2')
+		menuText+="\ndropdown.${grailsAppName}.label=${appplicationTitle}"
+	}
 	
 	if (menuText) {
 		newMessageText="${newMessageText}\n\n# Menu messages\n${menuText}"

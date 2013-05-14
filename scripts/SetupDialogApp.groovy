@@ -66,7 +66,6 @@ generateFile "${basedir}/grails-app/views/layouts/main.gsp" ,
    		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="navbar-inner">
         		<div class="container">
-          			<a href="/${grailsAppName}" title="\${message(code:'brand')}|\${message(code:'brand')}" class="brand" >&nbsp;</a>
           			<g:render template="/layouts/menu" />
 				</div>
 			</div>

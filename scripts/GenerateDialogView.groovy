@@ -8,7 +8,7 @@ includeTargets << grailsScript("_GrailsBootstrap")
 
 
 target ('default': "Generates a new dialog view") {
-	depends(checkVersion, parseArguments,packageApp)
+	depends(checkVersion, parseArguments,packageApp,loadApp)
 
 	promptForName(type: "Domain class)")
 
@@ -31,7 +31,7 @@ target ('default': "Generates a new dialog view") {
 			}
 		}
 		// create path
-		new File("${basedir}/grails-app/views/${shortName}").mkdirs()
+		new File("${basedir}/grails-app/views/${propertyName}").mkdirs()
 		
 		// create file		
 		def viewText="""<dialog:form object="\${${propertyName}Instance}" >
