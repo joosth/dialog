@@ -1,8 +1,8 @@
 class DialogGrailsPlugin {
     // the plugin version
-    def version = "0.2"
+    def version = "2.0"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "1.3.5 > *"
+    def grailsVersion = "2.1.1 > *"
     // the other plugins this plugin depends on
     def dependsOn = [:]
     // resources that are excluded from plugin packaging
@@ -17,15 +17,15 @@ class DialogGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "Your name"
+    def author = "Joost Horward"
     def authorEmail = ""
-    def title = "Plugin summary/headline"
+    def title = "Dialog"
     def description = '''\\
-Brief description of the plugin.
+Provides easy-to-maintain CRUD dialogs and lists with JQuery and twitter bootstrap.
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/dialog"
+    def documentation = "http://www.open-t.nl/p/projects/dialog"
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 

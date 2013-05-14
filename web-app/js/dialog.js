@@ -236,6 +236,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     			});
        			// refresh dialog on event
        			$("#"+tableId).bind("dialog-refresh",dialog.refreshDatatableEvent);
+       			$("#"+tableId).addClass("dialog-events");
+       			
        			/*
        			if ( $(this).hasClass("rowreordering")) {
        				dialog.dataTableHashList[tableId].rowReordering(       				
@@ -372,14 +374,14 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
 	 
-	 var dialogHTML = '<div title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerName+' '+id+' ?</div></form></div>'
+	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerName+' '+id+' ?</div></form></div>'
 
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
 	 var theDialog=$(dialogHTML).dialog({ 
 		 modal:true,
 		 width:400,
-		 height:170,
+		 height:200,
 		 buttons: { 
 		 	"Delete": function(e) {
 			 	var formData=theDialog.find("form").serialize();
@@ -474,13 +476,13 @@ dialog.statusMessage = function statusMessage(event,eventData) {
 dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 	
 	 
-	 var dialogHTML = '<div title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
+	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
 	 var theDialog=$(dialogHTML).dialog({ 
 		 modal:false,
 		 width:400,
-		 height:100,
+		 height:200,
 		 buttons: { 
 		 	"Delete": function(e) {
 			 	var formData=theDialog.find("form").serialize();

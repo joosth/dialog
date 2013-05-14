@@ -8,7 +8,7 @@ includeTargets << grailsScript("_GrailsBootstrap")
 
 
 target ('default': "Generates a new dialog view") {
-	depends(checkVersion, parseArguments,loadApp)
+	depends(checkVersion, parseArguments,packageApp)
 
 	promptForName(type: "Domain class)")
 
