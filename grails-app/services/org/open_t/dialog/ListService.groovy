@@ -49,9 +49,7 @@ class ListService {
         	def title=dc.getName();
         	title=title.replaceAll (".*\\.", "")
         	def propName=title[0].toLowerCase()+title.substring(1)
-        	
-            
-			
+    		
 			def columns
 			
 			if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
@@ -293,10 +291,12 @@ class ListService {
 		return json
 	}
 	
-	/*
+	/**
 	 * Move position of an item in a sortable list
+	 * @param dc
+	 * @param params
+	 * @return
 	 */
-	
 	def position(dc,params) {
 		def defaultDomainClass = new DefaultGrailsDomainClass( dc )		
 		Map belongsToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)

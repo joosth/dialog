@@ -38,7 +38,6 @@ modules = {
 		resource url:'/css/dialog.codemirror.css'
 		resource url:'js/codemirror/lib/codemirror.css'		
 		resource url:'/js/codemirror/lib/codemirror.js'
-		//resource url:'/js/codemirror/lib/util/closetag.js'
 		
 		resource url: '/js/codemirror/addon/runmode/runmode.js'
 		resource url: '/js/codemirror/addon/runmode/colorize.js'		

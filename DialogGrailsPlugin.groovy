@@ -1,6 +1,6 @@
 class DialogGrailsPlugin {
     // the plugin version
-    def version = "2.0"
+    def version = "2.0.0"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.1.1 > *"
     // the other plugins this plugin depends on
@@ -25,7 +25,7 @@ Provides easy-to-maintain CRUD dialogs and lists with JQuery and twitter bootstr
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://www.open-t.nl/p/projects/dialog"
+    def documentation = "http://www.open-t.nl/catviz/p/projects/dialog"
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
