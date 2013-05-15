@@ -50,7 +50,7 @@ target ('default': "Generates dialog messages") {
 		}
 	
 		if (!labelExists("form.${dcname}.title")) {
-			msgText+="\nlist.${dcname}.title=${defaultDomainClass.naturalName}"
+			msgText+="\nform.${dcname}.title=${defaultDomainClass.naturalName}"
 		}
 		
 		if (dc.hasProperty("listConfig")) {		

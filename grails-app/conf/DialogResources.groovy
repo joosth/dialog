@@ -67,7 +67,8 @@ modules = {
 		resource url:'/js/jquery/jquery.dataTables.js'
 		resource url:'/js/jquery/jquery.dataTables.rowReordering.js'
 		resource url:'/js/jquery/dataTables/DT_bootstrap.js'
-		resource url:'/css/DT_bootstrap.css'						
+		resource url:'/css/DT_bootstrap.css'
+		resource url:'/js/dialog.datatables.js'
 	}
 	
 	'dialog-tree' {

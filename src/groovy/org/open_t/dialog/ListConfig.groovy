@@ -19,7 +19,8 @@ class ListConfig {
 	
 	class ListConfigColumn {
 		String name
-		Boolean sortable
+		Boolean sortable=false
+		Boolean filter=false
 	}
 	
 	def column (params){
@@ -101,6 +102,10 @@ class ListConfig {
 		
 		def json = [sEcho:params.sEcho,iTotalRecords:totalRecords,iTotalDisplayRecords:totalRecords,aaData:aaData]
 		return json
+	}
+	
+	def getFilterColumns() {
+		columns.findAll { it.filter }.collect { it.name }
 	}
 	
 	

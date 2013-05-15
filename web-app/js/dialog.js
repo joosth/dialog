@@ -139,7 +139,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	        	}
        	},
         open: function(event, ui) {
-        	
+        	// This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
         	$(this).trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
         	
         		 $(this).keyup(function(e) {
@@ -155,82 +155,12 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
        		$(this).find(".dialogtabs").tabs();
        		$(this).find(".altselect").altselect();       	
-
-       		
-       		
-       		var dataTable = $(this).find('.detailTable');
-       		
-       		$(this).find('.detailTable').each(function (index) {
-       			var curMatch = $(this);
-       			var tableId = curMatch.attr('id');
-       			var jsonUrl = curMatch.attr("jsonUrl");
-       			var newButton=curMatch.attr("newButton");
-       			var positionUrl = curMatch.attr("positionUrl");
-       			var controller = jsonUrl.split('/')[1]; //extract controller name from json url
-       			
-       			dialog.dataTableHashList[tableId] = curMatch.dataTable({
-    				"bProcessing": true,
-    				"bServerSide": true,
-    				"sAjaxSource": dialog.baseUrl+jsonUrl,
-    				"sPaginationType": "bootstrap",
-    				"bFilter": false,
-    				"bJQueryUI": false,
-    				"aoColumnDefs": [ 
-    									{ "bSortable": false, "aTargets": ["nonsortable"] }
-    								] ,
-    				"iDisplayLength":5,
-    				"aLengthMenu": [[5,10, 25, 50], [5,10, 25, 50 ]],
-    				/*
-    			    sDom explanation:
-    			    l - Length changing
-    			    f - Filtering input
-    			    t - The table!
-    			    i - Information
-    			    p - Pagination
-    			    r - pRocessing
-    			    < and > - div elements
-    			    <"class" and > - div with a class
-    			    Examples: <"wrapper"flipt>, <lf<t>ip>
-    			*/
-    			
-    			"sDom": '<"toolbar"lf><"processing"r>tip',
-    				
-    				"oLanguage": {
-    			     	 "sUrl": dialog.dataTablesLanguageUrl, 
-    			    	},
-			    	"fnInitComplete": function() {
-			    		if ( $(this).hasClass("rowreordering")) {
-		       				dialog.dataTableHashList[tableId].rowReordering(       				
-		       				{
-		       					 sURL:dialog.baseUrl+positionUrl,
-		                         sRequestType: "POST"
-				
-		       				});       				
-		       			};
-		       			// Add NEW button ("parent()" is the div with class dataTables_wrapper)		       			
-		       			if (id != null && (!newButton || newButton!="false")) {
-		       				//curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
-		       				curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
-		       			}
-    			    		
-			    	}
-    			    	
-    				
-    			});
-       			// refresh dialog on event
-       			$("#"+tableId).bind("dialog-refresh",dialog.refreshDatatableEvent);
-       			$("#"+tableId).addClass("dialog-events");       			
-       		});
        		
        		// get z-index of dialog so we can put cluetips above it
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
        		
        		$(this).find(".help").tooltip({});
-       		
-       		
-       		
-       		
-       		
+       		       		
        		$("input.autocomplete").each(function (index) {
        			var curMatch = $(this);
        			var jsonUrl = curMatch.attr("jsonUrl");
@@ -366,45 +296,6 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
         });
 }
 
-/**
- * Respond to refresh event for a datatable
- * @param event
- * @param eventData
- */
-
-dialog.refreshDatatableEvent = function refreshDatatableEvent(event,eventData) {
-	if (dialog.options.refreshPage) {
-		window.location.reload();
-	} else {	
-		var lastPage = eventData.id==null;
-		
-		if (eventData.dc!=null) {
-	        var tableId="detailTable_" + eventData.dc.replace(".","_").replace("class ","");
-	        
-	        for(key in dialog.dataTableHashList) {
-	        	// TODO this is a crude measure. All datatables will refresh. 
-	        	// The logic between messages, dialogs and datatables needs to be fixed
-	        	if (eventData.dc=="ALL" || key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
-	        		dialog.refreshDataTable(key,dialog.dataTableHashList,lastPage)		
-	        	}        	
-	        }
-		}
-	}
-}
-
-
-dialog.refreshDataTable = function refreshDataTable(key, list, lastPage) {
-	var curTable = list[key];
-	if (typeof(curTable) !== 'undefined' && curTable != null) {
-		if (lastPage == false) {
-			curTable.fnDraw(false);
-			//curTable.fnReloadAjax();
-		} else {
-			curTable.fnPageChange( 'last' );
-		}
-	}
-}
-
 
 dialog.obj2ParamStr = function obj2ParamStr(params) {
 	var paramStr="";
@@ -489,7 +380,6 @@ $(function() {
 	}
 
 	
-	
 	// Initialize date picker input elements
  	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
   	
@@ -497,25 +387,9 @@ $(function() {
   	return confirm('Are you sure?')
   	});
   	
-  	if($.cluetip) {
-  		$(".help").cluetip({splitTitle: '|',cluezIndex:10000});
-  	}
-	/* Helper for the left menu, when clicking a li the enclosed a's href  will be called */
-
-	$("div.dialog-menu ul ul li a").each(function (index) {
-		var curMatch = $(this);
-		curMatch.parent().click(function(){
-			document.location = curMatch[0].href;
-		});
-	});
-	
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);	
 	$("#statusmessage").addClass("dialog-events");
-	var test=function (e) {
-		alert ('test')
-		return false
-	}
-    
+	
 });
 
 

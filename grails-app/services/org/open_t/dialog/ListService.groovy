@@ -40,12 +40,12 @@ class ListService {
 	* @param dc The domain class to be used
 	* @param params The parameters from the http request
 	* @param request the HTTPServletRequest
-	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
+	* @param filterColumnNames The name of the column to be used for filtering (can be null to disable)
 	* @param actions A closure that provides customized actions in the actions column of the table
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 	
-	def jsonlist(dc,params,request,filterColumnName=null,actions=null) {
+	def jsonlist(dc,params,request,filterColumnNames=null,actions=null) {
         	def title=dc.getName();
         	title=title.replaceAll (".*\\.", "")
         	def propName=title[0].toLowerCase()+title.substring(1)
@@ -54,6 +54,9 @@ class ListService {
 			
 			if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
 				columns=dc.listConfig.columns.collect { it.name }
+				if (!filterColumnNames) {
+					filterColumnNames=dc.listConfig.filterColumns					
+				}
 			} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
 				columns=dc.listProperties
 			}
@@ -84,12 +87,12 @@ class ListService {
 					iTotalDisplayRecords=0
 				}				
 			} else {
-				if (filterColumnName && params.sSearch) {
+				if (filterColumnNames && params.sSearch) {
 					def fields
-					if (String.isInstance(filterColumnName)) {
-						fields=[filterColumnName]
+					if (String.isInstance(filterColumnNames)) {
+						fields=[filterColumnNames]
 					} else {
-						fields=filterColumnName
+						fields=filterColumnNames
 					}
 					def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 					def order=fields.collect {"dc.${it}"}.join(",")
@@ -141,12 +144,12 @@ class ListService {
 	* @param request the HTTPServletRequest
 	* @param query the HQL query
 	* @param the HQL query that counts the number of items in above query, if null, the query is created by prepending 'select count(*) ' to the query above
-	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
+	* @param filterColumnNames The name of the column to be used for filtering (can be null to disable)
 	* @param actions A closure that provides customized actions in the actions column of the table
 	* @param queryParams a parameter map for the query
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnName=null,actions=null,queryParams=[:]) {
+	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnNames=null,actions=null,queryParams=[:]) {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
 		def propName=title[0].toLowerCase()+title.substring(1)
@@ -160,13 +163,13 @@ class ListService {
 			columns=listProperties
 		} else if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
 			columns=dc.listConfig.columns.collect { it.name }
+			if (!filterColumnNames) {
+				filterColumnNames=dc.listConfig.filterColumns
+			}
 		} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
 			columns=dc.listProperties
 		}
 		
-		
-		//def columns=listProperties ? listProperties : dc.listProperties
-		//def columns= dc.listProperties
 		def sortName=columns[new Integer(params.iSortCol_0)]
 		sortName=sortName? sortName:columns[0]
 		
@@ -176,8 +179,6 @@ class ListService {
 		def detailTableId="detailTable_"+dc
 		detailTableId=detailTableId.replace(".","_")
 		detailTableId=detailTableId.replace("class ","")
-		
-		
 					
 		if (params['objectId'] != null) {
 			query = "${query} and (${params.property}.id=${params.objectId})"
@@ -185,17 +186,17 @@ class ListService {
 		}
 		def iTotalRecords=dc.executeQuery(countQuery,queryParams)[0]
 		def iTotalDisplayRecords=iTotalRecords
-		if (filterColumnName && params.sSearch) {
+		if (filterColumnNames && params.sSearch) {
 			def fields			
-			if (String.isInstance(filterColumnName)) {
-				fields=[filterColumnName]
+			if (String.isInstance(filterColumnNames)) {
+				fields=[filterColumnNames]
 			} else {
-				fields=filterColumnName
+				fields=filterColumnNames
 			}
 			def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 			def order=fields.collect {"dc.${it}"}.join(",")
 			
-			//query = "${query} and (${filterColumnName} like '%${params.sSearch}%') order by ${order}"
+			//query = "${query} and (${filterColumnNames} like '%${params.sSearch}%') order by ${order}"
 			query = "${query} and (${where})"
 			countQuery= "${countQuery} and (${where})"
 			queryParams.put('term','%'+params.sSearch+'%')
@@ -236,7 +237,7 @@ class ListService {
 	* @param request the HTTPServletRequest
 	* @param query the HQL query
 	* @param the HQL query that counts the number of items in above query, if null, the query is created by prepending 'select count(*) ' to the query above
-	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
+	* @param filterColumnNames The name(s) of the column to be used for filtering (can be null to disable)
 	* @param actions A closure that provides customized actions in the actions column of the table
 	* @param queryParams a parameter map for the query
 	* @return a map that is ready to be rendered as a JSON message
