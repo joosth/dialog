@@ -1,8 +1,8 @@
 /*
-* CodeMirror module for dialog plugin
+* Datatables module for dialog plugin
 *  
 * Grails Dialog plug-in
-* Copyright 2011 Open-T B.V., and individual contributors as indicated
+* Copyright 2013 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *

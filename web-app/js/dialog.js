@@ -142,15 +142,13 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         	// This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
         	$(this).trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
         	
-        		 $(this).keyup(function(e) {
-        		    if (e.keyCode == 13 && e.target.nodeName!="TEXTAREA") {
-        		    	$(this).parents('.ui-dialog').first().find('.ui-button').first().click();
-               		 return false;
-        		    }
-        		});
-        	
-
-        	
+    		 $(this).keyup(function(e) {
+    		    if (e.keyCode == 13 && e.target.nodeName!="TEXTAREA") {
+    		    	$(this).parents('.ui-dialog').first().find('.ui-button').first().click();
+           		 return false;
+    		    }
+    		});
+    	        	
          	// Initialize date picker input elements
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
        		$(this).find(".dialogtabs").tabs();
@@ -160,80 +158,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
        		
        		$(this).find(".help").tooltip({});
-       		       		
-       		$("input.autocomplete").each(function (index) {
-       			var curMatch = $(this);
-       			var jsonUrl = curMatch.attr("jsonUrl");
-       			curMatch.autocomplete({source:jsonUrl,
-       									minLength:0,
-       				select: function( event, ui ) {
-       					$( this ).val( ui.item.label );
-       					var name=$( this ).attr("name");       					
-       					name=name.replace("-entry","");
-       					$('[name="'+ name+'.id"]' ).val( ui.item.value );
-       					$('[name="'+ name+'.id"]' ).attr("label", ui.item.label );
-       					if (ui.item.description) {
-       						$('#'+name+'-description' ).html( ui.item.description);
-       					}
-       					$('#'+name+'-container' ).addClass("ac-selected");
-       					$('#'+name+'-container' ).removeClass("ac-idle");
-       					$('#'+name+'-container' ).removeClass("ac-selecting");
-       					// nice idea! should use this.
-       					//$( "#project-icon" ).attr( "src", "images/" + ui.item.icon );
 
-       					return false;
-       				},
-       			   change: function(event, ui) {
-       				   
-       				   var name=$( this ).attr("name");       					
-       				   var currentValue=$( this ).val();
-       				   
-       				   name=name.replace("-entry","");       				   
-       				   var label=$('[name="'+ name+'.id"]' ).attr("label");
-       				   $(this).trigger("change");
-       				   $('[name="'+ name+'.id"]' ).trigger("change",this);
-       				   return false;
-       			   },
-       				
-       				focus: function( event, ui ) {
-       					$( this ).val( ui.item.label );
-       					var name=$( this ).attr("name");       					
-       					name=name.replace("-entry","");
-       					$('#'+name+'-container' ).removeClass("ac-selected");
-       					$('#'+name+'-container' ).removeClass("ac-idle");
-       					$('#'+name+'-container' ).addClass("ac-selecting");       					
-       					return false;
-       				}
-       			}).data( "autocomplete" )._renderItem = function( ul, item ) {       					
-       					var desc = item.description ? item.description : ""
-       				return $( "<li></li>" )
-    				.data( "item.autocomplete", item )
-    				.append( "<a>" + item.label + "<br><span class=\"autocomplete-description\">" + desc + "</span></a>" )
-    				.appendTo( ul );
-       			};
-       			
-       		}
-       		);
-       		$("input.autocomplete").blur(function() {
-       			   var name=$( this ).attr("name");       					
-				   var currentValue=$( this ).val();
-				   
-				   name=name.replace("-entry","");       				   
-				   var label=$('[name="'+ name+'.id"]' ).attr("label");
-				   
-				   if (currentValue=="" || currentValue=="-") {
-					$('[name="'+ name+'.id"]' ).val("null");
-				   } else {
-					   $( this ).val( label );
-				   }
-				   
-				   $('#'+name+'-container' ).addClass("ac-selected");
-				   $('#'+name+'-container' ).removeClass("ac-idle");
-				   $('#'+name+'-container' ).removeClass("ac-selecting");
-				   
-       		});
-       		
-       		
        		$(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
 
        		

@@ -103,5 +103,9 @@ modules = {
 		resource url:'/js/flot/jquery.flot.js'
 	}
 	
+	'dialog-autocomplete' {
+		dependsOn 'dialog'
+		resource url:'/js/dialog.autocomplete.js'
+	}
 	
 }
