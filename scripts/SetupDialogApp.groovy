@@ -16,11 +16,11 @@ target ('default': "Set up a dialog-based grails application") {
 	// AppNameResources.groovy
 	def grailsAppTitle=grailsAppName[0].toUpperCase()+grailsAppName.substring(1)
 	generateFile "${basedir}/grails-app/conf/${grailsAppTitle}Resources.groovy",	
-"""modules = {
-    
-	${grailsAppName} {
-		dependsOn 'dialog,dialog-altselect,dialog-dataTables,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal,dialog-bootstrap'		
-	}
+"""
+modules = {    
+    todo {
+        dependsOn 'dialog,dialog-altselect,dialog-dataTables,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal,dialog-bootstrap,dialog-autocomplete,dialog-last'
+    }
 }
 """
 	// spring/resources.groovy

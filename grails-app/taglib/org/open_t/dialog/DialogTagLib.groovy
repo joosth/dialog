@@ -401,7 +401,7 @@ class DialogTagLib {
 	/**
 	* domainObject tag - shows a select box that allows to select an object from a domain class
 	*
-	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
+	* @param mode Contains 'edit' (generate select field) or 'show' (generate read-only output) or 'autocomplete'
 	* @param propertyName The property of the domain object
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
@@ -481,12 +481,11 @@ class DialogTagLib {
 	/**
 	* select tag - shows a select 
 	*
-	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
+	* @param mode Contains 'edit' or 'show' 
 	* @param propertyName The property of the domain object
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
 	* @param from A list of values to be used
-	* @param sort The property to sort the domain class items in the list by (default: name)
 	* @param optionKey attribute to be supplied to the &lt;select&gt; element
 	* @param optionValue attribute to be supplied to the &lt;select&gt; element
 	* @param multiple attribute to be supplied to the &lt;select&gt; element
@@ -585,9 +584,10 @@ class DialogTagLib {
 	/**
 	* form tag - create a &lt;form&gt;
 	*
-	* @param name The name of this tab
+	* @param name The name of this form
 	* @param object The domain object
 	* @param width The CSS width of this dialog (default: 600px)
+	* @param heigt The CSS height of this dialog (default: auto)
 	* @param title The title of this dialog
 	*/
 	
@@ -788,9 +788,7 @@ class DialogTagLib {
 	
 	/**
 	* filesTable tag 
-	* @param domainClass detail class name
-	* @param object master object
-	* @param property property that links detail with the master
+	* @param object domain class instance
 	*/
 	
 	def filesTable = { attrs ->

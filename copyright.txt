@@ -1,0 +1,9 @@
+The following libraries are included in this plugin:
+JQuery UI, MIT license
+Bootbox, MIT license
+CKeditor, GPL
+CodeMirror, MIT license
+Jquery Datatables, GPL v2 or BSD
+Fileuploader, GPL/LGPL v2 or later
+JSTree, MIT license
+Flot, MIT license

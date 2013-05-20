@@ -40,7 +40,6 @@ class DialogService {
 	* @param params The parameters from the http request 
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-
     def edit(domainClass,params) {
 		def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
 		
@@ -186,7 +185,6 @@ class DialogService {
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 	
-	
 	def delete(domainClass,params) {
 		def g=grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
 		def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
@@ -302,8 +300,11 @@ class DialogService {
 	* @param dc The domain class to be used
 	* @param params The parameters from the http request
 	* @param request the HTTPServletRequest
-	* @param filterColumnName The name of the column to be used for filtering (can be null to disable)
-	* @param actions A closure that provides customized actions in the actions column of the table
+	* @param query The query
+	* @param queryType The type of query
+	* @param queryParams
+	* @param labelColumnName
+	* @param descriptionColumnName
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 

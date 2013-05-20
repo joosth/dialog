@@ -1,3 +1,3 @@
-This is the dialog plug-in for Grails
-It provides services to minimize the amount of effort of creating dialogs and lists
-This plugin leverages JQuery, JQuery UI, JQuery Datatables and JQuery ClueTip
+This is the dialog plug-in for Grails.
+It provides services to minimize the amount of effort of creating dialogs and lists.
+See http://www.open-t.nl/catviz/p/projects/dialog for more information

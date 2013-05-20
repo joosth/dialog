@@ -17,8 +17,39 @@
 * along with this program.  If not, see http://www.gnu.org/licenses
 */
 
+/**
+ * Capitalize a string
+ */
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+/**
+ * Removed leading and trailing spaces
+ * @param value
+ * @returns
+ */
+dialog.trim = function trim(value) {
+	  value = value.replace(/^\s+/,'');
+	  value = value.replace(/\s+$/,'');
+	  return value;
+}
+
+/**
+ * Pack params in an url-friendly String
+ * @param params
+ * @returns {String}
+ */
+dialog.obj2ParamStr = function obj2ParamStr(params) {
+	var paramStr="";
+	 if (params) {
+		 var sep = "?";
+		 for (key in params) {
+			 paramStr=paramStr+sep+key+"="+params[key];
+			 sep="&";
+		 }		 
+	 }
+	 return paramStr;
 }
 
 /**
@@ -47,13 +78,14 @@ dialog.confirm = function confirm(message,title,url) {
 	
 }
 
-
-dialog.trim = function trim(value) {
-	  value = value.replace(/^\s+/,'');
-	  value = value.replace(/\s+$/,'');
-	  return value;
-	}
-
+/**
+ * Show dialog
+ * @param id
+ * @param controllerName
+ * @param options
+ * @param urlParams
+ * @returns {Boolean}
+ */
 dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
 	
@@ -174,13 +206,12 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 }
 
 /**
- * Delete a domain object
+ * Show a delete dialog
  * @param id
  * @param controllerName
  * @param options
  * @param urlParams
  */
-
 dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
 	var controllerTitle=controllerName.charAt(0).toUpperCase() + controllerName.slice(1); 
@@ -222,30 +253,22 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
 }
 
 
-dialog.obj2ParamStr = function obj2ParamStr(params) {
-	var paramStr="";
-	 if (params) {
-		 var sep = "?";
-		 for (key in params) {
-			 paramStr=paramStr+sep+key+"="+params[key];
-			 sep="&";
-		 }		 
-	 }
-	 return paramStr;
-}
-
+/**
+ * Show status message event handler
+ * @param event
+ * @param eventData
+ */
 dialog.statusMessage = function statusMessage(event,eventData) {
 	if (eventData.message) {
 		var msg='<div id="alertmessage" class="alert alert-success fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>'
 		$("#statusmessage").html(msg);
-		$("#alertmessage").addClass("in");
-		
+		$("#alertmessage").addClass("in");		
 		setTimeout( function() {$("#alertmessage").alert("close")}, 2000 );
 	}
 }
 
 /**
- * Delete a file
+ * Delete file dialog
  * @param id
  * @param controllerName
  * @param filename
