@@ -262,8 +262,9 @@ dialog.statusMessage = function statusMessage(event,eventData) {
 	if (eventData.message) {
 		var msg='<div id="alertmessage" class="alert alert-success fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>'
 		$("#statusmessage").html(msg);
-		$("#alertmessage").addClass("in");		
-		setTimeout( function() {$("#alertmessage").alert("close")}, 2000 );
+		$("#alertmessage").addClass("in");
+		// TODO This is more annoying than helpful. Maybe make this configurable.
+		//setTimeout( function() {$("#alertmessage").alert("close")}, 2000 );
 	}
 }
 
