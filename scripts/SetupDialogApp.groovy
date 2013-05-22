@@ -72,8 +72,8 @@ generateFile "${basedir}/grails-app/views/layouts/main.gsp" ,
 		</div>
         <div class="container" id="page">
         	<div class="row">
-        		<div class="span12" style="margin-top:45px;">
-	        		<div class="row" id="statusmessage"></div>
+        		<div class="span12" style="margin-top:45px;">	        		
+					<div class="row"><div class="span12" id="statusmessage"></div></div>
 	        		<g:if test="\${flash.message}">
 	        	    	<div class="alert alert-success">
 	    					<button type="button" class="close" data-dismiss="alert">×</button>

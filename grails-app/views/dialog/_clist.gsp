@@ -56,7 +56,7 @@
 				</g:if>
 				}
 				});	
-				$("#"+tableId).bind("dialog-refresh",dialog.refreshDatatableEvent);
+				$("#"+tableId).bind("dialog-refresh",dialog.datatables.refreshDatatableEvent);
 				$("#"+tableId).addClass("dialog-events");	       
 			});
         
