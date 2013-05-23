@@ -72,7 +72,11 @@ dialog.datatables.open =function open (e,params) {
        			// Add NEW button ("parent()" is the div with class dataTables_wrapper)		       			
        			if (params.id != null && (!newButton || newButton!="false")) {
        				//curMatch.parent().find('div.dataTables_length').prepend('<span class="list-toolbar-button ui-widget-content ui-state-default"><span onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+id+'})">New</span></span>&nbsp;');
-       				curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+params.id+'})">New</span></span>&nbsp;');
+       				var newString=this.dataTableSettings[0].oLanguage.sNew;
+       				if (!newString) {
+       					newString="new";
+       				}
+       				curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+params.id+'})">'+newString+'</span></span>&nbsp;');
        			}
 	    	}		    
 		});

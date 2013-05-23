@@ -49,10 +49,12 @@ class ListService {
         	def title=dc.getName();
         	title=title.replaceAll (".*\\.", "")
         	def propName=title[0].toLowerCase()+title.substring(1)
-    		
+			
+			def listConfig=null    		
 			def columns
 			
 			if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
+				listConfig=dc.listConfig
 				columns=dc.listConfig.columns.collect { it.name }
 				if (!filterColumnNames) {
 					filterColumnNames=dc.listConfig.filterColumns					
@@ -126,10 +128,21 @@ class ListService {
 					i++
         		}	            		
         		def baseUrl=request.contextPath
-        		if(!actions) {
+				
+				def actionsString=null
+				
+				if (actions) {
+					actionsString=actions(doc,['detailTableId':detailTableId])
+				}
+				
+				if (!actionsString && listConfig){					
+					actionsString=listConfig.renderActions(itemId:params.objectId,propName:propName)
+    			}
+        		if(!actionsString) {
         			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
-        		}
-        		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
+					actionsString=actions(doc,['detailTableId':detailTableId])
+        		} 
+        		inLine+=["${i}":actionsString]
 				aaData+=inLine
     		}
 

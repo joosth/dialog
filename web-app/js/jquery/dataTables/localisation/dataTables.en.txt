@@ -13,5 +13,6 @@
     "sPrevious": "&lsaquo;",
     "sNext":     "&rsaquo;",
     "sLast":     "&raquo;"
-  }
+  },
+  "sNew": "New"
 }

@@ -1,5 +1,7 @@
 package org.open_t.dialog
-
+import grails.util.Holders
+import org.springframework.web.servlet.support.RequestContextUtils as RCU
+import org.codehaus.groovy.grails.web.util.WebUtils
 class ListConfig {
 	String name
 	String controller 
@@ -32,7 +34,16 @@ class ListConfig {
 	
 	def renderActions = { props ->  
 		def s="""<div class="btn-group">"""
-		actions.each { action,label ->
+		
+		def applicationContext=Holders.getApplicationContext()
+		def messageSource = applicationContext.getBean("messageSource")
+		
+		def webUtils = WebUtils.retrieveGrailsWebRequest()
+		def request=webUtils.getCurrentRequest()
+		def locale = RCU.getLocale(request)
+		actions.each { action,code ->
+			String defaultLabel = messageSource.getMessage("list.action.${code}".toString(),null, "${code}",locale)
+			String label = messageSource.getMessage("list.${name}.action.${code}".toString(),null, defaultLabel,locale)
 			switch(action) {
 				case "delete":
 					s+="""<span class="btn btn-small" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)">${label}</span>"""
@@ -40,9 +51,7 @@ class ListConfig {
 				
 				default:					
 					s+="""<span class="btn btn-small" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)">${label}</span>"""
-			}
-			
-		
+			}		
 		}
 		s+="""</div>"""
 		return s
