@@ -29,7 +29,7 @@ class ListConfig {
 		columns.add (new ListConfigColumn(params))
 	}
 	
-	def actions=['dialog':'edit','delete':'&times;']
+	def actions=['dialog','delete']
 	
 	
 	def renderActions = { props ->  
@@ -41,9 +41,9 @@ class ListConfig {
 		def webUtils = WebUtils.retrieveGrailsWebRequest()
 		def request=webUtils.getCurrentRequest()
 		def locale = RCU.getLocale(request)
-		actions.each { action,code ->
-			String defaultLabel = messageSource.getMessage("list.action.${code}".toString(),null, "${code}",locale)
-			String label = messageSource.getMessage("list.${name}.action.${code}".toString(),null, defaultLabel,locale)
+		actions.each { action ->
+			String defaultLabel = messageSource.getMessage("list.action.${action}.label".toString(),null, "${action}",locale)
+			String label = messageSource.getMessage("list.${name}.action.${action}.label".toString(),null, defaultLabel,locale)
 			switch(action) {
 				case "delete":
 					s+="""<span class="btn btn-small" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)">${label}</span>"""

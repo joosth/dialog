@@ -35,8 +35,8 @@ dialog.fileuploader.open =function open (e,params) {
 			    },
 			    
 			 template: '<div class="qq-uploader well">' + 
-         '<div class="qq-upload-drop-area well"><span>Drop files here to upload</span></div>' +
-         '<div class="qq-upload-button btn btn-primary">Upload a file</div>' +
+         '<div class="qq-upload-drop-area well"><span>'+dialog.messages.dropfileshere+'</span></div>' +
+         '<div class="qq-upload-button btn btn-primary">'+dialog.messages.upload+'</div>' +
          '<ul class="qq-upload-list nav nav-list"></ul>' + 
       '</div>',
       fileTemplate: '<li>' +

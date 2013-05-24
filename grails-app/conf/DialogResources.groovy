@@ -14,12 +14,6 @@ modules = {
 		resource url:'/css/ui.altselect.css'
 	}
 	
-	'dialog-cluetip' {
-		dependsOn 'dialog'
-		resource url:'/js/jquery/jquery.cluetip-patched.js'
-		resource url:'/css/jquery.cluetip.css'
-	}
-	
 	'dialog-tinymce' {		
 		dependsOn 'dialog'
 		resource url:'/js/tiny_mce/tiny_mce.js'
@@ -87,10 +81,6 @@ modules = {
 	'dialog-last' {
 		dependsOn 'dialog'
 		resource url:'/js/dialog.last.js'
-	}
-	
-	'dialog-demo' {
-		dependsOn 'dialog,dialog-cluetip,dialog-altselect,dialog-dataTables,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal,dialog-bootstrap'
 	}
 	
 	'dialog-bootbox' {

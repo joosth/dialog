@@ -121,13 +121,13 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	 var theWidth=$(dialogHTML).css("width").replace("px","");
 	 var theHeight=$(dialogHTML).css("height").replace("px","");
 	 if (theHeight=="0") theHeight="auto";
-	 	 
+	 
 	 var theDialog=$(dialogHTML).dialog({ 
 		 modal:true,
 		 width:theWidth,
-		 height:theHeight,
-		 buttons: { 
-		 	"OK": function(e,ui) {
+		 height:theHeight,		 
+		 buttons: 
+			 [ { text: window.dialog.messages.ok, click: function(e,ui) {
 	        	$(this).trigger("dialog-submit",{event:e,ui:ui,'this':this,id:id,controllerName:controllerName});
 
 		 		if (submitForm) {
@@ -164,12 +164,13 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		 			$( this ).dialog( "close" );
 		 		}
 		 		}
-        	},
-
-       	Cancel: function() {
+        	}
+			 }
+        , { text: window.dialog.messages.cancel, click:  function() {
 	        		$( this ).dialog( "close" );
 	        	}
-       	},
+        }
+       	],
         open: function(event, ui) {
         	// This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
         	$(this).trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});

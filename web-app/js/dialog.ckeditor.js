@@ -27,7 +27,8 @@ dialog.ckeditor.open =function open (e,params) {
 	CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*>[.\s\S]*<\/c:[.\s\S]*>/gi );	 // Catviz Tags 
 	CKEDITOR.config.protectedSource.push( /<g:[.\s\S]*\/>/gi );	 // Grails Tags (Self-closing) 
 	CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*\/>/gi );	 // Catviz Tags (Self-closing)
-	CKEDITOR.config.contentsCss='css/theme/theme.css'
+	//CKEDITOR.config.contentsCss=dialog.baseUrl+'/css/theme/theme.css';
+	CKEDITOR.config.contentsCss=dialog.baseUrl+'/static/bundle-bundle_bootstrap_head.css';
 	
 	CKEDITOR.config.toolbar = 'Compact';
 	CKEDITOR.config.toolbar_Compact =

@@ -49,10 +49,11 @@ class DialogTagLib {
 			dialog.language="${g.message(code:'language.code',default:'en')}";
 			dialog.dataTablesLanguageUrl="${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'language.code',default:'en')}.txt";
 			
-			var uploader={}
-  			uploader.uploadMessage="${message(code:'dialog.uploader.uploadafile')}";
-  			uploader.dropfilesMessage="${message(code:'dialog.uploader.dropfileshere')}"; 	
-
+			dialog.messages={}
+			dialog.messages.ok="${message(code:'dialog.messages.ok')}";
+			dialog.messages.cancel="${message(code:'dialog.messages.cancel')}";
+			dialog.messages.upload="${message(code:'dialog.messages.upload')}";
+			dialog.messages.dropfileshere="${message(code:'dialog.messages.dropfileshere')}";
         </script>        
 		"""
 	}
