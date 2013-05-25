@@ -21,7 +21,8 @@ import org.codehaus.groovy.grails.commons.*
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import org.apache.commons.lang.WordUtils
-
+import org.springframework.web.servlet.support.RequestContextUtils as RCU
+import org.codehaus.groovy.grails.web.util.WebUtils
 /*
  * Provide generic edit,submit,delete operations for dialog handling 
  */
@@ -30,6 +31,7 @@ class DialogService {
 
 	def grailsApplication
 	def sessionFactory
+	def messageSource
 	
     boolean transactional = true
     
@@ -76,6 +78,14 @@ class DialogService {
             return returnMap
         }
     }
+	
+	def getMessage(code) {
+		def webUtils = WebUtils.retrieveGrailsWebRequest()
+		def request=webUtils.getCurrentRequest()
+		def locale = RCU.getLocale(request)
+		
+		return messageSource.getMessage(code,null, code,locale)		
+	}
 	
 	/**
 	* Processes a form submission.
@@ -140,7 +150,10 @@ class DialogService {
             	 def session = sessionFactory.getCurrentSession()
             	session.flush()
 				
-            	resultMessage="${domainClassName} #${domainClassInstance.id} : ${domainClassInstance.toString()} ${action}" 
+				def domainClassLabel=getMessage("dialog.submit.${domainClassName}.label")
+				def actionLabel=getMessage("dialog.submit.${action}.label")
+				
+            	resultMessage="${domainClassLabel} ${domainClassInstance.id}:${domainClassInstance.toString()} ${actionLabel}." 
             } else {
 				if (domainClassInstance) {
 					domainClassInstance.errors.allErrors.each {						
@@ -205,13 +218,21 @@ class DialogService {
 			theName = domainClassInstance.toString()
 		} catch (Exception e) {
 		}
+		
         try { 
         	domainClassInstance.delete(failOnError:true,flush:true)
-        	resultMessage="${domainClassName} #${params.id} : ${theName} deleted"
+			
+			def domainClassLabel=getMessage("dialog.submit.${domainClassName}.label")
+			def actionLabel=getMessage("dialog.submit.deleted.label")
+			
+        	resultMessage="${domainClassLabel} #${params.id} : ${theName} ${actionLabel}"
         	
         } catch (Exception e ){
+			def domainClassLabel=getMessage("dialog.submit.${domainClassName}.label")
+			def actionLabel=getMessage("dialog.submit.notdeleted.label")
+			
         	successFlag=false
-        	resultMessage="${domainClassName} #${params.id} : ${theName} not deleted: ${e.message}"
+        	resultMessage="${domainClassLabel} #${params.id} : ${theName} ${actionLabel}: ${e.message}"
         }
 		
 		

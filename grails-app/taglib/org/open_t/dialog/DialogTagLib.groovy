@@ -28,6 +28,7 @@ package org.open_t.dialog
 import org.codehaus.groovy.grails.commons.*
 class DialogTagLib {
 	def dialogService
+	def listService
 	def grailsApplication
 	static namespace = 'dialog'
 	
@@ -54,6 +55,8 @@ class DialogTagLib {
 			dialog.messages.cancel="${message(code:'dialog.messages.cancel')}";
 			dialog.messages.upload="${message(code:'dialog.messages.upload')}";
 			dialog.messages.dropfileshere="${message(code:'dialog.messages.dropfileshere')}";
+			dialog.messages.confirmdelete="${message(code:'dialog.messages.confirmdelete')}";
+			dialog.messages.confirmdeleteTitle="${message(code:'dialog.messages.confirmdeleteTitle')}";
         </script>        
 		"""
 	}
@@ -249,15 +252,19 @@ class DialogTagLib {
 			
 			switch(attrs.mode) {
 				case "show":
-					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
+					def value=attrs.object."${attrs.propertyName}"
+					
+					return listService.getDisplayString(value)
+
 					break
 				
 				case "edit":
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
-					
-					
-					def dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd")
+					def dateValue
+					if (attrs.object."${attrs.propertyName}") {
+						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd")
+					}
 					out << g.textField(name:attrs.propertyName+'_date',value:dateValue,class:'datepicker')
 					break
 			}
@@ -282,8 +289,9 @@ class DialogTagLib {
 		out << row (object:attrs.object,propertyName:attrs.propertyName) {
 			
 			switch(attrs.mode) {
-				case "show":
-					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
+				case "show":					
+					def value=attrs.object."${attrs.propertyName}"
+					return listService.getDisplayString(value)					
 					break
 				
 				case "edit":
@@ -389,7 +397,8 @@ class DialogTagLib {
 		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			switch(attrs.mode) {
 				case "show":
-					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
+					def value=fieldValue(bean: attrs.object, field: attrs.propertyName)
+					g.message(code:"dialog.checkBox.${value}.label".toString(), default:value.toString())
 					break
 				
 				case "edit":
@@ -775,14 +784,14 @@ class DialogTagLib {
 					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""			
 			if (listConfig) {
 				listConfig.columns.each { column ->
-					out << """<th class="${column.sortable?'sortable':'nonsortable'}">${g.message(code:"list.${listConfig.name}.${column.name}.label")}</th>"""
+					out << """<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}">${g.message(code:"list.${listConfig.name}.${column.name}.label")}</th>"""
 				}
 			} else {		
 				listProperties.each { propertyName ->
-					out << """<th>${g.message(code:"${controllerName}.${propertyName}.label", default:"${propertyName}")}</th>"""
+					out << """<th class="${controllerName}-${propertyName}">${g.message(code:"${controllerName}.${propertyName}.label", default:"${propertyName}")}</th>"""
 				}
 			}
-		out << "<th class='nonsortable'>Actions</th></tr></thead><tbody>"
+		out << """<th class='nonsortable list-actions ${controllerName}-actions'>${g.message(code:"dialog.list.actions.label", default:"Actions")}</th></tr></thead><tbody>"""
 		out <<"""</tbody></table>"""
 	
 	}

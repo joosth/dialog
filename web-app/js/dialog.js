@@ -183,6 +183,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     		});
     	        	
          	// Initialize date picker input elements
+    		$.datepicker.setDefaults( $.datepicker.regional[ dialog.language ] );
        		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
        		$(this).find(".dialogtabs").tabs();
        		$(this).find(".altselect").altselect();       	
@@ -216,7 +217,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
 	var controllerTitle=controllerName.charAt(0).toUpperCase() + controllerName.slice(1); 
-	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+controllerTitle+' '+id+' ?</div></form></div>'
+	 var dialogHTML = '<div class="delete-dialog" title="'+dialog.messages.confirmdeleteTitle+'"><form><div class="errors" style="display:none;"></div><div>'+dialog.messages.confirmdelete+' '+controllerTitle+' '+id+' ?</div></form></div>'
 
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 

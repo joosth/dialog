@@ -2,6 +2,7 @@ modules = {
 	dialog {
 		dependsOn 'jquery'
 		resource url:'/js/jquery/jquery-ui-1.9.2.custom.min.js'
+		resource url:'/js/jquery/jquery-ui-i18n.js'
 		resource url: 'css/bootstrap-theme/jquery-ui-1.9.2.custom.css'		
 		resource url:'/js/dialog.js'
 		resource url:'/css/dialog.css'

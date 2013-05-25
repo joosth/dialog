@@ -34,8 +34,8 @@
 					{ "bSortable": false, "aTargets": [ ${listConfig.columns.size()} ,"nonsortable"] }
 				] ,
 				
-				"oLanguage": {
-		     	 "sUrl": "${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'datatables.language',default:'en')}.txt"
+				"oLanguage": {		     	
+		     	 "sUrl": dialog.dataTablesLanguageUrl, 
 		    	},
 		    	"fnInitComplete": function() {
 		    		 
@@ -72,9 +72,9 @@
 				<thead>
 					<tr>
 						<g:each in="${listConfig.columns}" var="column">											 
-							<th class="${column.sortable?'sortable':'nonsortable'}"><g:message code="list.${listConfig.name}.${column.name}.label" /></th>		
+							<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}"><g:message code="list.${listConfig.name}.${column.name}.label" /></th>		
 						</g:each>
-						<th width="50px"><g:message code="list.actions.label" default="Actions" /></th>
+						<th width="50px"><g:message code="dialog.list.actions.label" default="Actions" /></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -83,9 +83,9 @@
 				<tfoot>
 				<tr>
 					<g:each in="${listConfig.columns}" var="column">
-							<th class="${column.sortable?'sortable':'nonsortable'}"><g:message code="list.${listConfig.name}.${column.name}.label" /></th>
+							<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}"><g:message code="list.${listConfig.name}.${column.name}.label" /></th>
 					</g:each>
-				<th><g:message code="list.actions.label" default="Actions" /></th></tr>
+				<th><g:message code="dialog.list.actions.label" default="Actions" /></th></tr>
 				</tfoot>
 			</table>
 		</div>

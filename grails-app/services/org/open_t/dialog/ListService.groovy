@@ -21,8 +21,10 @@ package org.open_t.dialog
 
 import org.apache.commons.lang.WordUtils
 import org.codehaus.groovy.grails.commons.*
-
 import org.compass.core.*
+import org.springframework.web.servlet.support.RequestContextUtils as RCU
+import org.codehaus.groovy.grails.web.util.WebUtils
+import java.text.*
 
 import groovy.lang.Binding;
 
@@ -34,6 +36,7 @@ class ListService {
 	
 	def grailsApplication
     boolean transactional = true
+	def messageSource
 	
 	/**
 	* Generates a JSON response to feed the datalist
@@ -44,6 +47,45 @@ class ListService {
 	* @param actions A closure that provides customized actions in the actions column of the table
 	* @return a map that is ready to be rendered as a JSON message
 	*/
+	
+	def getDisplayString(value) {		
+		if (value==null) {
+			return ""
+		}		
+		try {
+			def type=value.getClass().getName()
+			
+			if (type== "java.lang.String") {
+				return value
+			}
+			
+			
+			def webUtils = WebUtils.retrieveGrailsWebRequest()
+			def request=webUtils.getCurrentRequest()
+			def locale = RCU.getLocale(request)
+			
+			if (type== "boolean" || type=="java.lang.Boolean") {							
+				return messageSource.getMessage("dialog.checkBox.${value}.label".toString(),null, value.toString(),locale)
+				
+			}
+			
+			if (type== "java.lang.Date" || type=="java.sql.Timestamp") {
+				def dateFormat
+				if (value.format ("hh:mm:ss")=="00:00:00") {
+					dateFormat= messageSource.getMessage("dialog.list.dateFormat".toString(),null, "yyyy-MM-dd",locale)
+				} else {
+					dateFormat= messageSource.getMessage("dialog.list.dateTimeFormat".toString(),null, "yyyy-MM-dd hh:mm:ss",locale)
+				}
+				def format=new SimpleDateFormat(dateFormat,locale)
+				return format.format(value)
+			}
+			
+			return value.toString()
+		} catch (Exception e) {
+			println e.message
+			return "?"
+		}		
+	}
 	
 	def jsonlist(dc,params,request,filterColumnNames=null,actions=null) {
         	def title=dc.getName();
@@ -115,7 +157,7 @@ class ListService {
 					// Doing so is considerably slower than the construct in the else
 					if (it.contains(".")) {												
 						def val=Eval.me("doc",doc,"doc.${it}")
-						inLine +=["${i}": val?val.toString():""]						
+						inLine +=["${i}": getDisplayString(val)]
 					} else {
 						def val=""
 						try {
@@ -123,7 +165,7 @@ class ListService {
 						} catch (Exception e) {
 							val="!!!"
 						}
-        				inLine +=["${i}": val?val.toString():""]
+						inLine +=["${i}": getDisplayString(val)]
 					}
 					i++
         		}	            		
@@ -134,11 +176,11 @@ class ListService {
 				if (actions) {
 					actionsString=actions(doc,['detailTableId':detailTableId])
 				}
-				
-				if (!actionsString && listConfig){					
-					actionsString=listConfig.renderActions(itemId:params.objectId,propName:propName)
+
+				if (!actions==null && listConfig){					
+					actionsString=listConfig.renderActions(itemId:doc.id,propName:propName)
     			}
-        		if(!actionsString) {
+        		if(!actions && !listConfig) {
         			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
 					actionsString=actions(doc,['detailTableId':detailTableId])
         		} 
@@ -226,10 +268,28 @@ class ListService {
             documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
 				def i=0				
-        		columns.each { 	            			   
+/*        		columns.each { 	            			   
         			inLine +=["${i}":doc."${it}".toString()]
 					i++
-        		}	            		
+        		}*/
+				columns.each {
+					// If the prop name contains a '.' it needs to be evaluated through a groovy shell
+					// Doing so is considerably slower than the construct in the else
+					if (it.contains(".")) {
+						def val=Eval.me("doc",doc,"doc.${it}")
+						inLine +=["${i}": getDisplayString(val)]
+					} else {
+						def val=""
+						try {
+							val=doc."${it}"
+						} catch (Exception e) {
+							val="!!!"
+						}
+						inLine +=["${i}": getDisplayString(val)]
+					}
+					i++
+				}
+					            		
         		def baseUrl=request.contextPath
         		if(!actions) {
         			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small  xlist-action-button xui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }

@@ -49,10 +49,13 @@ dialog.ckeditor.open =function open (e,params) {
 	
 	$(e.target).find(".ckeditor textarea").each( function() {
 		var curMatch = $(this);
-		var toolbar = $(this).attr("toolbar");
+		var toolbar = $(this).attr("toolbar");		
 		if (!toolbar) { toolbar="Compact" };
+		var height = $(this).attr("height");
+		if (!height) { height="auto" };
 		CKEDITOR.replace( this.id, {
-			toolbar:toolbar
+			toolbar:toolbar,
+			height:height
 		});
 	});
 	return false

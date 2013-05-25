@@ -53,7 +53,7 @@
 		] ,
 		
 		"oLanguage": {
-     	 "sUrl": "${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'datatables.language',default:'en')}.txt"
+     	 "sUrl": dialog.dataTablesLanguageUrl, 
     	},
     	"fnInitComplete": function() {
     		 
@@ -95,13 +95,13 @@
 						<tr>
 						<g:each in="${dc.listProperties}" var="property">
 						<g:if test="${dc.declaredFields.findAll {it.name=='sortableProperties'}.size()>0}">						 
-					 	<th class="${dc.sortableProperties?.contains(property)?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
+					 	<th class="${dc.sortableProperties?.contains(property)?'sortable':'nonsortable'} ${controllerName}-${property}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
 					 	</g:if>
 					 	<g:else>
-					 	<th class="${(property=='id' || new DefaultGrailsDomainClass(dc).hasPersistentProperty(property))?'sortable':'nonsortable'}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
+					 	<th class="${(property=='id' || new DefaultGrailsDomainClass(dc).hasPersistentProperty(property))?'sortable':'nonsortable'} ${controllerName}-${property}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
 					 	</g:else>		
 						</g:each>
-						<th width="50px"><g:message code="list.actions.label" default="Actions" /></th>				
+						<th width="50px"><g:message code="dialog.list.actions.label" default="Actions" /></th>				
 						</tr>
 					</thead>
 					<tbody>
@@ -114,7 +114,7 @@
 							<g:each in="${dc.listProperties}" var="property">
 					 	<th><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>		
 						</g:each>
-						<th><g:message code="list.actions.label" default="Actions" /></th>				
+						<th><g:message code="dialog.list.actions.label" default="Actions" /></th>				
 						</tr>
 					</tfoot>
 				</table>
