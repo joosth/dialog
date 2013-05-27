@@ -24,7 +24,9 @@ dialog.codemirror.editors = {};
 dialog.codemirror.open =function open (e,params) {
 	$(e.target).find("td.codemirror textarea").each( function() {
 		
-		var id=$(this).attr("id")
+		var id=$(this).attr("id");
+		var width=$(this).attr("width");
+		var height=$(this).attr("height");
 		if (id){		
 			var mode = $(this).attr('codeMirrorMode');		
 			var textarea = document.getElementById(id);
@@ -39,6 +41,7 @@ dialog.codemirror.open =function open (e,params) {
 						"'/'": function(cm) { cm.closeTag(cm, '/'); }
 					}				
 		      });
+				
 			}
 			//
 			if (mode=='text/x-groovy') {
@@ -49,7 +52,7 @@ dialog.codemirror.open =function open (e,params) {
 									
 		      });
 			}
-			
+			dialog.codemirror.editors[id].setSize(width,height);
 			
 		}
 	});
