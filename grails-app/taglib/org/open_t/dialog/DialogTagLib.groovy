@@ -563,10 +563,15 @@ class DialogTagLib {
 			def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
 			prefix=prefix.replace(".","_")
 			def names=attrs.names.split(",")
+			def defaultDomainClass = new DefaultGrailsDomainClass( attrs.object.class )
+			def domainPropertyName=defaultDomainClass.propertyName
+			
 			for (name in names) {
+				def defaultTabLabel=g.message(code:"dialog.tab.${name}", default:name)
+				def tabLabel=g.message(code:"dialog.tab.${domainPropertyName}.${name}", default:defaultTabLabel)
 				out <<"""
 				<li>
-					<a href="#${prefix}${name}">${name}</a>
+					<a href="#${prefix}${name}">${tabLabel}</a>
 				</li>
 				"""
 			}

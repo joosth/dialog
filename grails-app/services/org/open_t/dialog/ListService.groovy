@@ -177,7 +177,7 @@ class ListService {
 					actionsString=actions(doc,['detailTableId':detailTableId])
 				}
 
-				if (!actions==null && listConfig){					
+				if (actions==null && listConfig){					
 					actionsString=listConfig.renderActions(itemId:doc.id,propName:propName)
     			}
         		if(!actions && !listConfig) {
