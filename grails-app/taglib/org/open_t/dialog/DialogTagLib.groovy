@@ -373,7 +373,7 @@ class DialogTagLib {
 		switch(attrs.mode) {
 			case "show":
 				String s = xmltext ? dialogService.prettyPrint(xmltext) : ""
-				return "<textarea cols=\"80\" rows=\"25\">"+s.encodeAsHTML()+"</textarea>"
+				return """${g.textArea(newAttrs) {s.encodeAsHTML()}}"""
 				break
 			
 			case "edit":
