@@ -947,20 +947,17 @@ class DialogTagLib {
 			def domainPropertyName=dc.getPropertyName()			
 			def url=attrs.url?:"${request.contextPath}/${domainPropertyName}/${action}"
 			def attributes=""
-			if (attrs.width) { attributes+=""" treeDialogWidth="${attrs.width}" """	}		
+			if (attrs.width)  { attributes+=""" treeDialogWidth="${attrs.width}" """	}		
 			if (attrs.height) { attributes+=""" treeDialogHeight="${attrs.height}" """ }
-			if (attrs.root) { attributes+=""" treeRoot="${attrs.root}" """ }
+			if (attrs.root)   { attributes+=""" treeRoot="${attrs.root}" """ }
 						
 			def value=attrs.object."${attrs.propertyName}"
 			
-			
 			"""<span id="treeselect-${attrs.propertyName}-span" treeUrl="${url}" ${attributes} >
-				<span>${value}</span>
+				<span>${value?:''}</span>
 					<a href="#" onclick="dialog.tree.treeSelect('treeselect-${attrs.propertyName}');" class="btn btn-small">...</a>
 				<input id="treeselect-field-input" type="hidden" name="${attrs.propertyName}.id" value="${value?.id}" />
-			</span>"""
-			
-			
+			</span>"""			
 		}
 		
 	}
