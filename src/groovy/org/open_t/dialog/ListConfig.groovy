@@ -7,7 +7,7 @@ class ListConfig {
 	String controller 
 	Boolean bFilter=false
 	def toolbar=false
-	def newButton=false
+	def newButton=true
 	def rowreordering=false
 	def idName="id"
 	List<ListConfigColumn> columns=new ArrayList()
