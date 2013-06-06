@@ -76,7 +76,7 @@ modules = {
 	
 	'dialog-bootstrap' {
 		dependsOn 'dialog'
-		resource url:'/js/jquery/jquery.dataTables.js'
+		
 	}
 	
 	'dialog-last' {
