@@ -150,10 +150,10 @@ class DialogService {
             	 def session = sessionFactory.getCurrentSession()
             	session.flush()
 				
-				def domainClassLabel=getMessage("dialog.submit.${domainClassName}.label")
+				def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
 				def actionLabel=getMessage("dialog.submit.${action}.label")
 				
-            	resultMessage="${domainClassLabel} ${domainClassInstance.id}:${domainClassInstance.toString()} ${actionLabel}." 
+            	resultMessage="${domainClassLabel} ${domainClassInstance.id} ${actionLabel}." 
             } else {
 				if (domainClassInstance) {
 					domainClassInstance.errors.allErrors.each {						
@@ -222,13 +222,13 @@ class DialogService {
         try { 
         	domainClassInstance.delete(failOnError:true,flush:true)
 			
-			def domainClassLabel=getMessage("dialog.submit.${domainClassName}.label")
+			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
 			def actionLabel=getMessage("dialog.submit.deleted.label")
 			
         	resultMessage="${domainClassLabel} #${params.id} : ${theName} ${actionLabel}"
         	
         } catch (Exception e ){
-			def domainClassLabel=getMessage("dialog.submit.${domainClassName}.label")
+			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
 			def actionLabel=getMessage("dialog.submit.notdeleted.label")
 			
         	successFlag=false

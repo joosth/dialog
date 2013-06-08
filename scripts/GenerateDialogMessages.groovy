@@ -53,6 +53,10 @@ target ('default': "Generates dialog messages") {
 			msgText+="\nform.${dcname}.title=${defaultDomainClass.naturalName}"
 		}
 		
+		if (!labelExists("dialog.submit.${dcname}.label")) {
+			msgText+="\ndialog.submit.${dcname}.label=${defaultDomainClass.naturalName}"
+		}
+		
 		if (dc.hasProperty("listConfig")) {		
 			dc.getStaticPropertyValue("listConfig",Object).columns.each { column ->
 				if (!labelExists("list.${dcname}.${column.name}.label")) {
