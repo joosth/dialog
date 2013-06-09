@@ -1,7 +1,6 @@
 class DialogGrailsPlugin {
 	def version = "2.0.0"
 	def grailsVersion = "2.0 > *"
-	def dependsOn = ['twitterBootstrap': "2.2.2"]
 
 	def author = "Joost Horward"
 	def authorEmail = "joost@open-t.nl"
