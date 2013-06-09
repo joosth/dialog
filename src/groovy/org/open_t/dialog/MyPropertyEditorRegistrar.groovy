@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
-package org.open_t.dialog;
-
-import java.util.Date;
+package org.open_t.dialog
 
 import org.springframework.beans.PropertyEditorRegistrar
 import org.springframework.beans.PropertyEditorRegistry
@@ -28,13 +26,11 @@ import org.springframework.beans.PropertyEditorRegistry
  *
  * @author Joost Horward
  */
+class MyPropertyEditorRegistrar implements PropertyEditorRegistrar {
 
-public class MyPropertyEditorRegistrar implements PropertyEditorRegistrar {
-
-	public void registerCustomEditors(PropertyEditorRegistry registry) {
-		//registry.registerCustomEditor(Date.class, new org.open_t.dialog.DateEditor());
-		registry.registerCustomEditor(BigDecimal.class, new org.open_t.dialog.BigDecimalEditor());
-		registry.registerCustomEditor(Date.class, new DateTimePropertyEditor("yyyy-MM-dd'T'HH:mm"));
-		
+	void registerCustomEditors(PropertyEditorRegistry registry) {
+		//registry.registerCustomEditor(Date.class, new org.open_t.dialog.DateEditor())
+		registry.registerCustomEditor(BigDecimal, new BigDecimalEditor())
+		registry.registerCustomEditor(Date, new DateTimePropertyEditor("yyyy-MM-dd'T'HH:mm"))
 	}
 }

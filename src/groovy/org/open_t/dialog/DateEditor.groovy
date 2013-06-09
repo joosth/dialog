@@ -16,32 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
-package org.open_t.dialog;
-import java.text.*
-import java.util.*;
+package org.open_t.dialog
 
 import java.beans.PropertyEditorSupport
+import java.text.SimpleDateFormat
 
 /**
  * Date property editor
  * Displays and accepts date in the xs:date format
- * 
+ *
  * @author Joost Horward
  */
+class DateEditor extends PropertyEditorSupport {
 
-public class DateEditor extends PropertyEditorSupport{
-	
 	String getAsText() {
 		//def locale = new Locale('nl')
-		Date d = (Date) super.getValue()
+		Date d = super.getValue()
 		log.debug "GetAsText: ${d}"
 		if (d) {
 			return d.format("yyyy-MM-dd'T'HH:mm:ss")
-		} else {
-			return null
 		}
+		return null
 	}
-	
+
 	void setAsText(String value) {
 		log.debug "SetAsText: ${value}"
 		if (value=="") {
@@ -52,12 +49,9 @@ public class DateEditor extends PropertyEditorSupport{
 				value+="T00:00:00"
 			}
 			def df=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-			
-			df.parse(value)            
+
+			df.parse(value)
 			setValue(df.parse(value))
 		}
 	}
-	
-	
-	
 }

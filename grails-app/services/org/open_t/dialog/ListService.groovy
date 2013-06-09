@@ -19,25 +19,24 @@
 
 package org.open_t.dialog
 
-import org.apache.commons.lang.WordUtils
-import org.codehaus.groovy.grails.commons.*
-import org.compass.core.*
-import org.springframework.web.servlet.support.RequestContextUtils as RCU
-import org.codehaus.groovy.grails.web.util.WebUtils
-import java.text.*
+import java.text.SimpleDateFormat
 
-import groovy.lang.Binding;
+import org.apache.commons.lang.WordUtils
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.codehaus.groovy.grails.web.util.WebUtils
+import org.springframework.web.servlet.support.RequestContextUtils as RCU
 
 /*
  * Provide list handling service
  */
-
 class ListService {
-	
+
+	static transactional = false
+
 	def grailsApplication
-    boolean transactional = true
 	def messageSource
-	
+
 	/**
 	* Generates a JSON response to feed the datalist
 	* @param dc The domain class to be used
@@ -47,28 +46,26 @@ class ListService {
 	* @param actions A closure that provides customized actions in the actions column of the table
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-	
-	def getDisplayString(value) {		
+
+	def getDisplayString(value) {
 		if (value==null) {
 			return ""
-		}		
+		}
 		try {
 			def type=value.getClass().getName()
-			
+
 			if (type== "java.lang.String") {
 				return value
 			}
-			
-			
+
 			def webUtils = WebUtils.retrieveGrailsWebRequest()
 			def request=webUtils.getCurrentRequest()
 			def locale = RCU.getLocale(request)
-			
-			if (type== "boolean" || type=="java.lang.Boolean") {							
+
+			if (type== "boolean" || type=="java.lang.Boolean") {
 				return messageSource.getMessage("dialog.checkBox.${value}.label".toString(),null, value.toString(),locale)
-				
 			}
-			
+
 			if (type== "java.lang.Date" || type=="java.sql.Timestamp") {
 				def dateFormat
 				if (value.format ("hh:mm:ss")=="00:00:00") {
@@ -79,45 +76,44 @@ class ListService {
 				def format=new SimpleDateFormat(dateFormat,locale)
 				return format.format(value)
 			}
-			
+
 			return value.toString()
 		} catch (Exception e) {
 			println e.message
 			return "?"
-		}		
+		}
 	}
-	
+
 	def jsonlist(dc,params,request,filterColumnNames=null,actions=null) {
         	def title=dc.getName();
         	title=title.replaceAll (".*\\.", "")
         	def propName=title[0].toLowerCase()+title.substring(1)
-			
-			def listConfig=null    		
+
+			def listConfig=null
 			def columns
-			
+
 			if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
 				listConfig=dc.listConfig
 				columns=dc.listConfig.columns.collect { it.name }
 				if (!filterColumnNames) {
-					filterColumnNames=dc.listConfig.filterColumns					
+					filterColumnNames=dc.listConfig.filterColumns
 				}
 			} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
 				columns=dc.listProperties
 			}
-			
-			
-            def sortName=columns[new Integer(params.iSortCol_0)]
+
+			def sortName=columns[new Integer(params.iSortCol_0)]
      		sortName=sortName? sortName:columns[0]
-			 
+
 			def documentList
 			def iTotalRecords=dc.count()
 			def iTotalDisplayRecords
-			
+
 			//Create Id for the table
 			def detailTableId="detailTable_"+dc
 			detailTableId=detailTableId.replace(".","_")
 			detailTableId=detailTableId.replace("class ","")
-						
+
 			if (params['objectId'] != null) {
 				if (params.objectId !='null') {
 					def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
@@ -129,7 +125,7 @@ class ListService {
 				} else {
 					iTotalRecords=0
 					iTotalDisplayRecords=0
-				}				
+				}
 			} else {
 				if (filterColumnNames && params.sSearch) {
 					def fields
@@ -141,21 +137,21 @@ class ListService {
 					def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 					def order=fields.collect {"dc.${it}"}.join(",")
 					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params.sSearch+'%'],[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
-					iTotalDisplayRecords =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}",[term:'%'+params.sSearch+'%'])				
+					iTotalDisplayRecords =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}",[term:'%'+params.sSearch+'%'])
 				} else {
 					documentList=dc.list([max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
 					iTotalDisplayRecords = iTotalRecords
 				}
 			}
-			
+
     		def aaData=[]
             documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
-				def i=0				
+				def i=0
         		columns.each {
 					// If the prop name contains a '.' it needs to be evaluated through a groovy shell
 					// Doing so is considerably slower than the construct in the else
-					if (it.contains(".")) {												
+					if (it.contains(".")) {
 						def val=Eval.me("doc",doc,"doc.${it}")
 						inLine +=["${i}": getDisplayString(val)]
 					} else {
@@ -168,22 +164,22 @@ class ListService {
 						inLine +=["${i}": getDisplayString(val)]
 					}
 					i++
-        		}	            		
+        		}
         		def baseUrl=request.contextPath
-				
+
 				def actionsString=null
-				
+
 				if (actions) {
 					actionsString=actions(doc,['detailTableId':detailTableId])
 				}
 
-				if (actions==null && listConfig){					
+				if (actions==null && listConfig){
 					actionsString=listConfig.renderActions(itemId:doc.id,propName:propName)
     			}
         		if(!actions && !listConfig) {
         			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
 					actionsString=actions(doc,['detailTableId':detailTableId])
-        		} 
+        		}
         		inLine+=["${i}":actionsString]
 				aaData+=inLine
     		}
@@ -191,7 +187,7 @@ class ListService {
     		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
         	return json
         }
-	
+
 	/**
 	* Generates a JSON response to feed the datalist from an arbitrary HQL query
 	* @param dc The domain class to be used
@@ -208,11 +204,11 @@ class ListService {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
 		def propName=title[0].toLowerCase()+title.substring(1)
-		
+
 		if(!countQuery) {
 			countQuery="select count(*) ${query}"
 		}
-		
+
 		def columns
 		if (listProperties) {
 			columns=listProperties
@@ -224,17 +220,17 @@ class ListService {
 		} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
 			columns=dc.listProperties
 		}
-		
+
 		def sortName=columns[new Integer(params.iSortCol_0)]
 		sortName=sortName? sortName:columns[0]
-		
+
 		def documentList
-		
+
 		//Create Id for the table
 		def detailTableId="detailTable_"+dc
 		detailTableId=detailTableId.replace(".","_")
 		detailTableId=detailTableId.replace("class ","")
-					
+
 		if (params['objectId'] != null) {
 			query = "${query} and (${params.property}.id=${params.objectId})"
 			countQuery= "${countQuery} and (${params.property}.id=${params.objectId})"
@@ -242,7 +238,7 @@ class ListService {
 		def iTotalRecords=dc.executeQuery(countQuery,queryParams)[0]
 		def iTotalDisplayRecords=iTotalRecords
 		if (filterColumnNames && params.sSearch) {
-			def fields			
+			def fields
 			if (String.isInstance(filterColumnNames)) {
 				fields=[filterColumnNames]
 			} else {
@@ -250,25 +246,25 @@ class ListService {
 			}
 			def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 			def order=fields.collect {"dc.${it}"}.join(",")
-			
+
 			//query = "${query} and (${filterColumnNames} like '%${params.sSearch}%') order by ${order}"
 			query = "${query} and (${where})"
 			countQuery= "${countQuery} and (${where})"
 			queryParams.put('term','%'+params.sSearch+'%')
-			
-			
+
+
 			iTotalDisplayRecords=dc.executeQuery(countQuery,queryParams)[0]
 		}
-		
+
 		query="${query} order by ${sortName} ${params.sSortDir_0}"
-		
+
 		documentList=dc.executeQuery(query,queryParams,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
-		
+
 		def aaData=[]
             documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
-				def i=0				
-/*        		columns.each { 	            			   
+				def i=0
+/*        		columns.each {
         			inLine +=["${i}":doc."${it}".toString()]
 					i++
         		}*/
@@ -289,7 +285,7 @@ class ListService {
 					}
 					i++
 				}
-					            		
+
         		def baseUrl=request.contextPath
         		if(!actions) {
         			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small  xlist-action-button xui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
@@ -301,9 +297,9 @@ class ListService {
     		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
     	return json
 	}
-	
+
 	/**
-	* DEPRECATED 
+	* DEPRECATED
 	* Generates a JSON response to feed the datalist from a searchable query
 	* @param dc The domain class to be used
 	* @param params The parameters from the http request
@@ -319,32 +315,32 @@ class ListService {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
 		def propName=title[0].toLowerCase()+title.substring(1)
-		
-		
+
+
 		def columns=listProperties ? listProperties : dc.listProperties
 		//def columns= dc.listProperties
 		def sortName=columns[new Integer(params.iSortCol_0)]
 		sortName=sortName? sortName:columns[0]
-		
+
 		def documentList
-		
+
 		//Create Id for the table
 		def detailTableId="detailTable_"+dc
 		detailTableId=detailTableId.replace(".","_")
 		detailTableId=detailTableId.replace("class ","")
-		
-		
+
+
 		if (params.sSearch) {
-			query = params.sSearch			
+			query = params.sSearch
 		}
 		def res=dc.search(query,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
 		documentList=res.results
-		
+
 		def iTotalRecords=res.total
 		def iTotalDisplayRecords=iTotalRecords
-		
 
-		
+
+
 		def aaData=[]
 			documentList.each { doc ->
 				def inLine=[DT_RowId:doc.id]
@@ -364,7 +360,7 @@ class ListService {
 			def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
 		return json
 	}
-	
+
 	/**
 	 * Move position of an item in a sortable list
 	 * @param dc
@@ -372,9 +368,9 @@ class ListService {
 	 * @return
 	 */
 	def position(dc,params) {
-		def defaultDomainClass = new DefaultGrailsDomainClass( dc )		
+		def defaultDomainClass = new DefaultGrailsDomainClass( dc )
 		Map belongsToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
-		
+
 		def movedItem=dc.get(params.id)
 		Integer toPosition=new Integer(params.toPosition)
 		movedItem.position=toPosition
