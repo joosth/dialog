@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
-package org.open_t.dialog;
-import java.text.*;
-import java.util.*;
+package org.open_t.dialog
 
 import java.beans.PropertyEditorSupport
 
@@ -30,27 +28,22 @@ import java.beans.PropertyEditorSupport
  *
  * @author Joost Horward
  */
-public class BigDecimalEditor extends PropertyEditorSupport{
-	
+class BigDecimalEditor extends PropertyEditorSupport {
+
 	String getAsText() {
 		if( super.getValue()) {
 			def s = String.format("%01.2f",(BigDecimal) super.getValue())
-			s=s.replace( '.', ',')			
-			return s 
-		} else {			
-			return "0,00"
+			return s.replace( '.', ',')
 		}
+		return "0,00"
 	}
-	
+
 	void setAsText(String value) {
 		if (value=="") {
 			setValue(null)
 		} else {
-			def s=value.replace( ',', '.')  			      
+			def s=value.replace( ',', '.')
 			setValue(new BigDecimal(s))
 		}
 	}
-	
-	
-	
 }

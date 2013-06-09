@@ -18,8 +18,6 @@
  */
 package org.open_t.dialog;
 
-import java.util.Date;
-
 import org.springframework.beans.PropertyEditorRegistrar
 import org.springframework.beans.PropertyEditorRegistry
 
@@ -28,12 +26,10 @@ import org.springframework.beans.PropertyEditorRegistry
  *
  * @author Joost Horward
  */
+class DialogPropertyEditorRegistrar implements PropertyEditorRegistrar {
 
-public class DialogPropertyEditorRegistrar implements PropertyEditorRegistrar {
-
-	public void registerCustomEditors(PropertyEditorRegistry registry) {
-		registry.registerCustomEditor(BigDecimal.class, new org.open_t.dialog.BigDecimalEditor());
-		registry.registerCustomEditor(Date.class, new DateTimePropertyEditor("yyyy-MM-dd'T'HH:mm"));
-		
+	void registerCustomEditors(PropertyEditorRegistry registry) {
+		registry.registerCustomEditor(BigDecimal, new BigDecimalEditor())
+		registry.registerCustomEditor(Date, new DateTimePropertyEditor("yyyy-MM-dd'T'HH:mm"))
 	}
 }

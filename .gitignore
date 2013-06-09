@@ -1,19 +1,20 @@
 # Git ignore list for grails project
 *.class
 *.iws
-*.war
 .classpath
 .DS_Store
 .project
 .settings
 /*.launch
 /*.tmproj
-/out/**
-/docs/**
+/out
+/docs
 stacktrace.log
 test/reports
-/target/**
+/target
 jetty-env.xml
-/files/**
+/files
 *~
 ._*
+plugin.xml
+*.zip

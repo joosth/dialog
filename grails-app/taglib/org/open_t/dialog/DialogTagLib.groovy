@@ -19,19 +19,22 @@
 
 package org.open_t.dialog
 
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+
 /**
  * Tag library for Dialog plugin
  *
  * @author Joost Horward
  */
-
-import org.codehaus.groovy.grails.commons.*
 class DialogTagLib {
+
 	def dialogService
 	def listService
 	def grailsApplication
+
 	static namespace = 'dialog'
-	
+
 	/**
 	 * Element to place in HTML page's <head> section
 	 * Initializes namespace dialog and hashlist for datatable
@@ -49,7 +52,7 @@ class DialogTagLib {
 			dialog.pluginUrl="${resource(plugin:'dialog')}";
 			dialog.language="${g.message(code:'language.code',default:'en')}";
 			dialog.dataTablesLanguageUrl="${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'language.code',default:'en')}.txt";
-			
+
 			dialog.messages={}
 			dialog.messages.ok="${message(code:'dialog.messages.ok')}";
 			dialog.messages.cancel="${message(code:'dialog.messages.cancel')}";
@@ -57,20 +60,20 @@ class DialogTagLib {
 			dialog.messages.dropfileshere="${message(code:'dialog.messages.dropfileshere')}";
 			dialog.messages.confirmdelete="${message(code:'dialog.messages.confirmdelete')}";
 			dialog.messages.confirmdeleteTitle="${message(code:'dialog.messages.confirmdeleteTitle')}";
-        </script>        
+        </script>
 		"""
 	}
-	
+
 	/**
 	 * This tag generates a 2-cell row in the dialog table. The first cell contains the property's label, the second one contains the edit element or display value.
 	 * It is mostly for internal use, the dialog elements input, select etc. use this to wrap themselves in.
-	 * 
+	 *
 	 *  @param object The domain object
 	 *  @param propertyName The property of the domain object
-	 *  
+	 *
 	 */
 
-	
+
 	def row = { attrs,body ->
 		def object=attrs.object;
 		def domainPropertyName=object.getClass().getName()
@@ -110,7 +113,7 @@ class DialogTagLib {
 			if (attrs.noLabel=="true") { colspan+=1 }
 			if (attrs.noHelp=="true") { colspan+=1 }
 			if (attrs.noErrors=="true") { colspan+=1 }
-			
+
 			out <<"""<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
 			if (attrs.noLabel!="true"){
 			out << """<td valign="top" class="name">
@@ -120,22 +123,22 @@ class DialogTagLib {
 			}
 			out <<"""<td colspan="${colspan}" valign="top" class="value ${attrs.class}">"""
 			out << body()
-			
+
 			out << """</td>"""
 			if (attrs.noHelp!="true"){
 				if (g.message(code:"${domainPropertyName}.${propertyName}.help",default:'')) {
 					out << """<td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></td>"""
 				}
 			}
-			
+
 			if (attrs.noErrors!="true"){
 				out <<"""<td class="text-error">${errors}</td>"""
 			}
 			out <<"""</tr>"""
 		}
 	}
-	
-	def simplerow = { attrs,body ->		
+
+	def simplerow = { attrs,body ->
 		def cssClass=attrs.class ? attrs.class : ""
 		def error=attrs.error ? attrs.error : ""
 		def errors=""
@@ -143,7 +146,7 @@ class DialogTagLib {
 				cssClass+=" error"
 			}
 		def label=attrs.label?:g.message(code:"${attrs.name}.label", default:"${attrs.name}")
-		
+
 		if (attrs.vertical == "true") {
 			out <<"""
 			<tr class="prop ${cssClass}">
@@ -169,19 +172,19 @@ class DialogTagLib {
 					</td>
 					<td valign="top" class="value ${attrs.class}">"""
 			out << body()
-			
+
 			def helptext="&nbsp;"
 			def helpTitle=attrs.help?:g.message(code:"${attrs.name}.help")
 			if (attrs.help || g.message(code:"${attrs.name}.help",default:'UNKNOWN')!='UNKNOWN') {
 				helptext="""<span class="help-icon help action" title="${helpTitle}" href="#">&nbsp;</span>"""
-			}			
+			}
 			out << """</td><td>${helptext}</td><td>${error}</td></tr>"""
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	/**
 	* Text input field tag
 	* Any extra attributes are copied over to the HTML &lt;input&gt; element.
@@ -191,73 +194,73 @@ class DialogTagLib {
 	* @param propertyName The property of the domain object
 	* @param object The domain object
 	* @param type The type of input to be used (default: text)
-	* @param class The CSS class to be supplied to the enclosing row  
+	* @param class The CSS class to be supplied to the enclosing row
 	*/
 
-	
+
 	def textField = { attrs ->
-		
+
 		out << row ("class":attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
-			
-			
+
+
 			switch(attrs.mode) {
 				case "show":
 					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
 					break
-				
+
 				case "edit":
 					def name=attrs.propertyName
 					def value=null
 					if (attrs.value) {
 						value=attrs.value
 					} else {
-						value=fieldValue(bean: attrs.object, field: attrs.propertyName)						
+						value=fieldValue(bean: attrs.object, field: attrs.propertyName)
 					}
-					
+
 					// Copy all extra attributes, skip the ones that are only meaningful for textField or are handled manually
 					def copiedAttrs=""
 					def skipAttrs=['object','propertyName','mode','class','type','value']
-					attrs.each { attrKey, attrValue ->						 
+					attrs.each { attrKey, attrValue ->
 						 if (!skipAttrs.contains(attrKey))
 						 {
 							 copiedAttrs+=""" ${attrKey}="${attrValue}" """
 						 }
 					}
-					def inputType="text";
-					if (attrs.type) inputType=attrs.type;
-					
+					def inputType="text"
+					if (attrs.type) inputType=attrs.type
+
 					"""<input type="${inputType}" name="${name}" value="${value}" id="${name}" ${copiedAttrs}  />"""
-					
+
 					break
 			}
 		}
 	}
-	
+
 	/**
 	* Date input field tag
 	* This generates an text input element that pops up a calendar
 	* Currently the format to be used is fixed yyyy-MM-dd
 	* It uses the DateTimePropertyEditor to process the text
 	* Generates a hidden field which triggers the use of the structured property editor
-	* 
+	*
 	* @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
 	* @param propertyName The property of the domain object
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
 	*/
-	
+
 	def date = { attrs ->
-	
+
 		out << row ("class":attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
-			
+
 			switch(attrs.mode) {
 				case "show":
 					def value=attrs.object."${attrs.propertyName}"
-					
+
 					return listService.getDisplayString(value)
 
 					break
-				
+
 				case "edit":
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
@@ -270,7 +273,7 @@ class DialogTagLib {
 			}
 		}
 	}
-	
+
 	/**
 	* Date input field tag
 	* This generates an text input element that pops up a calendar plus a text input element for the time in hh:mm format
@@ -283,63 +286,63 @@ class DialogTagLib {
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
 	*/
-	
+
 	def dateTime = { attrs ->
-		
+
 		out << row (object:attrs.object,propertyName:attrs.propertyName) {
-			
+
 			switch(attrs.mode) {
-				case "show":					
+				case "show":
 					def value=attrs.object."${attrs.propertyName}"
-					return listService.getDisplayString(value)					
+					return listService.getDisplayString(value)
 					break
-				
+
 				case "edit":
 					def dateValue=attrs.object."${attrs.propertyName}"
-					
+
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
-					
-					
+
+
 					def dateAttrs=[name:attrs.propertyName+'_date',value:g.formatDate([date:dateValue,format:"yyyy-MM-dd"]),class:'datepicker']
 					out << g.textField(dateAttrs)
-					
+
 					out << "&nbsp;"
 					def timeAttrs=[name:attrs.propertyName+'_time',value:g.formatDate([date:dateValue,format:"HH:mm"]),class:'time']
 					out << g.textField(timeAttrs)
-					
-					
+
+
 					break
 			}
-			
+
 		}
-		
-		
-				
+
+
+
 	}
-	
+
 	/**
 	* Text area field tag
-	* 
+	*
 	* @param mode Contains 'edit' (generate textarea field) or 'show' (generate read-only output)
 	* @param propertyName The property of the domain object
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
 	*/
 
-	
+
 	def textArea = { attrs ->
-		
+
 		def copiedAttrs=""
 		def skipAttrs=['object','propertyName','mode','type','value']
-		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}			 
-		
+		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}
+
 		out << row (attrs) {
 			switch(attrs.mode) {
 				case "show":
 					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
 					break
-				
+
 				case "edit":
 					// Hack to assign unique ID's and keep tinyMCE happy
 					newAttrs+=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5,id:"id${new Random().nextInt(10000000)}"]
@@ -349,7 +352,7 @@ class DialogTagLib {
 			}
 		}
 	}
-	
+
 	/**
 	* XML editing text area field tag
 	*
@@ -359,7 +362,7 @@ class DialogTagLib {
 	* @param class The CSS class to be supplied to the enclosing row
 	*/
 
-	
+
 	def xml = { attrs ->
 		def skipAttrs=['object','propertyName','mode','type','value']
 		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}
@@ -368,21 +371,21 @@ class DialogTagLib {
 		def xmltext=attrs.object."${attrs.propertyName}"
 		newAttrs.value = xmltext ? dialogService.prettyPrint(xmltext) : ""
 		newAttrs.name=attrs.propertyName
-	
+
 	out << row (attrs) {
 		switch(attrs.mode) {
 			case "show":
 				String s = xmltext ? dialogService.prettyPrint(xmltext) : ""
 				return """${g.textArea(newAttrs) {s.encodeAsHTML()}}"""
 				break
-			
+
 			case "edit":
 				"""${g.textArea(newAttrs)}"""
 				break
 		}
 	}
 	}
-	
+
 	/**
 	* Checkbox tag
 	*
@@ -391,23 +394,23 @@ class DialogTagLib {
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
 	*/
-	
+
 	def checkBox = { attrs ->
-	
+
 		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			switch(attrs.mode) {
 				case "show":
 					def value=fieldValue(bean: attrs.object, field: attrs.propertyName)
 					g.message(code:"dialog.checkBox.${value}.label".toString(), default:value.toString())
 					break
-				
+
 				case "edit":
 					"""${g.checkBox(name:attrs.propertyName,value:attrs.object."${attrs.propertyName}")}"""
 					break
 			}
 		}
 	}
-	
+
 	/**
 	* domainObject tag - shows a select box that allows to select an object from a domain class
 	*
@@ -418,15 +421,15 @@ class DialogTagLib {
 	* @param from A list of values to be used in lieu of all objects in the domain class
 	* @param sort The property to sort the domain class items in the list by (default: name)
 	*/
-	
+
 	def domainObject = { attrs ->
-	
+
 		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			switch(attrs.mode) {
 				case "show":
 					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
 					break
-				
+
 				case "edit":
 					def optionValues=[]
 					def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
@@ -440,12 +443,12 @@ class DialogTagLib {
 						else
 							optionValues= property.getType().findAll([sort:'name',order:'asc'])
 					}
-					
-					
-					
+
+
+
 					def value=attrs.object."${attrs.propertyName}"
 					def valueId=value ? value.id : null
-											
+
 					if (property.isOptional())
 						"""${g.select(name:attrs.propertyName+'.id',value:valueId,from:optionValues,optionKey:'id',noSelection:['null': '-'] )}"""
 					else
@@ -461,15 +464,15 @@ class DialogTagLib {
 					def value=attrs.object."${attrs.propertyName}"
 					def valueLabel=value ? value.acLabel : ""
 					def valueDescription=value ? value.acDescription : ""
-					
+
 					def valueId=value ? value.id : null
-					
+
 					def dc = new DefaultGrailsDomainClass( property.getType())
 					def domainPropertyName=dc.getPropertyName()
-					
-					def acAction=attrs.acAction ? attrs.acAction : "autocomplete" 
+
+					def acAction=attrs.acAction ? attrs.acAction : "autocomplete"
 					def jsonUrl="${request.contextPath}/${domainPropertyName}/${acAction}"
-					
+
 					def descriptionText=""
 					if (attrs.subtitle=="true") {
 						descriptionText="""<p id="${attrs.propertyName}-description" class="autocomplete-description">${valueDescription}</p>"""
@@ -483,15 +486,15 @@ class DialogTagLib {
 //					   ${descriptionText}
 //					   <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}"/><span id="${attrs.propertyName}-icon" class="ac-icon ui-icon ui-icon-triangle-1-w">&nbsp;</span></span>"""
 					break
-			
+
 			}
 		}
 	}
-	
+
 	/**
-	* select tag - shows a select 
+	* select tag - shows a select
 	*
-	* @param mode Contains 'edit' or 'show' 
+	* @param mode Contains 'edit' or 'show'
 	* @param propertyName The property of the domain object
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
@@ -502,7 +505,7 @@ class DialogTagLib {
 	* @param style attribute to be supplied to the &lt;select&gt; element
 	*/
 
-	
+
 	def select = { attrs ->
 
 		out << row (object:attrs.object,propertyName:attrs.propertyName, vertical:attrs.vertical) {
@@ -512,32 +515,32 @@ class DialogTagLib {
 			def optionKey = attrs.optionKey ? attrs.optionKey : null
 			multiple=null
 			optionKey=""
-			
+
 			switch(attrs.mode) {
 				case "show":
 					"""${fieldValue(bean: attrs.object, field: attrs.propertyName)}"""
 					break
-				
+
 				case "edit":
 					def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
 					def property=domainClass.getPropertyByName(attrs.propertyName)
-					
+
 					def cp = domainClass.constrainedProperties[attrs.propertyName]
-															   
+
 					def optionValues=[]
 					if (attrs.from) {
 						optionValues=attrs.from
 					} else {
 						optionValues=attrs.object.constraints."${attrs.propertyName}".inList
 					}
-					
+
 					def opts=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",from:optionValues]
 					if (attrs["class"]) opts.put("class",attrs["class"])
 					if (attrs["optionKey"]) opts.put("optionKey",attrs["optionKey"])
 					if (attrs["optionValue"]) opts.put("optionValue",attrs["optionValue"])
 					if (attrs["multiple"]) opts.put("multiple",attrs["multiple"])
 					if (attrs["style"]) opts.put("style", attrs["style"])
-					
+
 					if (property.isOptional()) {
 						// TODO: yes. ''  for strings, null for int's
 						opts.put("noSelection",['': '-'])
@@ -548,7 +551,7 @@ class DialogTagLib {
 			}
 		}
 	}
-	
+
 	/**
 	* tabs tag - create a &lt;tabs&gt; enclosure for &lt;tab&gt; elements
 	*
@@ -557,7 +560,7 @@ class DialogTagLib {
 	*/
 
 	def tabs = { attrs,body ->
-	
+
 		out << """<div id="dialogtabs" class="dialogtabs" >
 			<ul>"""
 			def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
@@ -565,7 +568,7 @@ class DialogTagLib {
 			def names=attrs.names.split(",")
 			def defaultDomainClass = new DefaultGrailsDomainClass( attrs.object.class )
 			def domainPropertyName=defaultDomainClass.propertyName
-			
+
 			for (name in names) {
 				def defaultTabLabel=g.message(code:"dialog.tab.${name}", default:name)
 				def tabLabel=g.message(code:"dialog.tab.${domainPropertyName}.${name}", default:defaultTabLabel)
@@ -586,12 +589,12 @@ class DialogTagLib {
 	* @param name The name of this tab
 	* @param object The domain object
 	*/
-	
+
 	def tab = { attrs,body ->
 		def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
 		prefix=prefix.replace(".","_")
 		out << """<div id="${prefix}${attrs.name}">
-				<table class="dialog-form-table"><tbody>"""		
+				<table class="dialog-form-table"><tbody>"""
 				out << body()
 				out << "</tbody></table></div>"
 		}
@@ -605,40 +608,40 @@ class DialogTagLib {
 	* @param heigt The CSS height of this dialog (default: auto)
 	* @param title The title of this dialog
 	*/
-	
+
 	def form = { attrs,body ->
-		def width = attrs.width ? attrs.width : "600px";
-		def height = attrs.height ? attrs.height : "auto";
-		
+		def width = attrs.width ? attrs.width : "600px"
+		def height = attrs.height ? attrs.height : "auto"
+
 		def defaultName="form"
 		if (attrs.object) {
 			defaultName = new DefaultGrailsDomainClass( attrs.object.class).getPropertyName()
 		}
-		
+
 		def name = attrs.name ? attrs.name : defaultName
 		def title=attrs.title?attrs.title:g.message(code:"form.${name}.title", default:name)
-		
-		
-		
-		
+
+
+
+
 		out << """<div aid="dialog" style="width:${width};height:${height};" title="${title}" id="${name}">
 		<form class="ajaxdialogform" name="${name}" method="post" action="${attrs.action}" test="test" >"""
-		
+
 		if (attrs.error) {
 			out << """<div class="errors text-error">${attrs.error?attrs.error:''}</div>"""
 		} else {
 			out << """<div class="errors" style="display:none;"></div>"""
 		}
-		
+
 		def message=g.message(code:"form.${name}.message",default:'')
 		if (message) {
 			out << """<div class="dialog-message">${message}</div>"""
 		}
-		
+
 
 		// Add Hidden field with the id of the parent DomainObject (belongsTo)
 		// REMARK: Currently it will only work if belongto has only 1 relation
-		if (!(attrs.noBelongsTo && (attrs.noBelongsTo==true || attrs.noBelongsTo=="true"))) { 
+		if (!(attrs.noBelongsTo && (attrs.noBelongsTo==true || attrs.noBelongsTo=="true"))) {
 			if (attrs.object) {
 				def defaultDomainClass = new DefaultGrailsDomainClass( attrs.object.class )
 				Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
@@ -652,7 +655,7 @@ class DialogTagLib {
 		out << body()
 		out << "</form></div>"
 	}
-	
+
 	/**
 	* pageform tag - create a &lt;pageform&gt;
 	* this one is meant to be on a full page rather than in a popup dialog
@@ -662,18 +665,18 @@ class DialogTagLib {
 	* @param width The CSS width of this dialog (default: 600px)
 	* @param title The title of this dialog
 	*/
-	
-	def pageform = { attrs,body ->		
+
+	def pageform = { attrs,body ->
 		def name = attrs.name ? attrs.name : "form"
 		def action = attrs.action ? attrs.action : "submit${name}"
 		def cssClass=attrs.class ? "pageform ${attrs.class}" : "pageform"
 		def formClass=attrs.formClass ? attrs.formClass:""
-				
+
 		out << """<div class="pageform row"><div class="${cssClass}" id="${name}">
 			<div><h3>${g.message(code:"page.${name}.title", default:"${name}")}</h3></div>
 			<p>${g.message(code:"page.${name}.help", default:"")}</p>
 
-		<form class="${formClass} form-horizontal" name="${name}" method="post" action="${action}" >"""		
+		<form class="${formClass} form-horizontal" name="${name}" method="post" action="${action}" >"""
 		if (attrs.error) {
 			out << """<div class="errors">${attrs.error?attrs.error:''}</div>"""
 		} else {
@@ -691,66 +694,60 @@ class DialogTagLib {
 				}
 			}
 		}
-		
+
 		out << body()
 		out << "</form></div></div>"
-		
+
 	}
 	/**
 	 * Navigation buttons
 	 */
-	
+
 	def navigation = {attrs,body ->
-		if (grailsApplication.config.dialog?.bootstrap) {		
+		if (grailsApplication.config.dialog?.bootstrap) {
 			out << """<div class="navigation navigation-form-actions">"""
 			def buttons=attrs.buttons.split(",")
-			buttons.each { name ->			
+			buttons.each { name ->
 					out << """<button type="submit" name="${name}" class="${name} btn" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button>"""
 			}
-			out << """</div>"""		
+			out << """</div>"""
 		} else {
 			out << """<div class="navigation">
 				<ul class="clearfix">"""
-		
+
 			def buttons=attrs.buttons.split(",")
-			buttons.each { name ->				
+			buttons.each { name ->
 				out << """<li><button type="submit" name="${name}" class="${name}" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button></li>"""
 			}
-		
+
 			out << """	</ul>
 			</div>"""
 		}
-	}	
-	
-	/**
-	* table tag - create a &lt;table&gt; to contain form rows
-	*
-	*/
-	
+	}
 
+	/**
+	 * table tag - create a &lt;table&gt; to contain form rows
+	 */
 	def table = { attrs,body ->
-	
 		out << """<table class="dialog-form-table"><tbody>"""
 		out << body()
 		out << "</tbody></table>"
 	}
-	
+
 	/**
-	* detailTable tag - create a detail table in master/detail view 
-	* @param domainClass detail class name
-	* @param object master object
-	* @param property property that links detail with the master
-	*/
-	
+	 * detailTable tag - create a detail table in master/detail view
+	 * @param domainClass detail class name
+	 * @param object master object
+	 * @param property property that links detail with the master
+	 */
 	def detailTable = { attrs ->
-		
+
 		def copiedAttrs=""
 		def skipAttrs=['object','propertyName','mode','class','type','value']
 		attrs.each { attrKey, attrValue ->
-			 if (!skipAttrs.contains(attrKey))
-			 {
-				 copiedAttrs+=""" ${attrKey}="${attrValue}" """
-						 }
+			if (!skipAttrs.contains(attrKey)) {
+				copiedAttrs+=""" ${attrKey}="${attrValue}" """
+			}
 		}
 		def controllerName
 		def listProperties
@@ -762,21 +759,21 @@ class DialogTagLib {
 				listConfig=attrs.listConfig?:attrs.domainClass?.listConfig
 			}
 		}
-		if (listConfig) {			
+		if (listConfig) {
 			controllerName=listConfig.controller
 			listProperties=	listConfig.columns.collect { it.name }
-			prefix="detailTable_"+listConfig.name			
+			prefix="detailTable_"+listConfig.name
 		} else {
-		
+
 			def domainClass = new DefaultGrailsDomainClass( attrs.domainClass)
 
 			controllerName=attrs.controllerName?:domainClass.getPropertyName()
-			listProperties=attrs.domainClass.listProperties		
-			prefix="detailTable_"+attrs.domainClass		
+			listProperties=attrs.domainClass.listProperties
+			prefix="detailTable_"+attrs.domainClass
 			prefix=prefix.replace(".","_")
 			prefix=prefix.replace("class ","")
 		}
-		
+
 		def optionalParams = '?objectId='+attrs.object.id+'&objectClass='+attrs.object.getClass().getName()+'&property='+attrs.property
 		def jsonUrl='/'+controllerName+'/jsonlist'+optionalParams
 		def positionUrl='/'+controllerName+'/position'+optionalParams
@@ -784,41 +781,41 @@ class DialogTagLib {
 		if (attrs.rowreordering) {
 			cssClass+=" rowreordering"
 		}
-		
+
 		out << """<div class="datatable">
-					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""			
+					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
 			if (listConfig) {
 				listConfig.columns.each { column ->
 					out << """<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}">${g.message(code:"list.${listConfig.name}.${column.name}.label")}</th>"""
 				}
-			} else {		
+			} else {
 				listProperties.each { propertyName ->
 					out << """<th class="${controllerName}-${propertyName}">${g.message(code:"${controllerName}.${propertyName}.label", default:"${propertyName}")}</th>"""
 				}
 			}
 		out << """<th class='nonsortable list-actions ${controllerName}-actions'>${g.message(code:"dialog.list.actions.label", default:"Actions")}</th></tr></thead><tbody>"""
 		out <<"""</tbody></table>"""
-	
+
 	}
-	
+
 	/**
-	* filesTable tag 
+	* filesTable tag
 	* @param object domain class instance
 	*/
-	
+
 	def filesTable = { attrs ->
 		def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
 		def domainPropertyName=domainClass.getPropertyName()
-		
+
 		def prefix="filesTable_"+domainClass.name
 		prefix=prefix.replace(".","_")
 		prefix=prefix.replace("class ","")
-		
-		
+
+
 		def jsonUrl='/'+domainPropertyName+'/filelist/'+attrs.object.id
-		
+
 		def cssClass="detailTable"
-		
+
 		out << """<div>
 					<table id="${prefix}" class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
 		out << """<th>${g.message(code:"filestable.filename.label")}</th>"""
@@ -827,10 +824,10 @@ class DialogTagLib {
 		out << """<th>${g.message(code:"filestable.actions.label")}</th>"""
 		out << "</tr></thead><tbody>"
 		out <<"""</tbody></table>"""
-	
+
 	}
-	
-	
+
+
 	def upload = { attrs,body ->
 		def copiedAttrs=""
 		def skipAttrs=['object','propertyName','mode','class','type','value']
@@ -840,15 +837,15 @@ class DialogTagLib {
 				 copiedAttrs+=""" ${attrKey}="${attrValue}" """
 			 }
 		}
-		
+
 		out <<"""<div class="upload" ${copiedAttrs}>"""
 		out << body()
 		out << """</div>"""
 	}
-	
+
 	// Only needed for full-page dialogs containing an upload.
 	def uploadHead = { attrs ->
-		
+
 		def html="""
 		 <script  type="text/javascript">
 		\$(function() {
@@ -870,13 +867,10 @@ class DialogTagLib {
 			   });
 		</script>
 		"""
-		
+
 		out << html
-		
 	}
-	
-	
-	
+
 	def dropdown = { attrs,body ->
 		out << """ <li class="dropdown">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -888,7 +882,7 @@ class DialogTagLib {
 		out << body()
 		out <<"""</ul></li>"""
 	}
-	
+
 	def submenu = { attrs,body ->
 		out << """ <li class="dropdown-submenu">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -899,7 +893,7 @@ class DialogTagLib {
 		out << body()
 		out <<"""</ul></li>"""
 	}
-	
+
 	def menuitem = { attrs,body ->
 		def icon=""
 		if (attrs.icon) {
@@ -913,7 +907,7 @@ class DialogTagLib {
 		}
 		def label=g.message(code:code+'.label')
 		def help=g.message(code:code+'.help',default:'')
-		
+
 		def onclick=""
 		def link=""
 		if (attrs.onclick) {
@@ -928,39 +922,35 @@ class DialogTagLib {
 			} else {
 				onclick="""onclick="${attrs.onclick}" """
 			}
-			
+
 			link="""<a href="#" title="${help}">${icon}${label}</a>"""
 		} else {
 			link=g.link(controller:attrs.controller,action:attrs.action,params:attrs.params,title:help) {icon+ label }
-			
 		}
-		
-		out << """<li ${onclick}class="menu-item" >  ${link}</li>"""	
+
+		out << """<li ${onclick}class="menu-item" >  ${link}</li>"""
 	}
-	
-	def treeselect = { attrs, body -> 
+
+	def treeselect = { attrs, body ->
 		out << row ("class":attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
-			def action=attrs.action?:"treeJSON"			
+			def action=attrs.action?:"treeJSON"
 			def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
-			def property=domainClass.getPropertyByName(attrs.propertyName)			
+			def property=domainClass.getPropertyByName(attrs.propertyName)
 			def dc = new DefaultGrailsDomainClass( property.getType())
-			def domainPropertyName=dc.getPropertyName()			
+			def domainPropertyName=dc.getPropertyName()
 			def url=attrs.url?:"${request.contextPath}/${domainPropertyName}/${action}"
 			def attributes=""
-			if (attrs.width)  { attributes+=""" treeDialogWidth="${attrs.width}" """	}		
+			if (attrs.width)  { attributes+=""" treeDialogWidth="${attrs.width}" """	}
 			if (attrs.height) { attributes+=""" treeDialogHeight="${attrs.height}" """ }
 			if (attrs.root)   { attributes+=""" treeRoot="${attrs.root}" """ }
-						
+
 			def value=attrs.object."${attrs.propertyName}"
-			
+
 			"""<span id="treeselect-${attrs.propertyName}-span" treeUrl="${url}" ${attributes} >
 				<span>${value?:''}</span>
 					<a href="#" onclick="dialog.tree.treeSelect('treeselect-${attrs.propertyName}');" class="btn btn-small">...</a>
 				<input id="treeselect-field-input" type="hidden" name="${attrs.propertyName}.id" value="${value?.id}" />
-			</span>"""			
+			</span>"""
 		}
-		
 	}
-	
 }
-
