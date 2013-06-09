@@ -225,14 +225,14 @@ class DialogService {
 			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
 			def actionLabel=getMessage("dialog.submit.deleted.label")
 			
-        	resultMessage="${domainClassLabel} #${params.id} : ${theName} ${actionLabel}"
+        	resultMessage="${domainClassLabel} #${params.id} ${actionLabel}"
         	
         } catch (Exception e ){
 			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
 			def actionLabel=getMessage("dialog.submit.notdeleted.label")
 			
         	successFlag=false
-        	resultMessage="${domainClassLabel} #${params.id} : ${theName} ${actionLabel}: ${e.message}"
+        	resultMessage="${domainClassLabel} #${params.id} ${actionLabel}: ${e.message}"
         }
 		
 		
