@@ -26,6 +26,8 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.web.util.WebUtils
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
+import org.springframework.transaction.annotation.Transactional
+
 
 /*
  * Provide list handling service
@@ -84,6 +86,7 @@ class ListService {
 		}
 	}
 
+	@Transactional(readOnly=true)
 	def jsonlist(dc,params,request,filterColumnNames=null,actions=null) {
         	def title=dc.getName();
         	title=title.replaceAll (".*\\.", "")
@@ -200,6 +203,8 @@ class ListService {
 	* @param queryParams a parameter map for the query
 	* @return a map that is ready to be rendered as a JSON message
 	*/
+	@Transactional(readOnly=true)
+	
 	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnNames=null,actions=null,queryParams=[:]) {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
@@ -311,6 +316,7 @@ class ListService {
 	* @param queryParams a parameter map for the query
 	* @return a map that is ready to be rendered as a JSON message
 	*/
+	@Transactional(readOnly=true)
 	def jsonsearch(dc,params,request,query,listProperties=null,actions=null,queryParams=[:]) {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
@@ -367,6 +373,7 @@ class ListService {
 	 * @param params
 	 * @return
 	 */
+	@Transactional	
 	def position(dc,params) {
 		def defaultDomainClass = new DefaultGrailsDomainClass( dc )
 		Map belongsToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)

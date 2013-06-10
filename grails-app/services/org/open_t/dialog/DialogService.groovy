@@ -29,6 +29,7 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.web.util.WebUtils
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
+import org.springframework.transaction.annotation.Transactional
 
 /*
  * Provide generic edit,submit,delete operations for dialog handling
@@ -48,6 +49,7 @@ class DialogService {
 	* @param params The parameters from the http request
 	* @return a map that is ready to be rendered as a JSON message
 	*/
+	@Transactional(readOnly=true)
     def edit(domainClass,params) {
 		def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
 
@@ -103,7 +105,7 @@ class DialogService {
 	* @param after A closure to call after the submit
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-
+	@Transactional
 	def submit(domainClass,params,instance=null,Closure after={}) {
 		def res=[:]
 		try {
@@ -203,7 +205,7 @@ class DialogService {
 	* @param params The parameters from the http request
 	* @return a map that is ready to be rendered as a JSON message
 	*/
-
+	@Transactional
 	def delete(domainClass,params) {
 		def g=grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
 		def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
@@ -283,9 +285,10 @@ class DialogService {
 	* @param propertyName The 'property' that provides the related items from the target class
 	* @param joinClass The class that is used to maintain the join relationship. Needs to provide a create and a remove method
 	* @param targetClass The class that is on the other side of the n:m relationship
-	* @return Pretty XML
+	* @return
 	*/
 
+	@Transactional
 	def manageJoin(params,instance,propertyName,joinClass,targetClass) {
 
 		def newAuthorities=[]
@@ -335,6 +338,7 @@ class DialogService {
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 
+	@Transactional(readOnly=true)
 	def autocomplete(dc,params,request,query=["name"],queryType="prop",queryParams=[],labelColumnName="acLabel",descriptionColumnName="acDescription") {
 			def title=dc.getName();
 			title=title.replaceAll (".*\\.", "")
