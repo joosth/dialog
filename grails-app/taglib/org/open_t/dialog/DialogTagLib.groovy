@@ -53,15 +53,36 @@ class DialogTagLib {
 			dialog.language="${g.message(code:'language.code',default:'en')}";
 			dialog.dataTablesLanguageUrl="${resource(plugin:'dialog',dir:'js/jquery')}/dataTables/localisation/dataTables.${g.message(code:'language.code',default:'en')}.txt";
 
-			dialog.messages={}
+			dialog.messages={};
 			dialog.messages.ok="${message(code:'dialog.messages.ok')}";
 			dialog.messages.cancel="${message(code:'dialog.messages.cancel')}";
 			dialog.messages.upload="${message(code:'dialog.messages.upload')}";
 			dialog.messages.dropfileshere="${message(code:'dialog.messages.dropfileshere')}";
 			dialog.messages.confirmdelete="${message(code:'dialog.messages.confirmdelete')}";
 			dialog.messages.confirmdeleteTitle="${message(code:'dialog.messages.confirmdeleteTitle')}";
+
+            dialog.messages.datepicker = {};
+	        dialog.messages.datepicker.regional = {
+		        closeText: "${message(code:'dialog.datepicker.closeText')}",
+				prevText: "${message(code:'dialog.datepicker.prevText')}",
+				nextText: "${message(code:'dialog.datepicker.nextText')}",
+				currentText: "${message(code:'dialog.datepicker.currentText')}",
+				monthNames: ${message(code:'dialog.datepicker.monthNames')},
+			
+				monthNamesShort: ${message(code:'dialog.datepicker.monthNamesShort')},
+				dayNames: ${message(code:'dialog.datepicker.dayNames')},
+				dayNamesShort: ${message(code:'dialog.datepicker.dayNamesShort')},
+				dayNamesMin: ${message(code:'dialog.datepicker.dayNamesMin')},
+				weekHeader: "${message(code:'dialog.datepicker.weekHeader')}",
+				dateFormat: "${message(code:'dialog.datepicker.dateFormat')}",
+				firstDay: ${message(code:'dialog.datepicker.firstDay')},
+				isRTL: ${message(code:'dialog.datepicker.isRTL')},
+				showMonthAfterYear: ${message(code:'dialog.datepicker.showMonthAfterYear')},
+				yearSuffix: "${message(code:'dialog.datepicker.yearSuffix')}"
+            };
         </script>
 		"""
+     
 	}
 
 	/**
