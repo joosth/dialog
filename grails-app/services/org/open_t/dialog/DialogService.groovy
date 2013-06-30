@@ -206,7 +206,7 @@ class DialogService {
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 	@Transactional
-	def delete(domainClass,params) {
+	def delete(domainClass,params,instance=null) {
 		def g=grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
 		def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
 
@@ -215,8 +215,9 @@ class DialogService {
 		def domainClassName=defaultDomainClass.getName()
 
 		def id=params.id
-		def domainClassInstance = domainClass.get(params.id )
-		//domainClassInstance.properties = params
+		
+		def domainClassInstance = instance?instance:domainClass.get(params.id )
+		
 
         def theRefreshNodes=null
         def successFlag=true
