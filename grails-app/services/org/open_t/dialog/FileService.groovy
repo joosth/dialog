@@ -46,7 +46,7 @@ class FileService {
 			def diPath=filePath(dc,params.identifier,fileCategory)
 			def destFile= new File("${diPath}/${filename}")
 			FileUtils.copyFile(tempFile,destFile)
-			//tempFile.delete()
+			tempFile.delete()
 		}
 
 		def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName]
@@ -83,7 +83,6 @@ class FileService {
 		def basePath=grailsApplication.config.dialog.files.basePath
 		def name=dc.getName();
 		name=name.replaceAll (".*\\.", "")
-		//return "${basePath}/${fileCategory}/${name}/${packedPath(id)}"
 		return "${basePath}/${relativePath(dc,id,fileCategory)}"
 	}
 
@@ -128,7 +127,6 @@ class FileService {
 
 		def map = dir.listFiles().collect { file ->
 			[file:file,url:"${diUrl}/${file.name}"]
-			//[file:file,url:"/catviz/f/${params.id}/${file.name}"]
 		}
 		return map
 	}

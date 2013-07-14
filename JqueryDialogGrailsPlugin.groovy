@@ -1,11 +1,11 @@
-class DialogGrailsPlugin {
-	def version = "2.0.1"
+class JqueryDialogGrailsPlugin {
+	def version = "2.0.2"
 	def grailsVersion = "2.0 > *"
 
 	def author = "Joost Horward"
 	def authorEmail = "joost@open-t.nl"
-	def title = "Dialog"
-	def description = 'Provides easy-to-maintain CRUD popup dialogs and lists with JQuery, JQuery datatables and twitter bootstrap.'
+	def title = "jQuery Dialog"
+	def description = 'Provides easy-to-maintain CRUD popup dialogs and lists with jQuery, jQuery DataTables and Twitter Bootstrap.'
 
 	def documentation = "http://www.open-t.nl/catviz/p/projects/dialog"
 

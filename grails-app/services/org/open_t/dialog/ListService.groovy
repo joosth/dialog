@@ -252,7 +252,6 @@ class ListService {
 			def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 			def order=fields.collect {"dc.${it}"}.join(",")
 
-			//query = "${query} and (${filterColumnNames} like '%${params.sSearch}%') order by ${order}"
 			query = "${query} and (${where})"
 			countQuery= "${countQuery} and (${where})"
 			queryParams.put('term','%'+params.sSearch+'%')
@@ -269,10 +268,7 @@ class ListService {
             documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
 				def i=0
-/*        		columns.each {
-        			inLine +=["${i}":doc."${it}".toString()]
-					i++
-        		}*/
+
 				columns.each {
 					// If the prop name contains a '.' it needs to be evaluated through a groovy shell
 					// Doing so is considerably slower than the construct in the else
