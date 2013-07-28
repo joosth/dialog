@@ -8,6 +8,7 @@ import org.springframework.web.servlet.support.RequestContextUtils as RCU
 class ListConfig {
 	String name
 	String controller
+	String action='jsonlist'
 	Boolean bFilter=false
 	def toolbar=false
 	def newButton=true

@@ -26,7 +26,7 @@
 				"sDom": '<"toolbar"lf><"processing"r>tip',
 				"bProcessing": true,
 				"bServerSide": true,		
-				"sAjaxSource": "${createLink(controller:listConfig.controller,action: jsonlist ? jsonlist :'jsonlist',params:jsonlistparams?jsonlistparams:[:])}",
+				"sAjaxSource": "${createLink(controller:listConfig.controller,action: jsonlist ? jsonlist :listConfig.action,params:jsonlistparams?jsonlistparams:[:])}",
 				"sPaginationType": "bootstrap",	
 				"bFilter": ${listConfig.bFilter ? true : false},
 				"bJQueryUI": false,
