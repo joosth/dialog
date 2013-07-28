@@ -5,7 +5,7 @@ class DialogExceptionController {
 	def dialog() {
 		def title="Error handling error"
 		def msg=""
-		def exceptionCode=request.exception.message
+		def exceptionCode=request.exception?.message
 		def args=[]
 
 		if (request.exception.cause.class==org.open_t.dialog.DialogException || request.exception.cause.class==AssertionError) {
