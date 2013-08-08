@@ -184,7 +184,6 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     	        	
          	// Initialize date picker input elements
     		$.datepicker.setDefaults( $.datepicker.regional[ dialog.language ] );
-       		$(this).find(".datepicker").datepicker({ dateFormat: "yy-mm-dd" , changeMonth: true, changeYear:true});
        		$(this).find(".dialogtabs").tabs();
        		$(this).find(".altselect").altselect();       	
        		

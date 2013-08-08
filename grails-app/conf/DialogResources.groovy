@@ -97,5 +97,10 @@ modules = {
 		dependsOn 'dialog'
 		resource url:'/js/dialog.autocomplete.js'
 	}
+    
+    'dialog-datepicker' {
+		dependsOn 'dialog'
+		resource url:'/js/dialog.datepicker.js'
+	}
 
 }

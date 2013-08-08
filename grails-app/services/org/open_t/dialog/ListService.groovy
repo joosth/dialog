@@ -70,10 +70,10 @@ class ListService {
 
 			if (type== "java.lang.Date" || type=="java.sql.Timestamp") {
 				def dateFormat
-				if (value.format ("hh:mm:ss")=="00:00:00") {
-					dateFormat= messageSource.getMessage("dialog.list.dateFormat".toString(),null, "yyyy-MM-dd",locale)
+				if (value.format ("HH:mm:ss")=="00:00:00") {
+					dateFormat= messageSource.getMessage("dialog.date.format".toString(),null, "yyyy-MM-dd",locale)
 				} else {
-					dateFormat= messageSource.getMessage("dialog.list.dateTimeFormat".toString(),null, "yyyy-MM-dd hh:mm:ss",locale)
+					dateFormat= messageSource.getMessage("dialog.datetime.format".toString(),null, "yyyy-MM-dd hh:mm:ss",locale)
 				}
 				def format=new SimpleDateFormat(dateFormat,locale)
 				return format.format(value)

@@ -21,6 +21,9 @@ package org.open_t.dialog
 import java.beans.PropertyEditorSupport
 import java.text.SimpleDateFormat
 
+import org.codehaus.groovy.grails.web.util.WebUtils
+import org.springframework.web.servlet.support.RequestContextUtils as RCU
+
 /**
  * Date property editor
  * Displays and accepts date in the xs:date format
