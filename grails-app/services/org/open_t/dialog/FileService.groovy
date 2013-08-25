@@ -9,6 +9,7 @@ class FileService {
 	static transactional = false
 
 	def grailsApplication
+    def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
 
 	def uploadFile(request,params,fileCategory="images",dc=null) {
 		def filename
@@ -66,7 +67,7 @@ class FileService {
 	// TODO offer possibility to provide alternate location per category.
 
 	def relativePath(dc,id,fileCategory) {
-		def name=dc.getName();
+        def name = dc.class==java.lang.String ? dc : dc.getName()		
 		name=name.replaceAll (".*\\.", "")
 
 		Boolean flag=dc.methods.collect { method -> method.name }.contains("getFolderPath")
@@ -81,7 +82,7 @@ class FileService {
 
 	def filePath(dc,id,fileCategory) {
 		def basePath=grailsApplication.config.dialog.files.basePath
-		def name=dc.getName();
+		def name = dc.class==java.lang.String ? dc : dc.getName()
 		name=name.replaceAll (".*\\.", "")
 		return "${basePath}/${relativePath(dc,id,fileCategory)}"
 	}
@@ -90,13 +91,14 @@ class FileService {
 
 	def fileUrl(dc,id,fileCategory) {
 		def baseUrl=grailsApplication.config.dialog.files.baseUrl
-		def name=dc.getName();
+        def name = dc.class==java.lang.String ? dc : dc.getName()        
 		name=name.replaceAll (".*\\.", "")
 		return "${baseUrl}/${fileCategory}/${name}/${packedPath(id)}"
 	}
 
-	def filelist(dc,params,fileCategory="images") {
+	def filelist(dc,params,fileCategory="images",linkType="external") {
 		def format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",new Locale('nl'))
+        log.error "PARAMS: ${params}"
 		def diUrl=fileUrl(dc,params.id,fileCategory)
 
 		def aaData=[:]
@@ -104,8 +106,15 @@ class FileService {
 		if(params.id&& params.id!="null") {
 			File dir = new File(filePath(dc,params.id,fileCategory))
 			aaData=dir.listFiles().collect { file ->
+                def downloadLink
+                if (linkType=="external") {
+                    downloadLink="${diUrl}/${file.name}"
+                } else {
+                    log.error "params: ${params}"
+                    downloadLink=g.createLink(action:"streamfile",id:params.id,params:[filename:file.name])
+                }
 
-				[0:"""<a href="${diUrl}/${file.name}">${file.name}</a>""",
+				[0:"""<a href="${downloadLink}">${file.name}</a>""",
 				 1:file.length(),
 				 2:format.format(file.lastModified()),
 
@@ -200,4 +209,36 @@ class FileService {
 		def result=[success:success,mesage:"${params.filename} deleted"]
 		return [result:result]
 	}
+    
+    /**
+	 * Stream file
+	 * 
+	 * @param contentstream The content stream
+	 * @param The servlet response to use
+	 */
+	
+	def streamFile(dc,id,fileCategory,name,response) {
+        
+        def filePath=filePath(dc,id,fileCategory)+"/"+name
+        def file=new File(filePath)
+        
+        response.setHeader("Content-disposition", "attachment; filename=\"" +file.name+"\"")		
+        // TODO add Tika file type recognition
+		response.setHeader("Content-Type", "application/octet-stream")
+		
+		def inputStream=new FileInputStream(file)
+		def bufsize=100000
+		byte[] bytes=new byte[(int)bufsize]
+
+		def offset=0
+		def len=1
+		while (len>0) {
+			len=inputStream.read(bytes, 0, bufsize)
+			if (len>0)
+			response.outputStream.write(bytes,0,len)
+			offset+=bufsize
+		}
+		response.outputStream.flush()
+	}
+    
 }

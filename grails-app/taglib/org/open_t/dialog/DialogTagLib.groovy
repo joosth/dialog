@@ -837,24 +837,31 @@ class DialogTagLib {
 	*/
 
 	def filesTable = { attrs ->
-		def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
-		def domainPropertyName=domainClass.getPropertyName()
-
-		def prefix="filesTable_"+domainClass.name
+        def controller
+        def prefix
+        if (attrs.controller) {
+            controller=attrs.controller
+            prefix=controller
+        } else {
+            def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
+            controller=domainClass.getPropertyName()
+            prefix="filesTable_"+domainClass.name
+        }
+        def id=attrs.id?:attrs.object.id
 		prefix=prefix.replace(".","_")
 		prefix=prefix.replace("class ","")
 
 
-		def jsonUrl='/'+domainPropertyName+'/filelist/'+attrs.object.id
+		def jsonUrl='/'+controller+'/filelist/'+id
 
 		def cssClass="detailTable"
 
-		out << """<div>
+		out << """
 					<table id="${prefix}" class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
 		out << """<th>${g.message(code:"filestable.filename.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.size.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.date.label")}</th>"""
-		out << """<th>${g.message(code:"filestable.actions.label")}</th>"""
+		out << """<th class='nonsortable list-actions'>${g.message(code:"filestable.actions.label")}</th>"""
 		out << "</tr></thead><tbody>"
 		out <<"""</tbody></table>"""
 
