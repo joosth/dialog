@@ -285,6 +285,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 		 modal:false,
 		 width:400,
 		 height:200,
+         zIndex:10000,
 		 buttons: { 
 		 	"Delete": function(e) {
 			 	var formData=theDialog.find("form").serialize();
