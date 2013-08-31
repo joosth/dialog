@@ -52,9 +52,24 @@
 			{ "bSortable": false, "aTargets": [ ${dc.listProperties.size()} ,"nonsortable"] }
 		] ,
 		
-		"oLanguage": {
-     	 "sUrl": dialog.dataTablesLanguageUrl, 
-    	},
+		"oLanguage": {      		
+          "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",        
+          "sLengthMenu":   "${message(code:'dialog.datatables.sLengthMenu')}",
+          "sZeroRecords":  "${message(code:'dialog.datatables.sZeroRecords')}",
+          "sInfo":         "${message(code:'dialog.datatables.sInfo')}",
+          "sInfoEmpty":    "${message(code:'dialog.datatables.sInfoEmpty')}",
+          "sInfoFiltered": "${message(code:'dialog.datatables.sInfoFiltered')}",
+          "sInfoPostFix":  "${message(code:'dialog.datatables.sInfoPostFix')}",
+          "sSearch":       "${message(code:'dialog.datatables.sSearch')}",
+          "oPaginate": {
+            "sFirst":    "${message(code:'dialog.datatables.oPaginate.sFirst')}",
+            "sPrevious": "${message(code:'dialog.datatables.oPaginate.sPrevious')}",
+            "sNext":     "${message(code:'dialog.datatables.oPaginate.sNext')}",
+            "sLast":     "${message(code:'dialog.datatables.oPaginate.sLast')}"
+          },
+          "sNew":"${message(code:'dialog.datatables.sNew')}"
+        
+        },
     	"fnInitComplete": function() {
     		 
    		<g:if test="${toolbar}" >	
