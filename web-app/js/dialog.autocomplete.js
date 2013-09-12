@@ -21,18 +21,21 @@
 dialog.autocomplete = {};
 
 
-dialog.autocomplete.open =function open (e,params) {
+dialog.autocomplete.open =function(e,params) {
 	$(e.target).find('input.autocomplete').each( function(index) {
 			var curMatch = $(this);
 			var jsonUrl = curMatch.attr("jsonUrl");
+            var entryName=curMatch.attr("name");
+			var name=entryName.replace("-entry","");
+            
+            var submitName=curMatch.attr("submitName") ? curMatch.attr("submitName") : name+ +'.id';
+			
 			curMatch.autocomplete({source:jsonUrl,
 									minLength:0,
 				select: function( event, ui ) {
 					$( this ).val( ui.item.label );
-					var name=$( this ).attr("name");       					
-					name=name.replace("-entry","");
-					$('[name="'+ name+'.id"]' ).val( ui.item.value );
-					$('[name="'+ name+'.id"]' ).attr("label", ui.item.label );
+					$('[name="'+ submitName+'"]' ).val( ui.item.value );
+					$('[name="'+ submitName+'"]' ).attr("label", ui.item.label );
 					if (ui.item.description) {
 						$('#'+name+'-description' ).html( ui.item.description);
 					}
@@ -44,44 +47,35 @@ dialog.autocomplete.open =function open (e,params) {
 
 					return false;
 				},
-			   change: function(event, ui) {
-				   
-				   var name=$( this ).attr("name");       					
+			   change: function(event, ui) {	   
 				   var currentValue=$( this ).val();
-				   
-				   name=name.replace("-entry","");       				   
-				   var label=$('[name="'+ name+'.id"]' ).attr("label");
+				   var label=$('[name="'+ submitName+'"]' ).attr("label");
 				   $(this).trigger("change");
-				   $('[name="'+ name+'.id"]' ).trigger("change",this);
+				   $('[name="'+ submitName+'"]' ).trigger("change",this);
 				   return false;
 			   },
 				
 				focus: function( event, ui ) {
 					$( this ).val( ui.item.label );
-					var name=$( this ).attr("name");       					
-					name=name.replace("-entry","");
 					$('#'+name+'-container' ).removeClass("ac-selected");
 					$('#'+name+'-container' ).removeClass("ac-idle");
 					$('#'+name+'-container' ).addClass("ac-selecting");       					
 					return false;
 				}
 			}).data( "autocomplete" )._renderItem = function( ul, item ) {       					
-					var desc = item.description ? item.description : ""
+					var desc = item.description ? item.description : "";
 				return $( "<li></li>" )
 			.data( "item.autocomplete", item )
 			.append( "<a>" + item.label + "<br><span class=\"autocomplete-description\">" + desc + "</span></a>" )
 			.appendTo( ul );
 			};
 			
-			curMatch.blur(function() {
-				   var name=$( this ).attr("name");       					
+			curMatch.blur(function() {       					
 				   var currentValue=$( this ).val();
+				   var label=$('[name="'+ submitName+'"]' ).attr("label");
 				   
-				   name=name.replace("-entry","");       				   
-				   var label=$('[name="'+ name+'.id"]' ).attr("label");
-				   
-				   if (currentValue=="" || currentValue=="-") {
-					$('[name="'+ name+'.id"]' ).val("null");
+				   if (currentValue==="" || currentValue==="-") {
+					$('[name="'+ submitName+'"]' ).val("null");
 				   } else {
 					   $( this ).val( label );
 				   }
@@ -94,10 +88,8 @@ dialog.autocomplete.open =function open (e,params) {
 			
 		}
 		);
-	
-	
 	return false;
-}
+};
 
 
 
