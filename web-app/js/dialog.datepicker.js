@@ -31,11 +31,17 @@ if (!window.dialog.datepicker) {
 dialog.datepicker.open =function open (e,params) {     
     $(this).find(".datepicker").each (function (i) {
         var id=this.id;
+        var yearRange="c-10:c+10";
+        if ($(this).attr('yearRange')) {
+            yearRange=$(this).attr('yearRange');
+        }
+        
         var updateElementId = $(this).attr('id').replace("entry-","")+'_date';
         $(this).datepicker({    changeMonth: true, 
                                 changeYear:true,
                                 altField:"#"+updateElementId,
-                                altFormat:"yy-mm-dd'T'00:00:00"
+                                altFormat:"yy-mm-dd'T'00:00:00",
+                                yearRange:yearRange
                             });
     });
 };
