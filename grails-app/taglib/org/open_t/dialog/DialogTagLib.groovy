@@ -850,14 +850,15 @@ class DialogTagLib {
         def id=attrs.id?:attrs.object.id
 		prefix=prefix.replace(".","_")
 		prefix=prefix.replace("class ","")
+        
+        def actions=attrs.actions?:"none"
 
 
-		def jsonUrl='/'+controller+'/filelist/'+id
+		def jsonUrl='/'+controller+'/filelist/'+id+'?actions='+actions
 
 		def cssClass="detailTable"
 
-		out << """
-					<table id="${prefix}" class="${cssClass} table table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
+		out << """<table id="${prefix}" class="${cssClass} table table-striped table-bordered table-hover xxx" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
 		out << """<th>${g.message(code:"filestable.filename.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.size.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.date.label")}</th>"""

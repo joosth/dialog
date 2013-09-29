@@ -96,7 +96,7 @@ class FileService {
 		return "${baseUrl}/${fileCategory}/${name}/${packedPath(id)}"
 	}
 
-	def filelist(dc,params,fileCategory="images",linkType="external") {
+	def filelist(dc,params,fileCategory="images",linkType="external",actions=null) {
 		def format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",new Locale('nl'))
         log.error "PARAMS: ${params}"
 		def diUrl=fileUrl(dc,params.id,fileCategory)
@@ -113,13 +113,25 @@ class FileService {
                     log.error "params: ${params}"
                     downloadLink=g.createLink(action:"streamfile",id:params.id,params:[filename:file.name])
                 }
+                
+                if(!actions) {
+        			actions= { aParams,aFile -> 
+                        def actionsString="""<div class="btn-group">"""
+                        def actionsParameter=aParams.actions?:"none"
+                        def actionsList=actionsParameter.split(',')
+                        // TODO add other actions ('show','edit')
+                        if (actionsList.contains("delete")) {
+                            actionsString +="""<span class="btn btn-small" onclick="dialog.deleteFile(${aParams.id},'${aParams.controller}','${aFile.name}',null)">&times;</span>""" 
+                        }
+                        actionsString+="</div>"
+                        return actionsString
+                    }
+        		}
 
 				[0:"""<a href="${downloadLink}">${file.name}</a>""",
 				 1:file.length(),
 				 2:format.format(file.lastModified()),
-
-
-				 3:"""<div class="btn-group"><span class="btn btn-small" onclick="dialog.deleteFile(${params.id},'${params.controller}','${file.name}',null)">&times;</span></div>"""]
+                 3: actions(params,file)]				 
 			}.sort { file -> file[new Integer(params.iSortCol_0)] }
 
 			if (params.sSortDir_0=="desc") {
