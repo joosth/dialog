@@ -190,7 +190,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		// get z-index of dialog so we can put cluetips above it
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
        		
-       		$(this).find(".help").tooltip({});
+       		$(this).find(".help").tooltip({container:'body',placement:'left'});
 
        		$(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
 
@@ -261,13 +261,17 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
  */
 dialog.statusMessage = function statusMessage(event,eventData) {
 	if (eventData.message) {
-		var msg='<div id="alertmessage" class="alert alert-success fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>'
+        var alertType="success";
+        if (eventData.alertType!==null) {
+            alertType=eventData.alertType;
+        }
+		var msg='<div id="alertmessage" class="alert alert-'+alertType+' fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>';
 		$("#statusmessage").html(msg);
 		$("#alertmessage").addClass("in");
 		// TODO This is more annoying than helpful. Maybe make this configurable.
 		//setTimeout( function() {$("#alertmessage").alert("close")}, 2000 );
 	}
-}
+};
 
 /**
  * Delete file dialog
