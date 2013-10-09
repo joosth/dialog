@@ -31,7 +31,8 @@
 				"bFilter": ${listConfig.bFilter ? true : false},
 				"bJQueryUI": false,
 				"aoColumnDefs": [ 
-					{ "bSortable": false, "aTargets": [ ${listConfig.columns.size()} ,"nonsortable"] }
+					{ "bSortable": false, "aTargets": [ ${listConfig.columns.size()} ,"nonsortable"] },
+                    { "sClass": "actions" , "aTargets": [ -1 ] }
 				] ,
 				
 				"oLanguage": {      		

@@ -49,7 +49,8 @@
 		"bFilter": ${bFilter ? true : false},
 		"bJQueryUI": false,
 		"aoColumnDefs": [ 
-			{ "bSortable": false, "aTargets": [ ${dc.listProperties.size()} ,"nonsortable"] }
+			{ "bSortable": false, "aTargets": [ ${dc.listProperties.size()} ,"nonsortable"] },
+            { "sClass": "actions" , "aTargets": [ -1 ] }
 		] ,
 		
 		"oLanguage": {      		
