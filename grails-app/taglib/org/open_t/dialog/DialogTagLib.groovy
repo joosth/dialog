@@ -925,9 +925,14 @@ class DialogTagLib {
 	}
 
 	def submenu = { attrs,body ->
+        def icon=""
+		if (attrs.icon) {
+			icon="""<i class="${attrs.icon}"></i> """
+		}
+        
 		out << """ <li class="dropdown-submenu">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-					 			${g.message(code:'dropdown.'+attrs.code+'.label')}
+					 			${icon}${g.message(code:'dropdown.'+attrs.code+'.label')}
 								</a>
 								<ul class="dropdown-menu">
 		"""
