@@ -51,7 +51,9 @@ class ListConfig {
 				case "delete":
 					s+="""<span class="btn btn-small" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)">${label}</span>"""
 				break
-
+                case "show":
+                    s+="""<span class="btn btn-small" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',nosubmit:true,refresh : '${props.detailTableId}'}, null)">${label}</span>"""
+                break
 				default:
 					s+="""<span class="btn btn-small" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)">${label}</span>"""
 			}
@@ -78,7 +80,7 @@ class ListConfig {
 			// pagination
 			if (firstResult>totalRecords) { firstResult=totalRecords }
 			if ((firstResult+maxResults)>totalRecords) {maxResults=totalRecords-firstResult}
-			datalist=datalist[firstResult..maxResults-1]
+			datalist=datalist[firstResult..firstResult+maxResults-1]
 		}
 		renderList (datalist,totalRecords,params)
 	}
