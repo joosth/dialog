@@ -5,15 +5,19 @@ grails.project.dependency.resolution = {
 	inherits 'global'
 	log 'warn'
 
+	legacyResolve false
+
 	repositories {
-		grailsCentral()
+		grailsPlugins()
+        grailsHome()
+        mavenLocal()
+        grailsCentral()
+        mavenCentral()
+
+
 	}
 
 	plugins {
-		runtime 'org.grails.plugins:twitter-bootstrap:2.3.2',':resources:1.1.5'
-
-		build ':release:2.2.1', ':rest-client-builder:1.0.3', {
-			export = false
-		}
+		runtime 'org.grails.plugins:twitter-bootstrap:2.3.2',':resources:1.2.1'
 	}
 }
