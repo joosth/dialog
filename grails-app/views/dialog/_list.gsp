@@ -11,7 +11,7 @@
         
         <r:script>
         // Dialog plugin -- list
-        $(function() {
+       $(document).ready(function() {
         
         //Create Id for the table
         var tableId="detailTable_" + "${dc.getName().replace(".","_").replace("class ","")}";

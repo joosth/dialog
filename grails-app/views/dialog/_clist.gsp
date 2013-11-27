@@ -5,8 +5,9 @@
 		<meta name="layout" content="main" />
 		<title><g:message code="list.${listConfig.name}.title" /></title>
         <r:script>
+          
         	// Datatables list
-			$(function() {		        
+			$(document).ready(function() {	        
 	        	//Create Id for the table
 	        	var tableId="detailTable_${listConfig.name}";
 	        	var wrapperId="tableWrapper_${listConfig.name}";	        
