@@ -119,7 +119,8 @@ $.extend( $.fn.dataTableExt.oPagination, {
  * TableTools Bootstrap compatibility
  * Required TableTools 2.1+
  */
-if ( $.fn.DataTable.TableTools ) {
+
+if ( $.fn.DataTable && $.fn.DataTable.TableTools ) {
 	// Set the classes that TableTools uses to something suitable for Bootstrap
 	$.extend( true, $.fn.DataTable.TableTools.classes, {
 		"container": "DTTT btn-group",
@@ -151,7 +152,6 @@ if ( $.fn.DataTable.TableTools ) {
 		}
 	} );
 }
-
 
 /* Table initialisation */
 $(document).ready(function() {
