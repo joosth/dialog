@@ -3,6 +3,7 @@ package org.open_t.dialog
 import java.text.SimpleDateFormat
 
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.FileFileFilter
 
 class FileService {
 
@@ -252,5 +253,14 @@ class FileService {
 		}
 		response.outputStream.flush()
 	}
-    
+    /**
+     * Copy files from one domain object to another
+     */
+    def copyFiles(dc=null, fileCategory="images", fromId, toId) {
+        if( (fromId != null) && (toId != null) ) {
+            File fromDir = new File(filePath(dc,fromId,fileCategory))
+            File toDir = new File(filePath(dc,toId,fileCategory))
+            FileUtils.copyDirectory(fromDir,toDir,FileFileFilter.FILE)
+        }
+    }
 }
