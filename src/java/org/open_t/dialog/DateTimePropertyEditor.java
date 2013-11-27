@@ -40,11 +40,14 @@ public class DateTimePropertyEditor extends PropertyEditorSupport implements Str
 		try {
 			if (date.isEmpty()) {
 				throw new IllegalArgumentException("Can't populate date/time without a date");
-			}
+			}            
 			String time = (String) fieldValues.get("time");
 			if (time == null || time.isEmpty()) {
 				time = "00:00";
 			}
+            if (date.contains("T")) {
+               date=date.split("T")[0];
+            }
 			String dateTime = date + "T" + time;
 			return dateTimeFormat.parse(dateTime);
 		}
