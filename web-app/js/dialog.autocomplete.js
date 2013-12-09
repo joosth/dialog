@@ -1,6 +1,6 @@
 /*
 * Autocomplete module for dialog plugin
-*  
+*
 * Grails Dialog plug-in
 * Copyright 2013 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
@@ -27,9 +27,9 @@ dialog.autocomplete.open =function(e,params) {
 			var jsonUrl = curMatch.attr("jsonUrl");
             var entryName=curMatch.attr("name");
 			var name=entryName.replace("-entry","");
-            
-            var submitName=curMatch.attr("submitName") ? curMatch.attr("submitName") : name+ +'.id';
-			
+
+            var submitName=curMatch.attr("submitName") ? curMatch.attr("submitName") : name+'.id';
+
 			curMatch.autocomplete({source:jsonUrl,
 									minLength:0,
 				select: function( event, ui ) {
@@ -47,45 +47,45 @@ dialog.autocomplete.open =function(e,params) {
 
 					return false;
 				},
-			   change: function(event, ui) {	   
+			   change: function(event, ui) {
 				   var currentValue=$( this ).val();
 				   var label=$('[name="'+ submitName+'"]' ).attr("label");
 				   $(this).trigger("change");
 				   $('[name="'+ submitName+'"]' ).trigger("change",this);
 				   return false;
 			   },
-				
+
 				focus: function( event, ui ) {
 					$( this ).val( ui.item.label );
 					$('#'+name+'-container' ).removeClass("ac-selected");
 					$('#'+name+'-container' ).removeClass("ac-idle");
-					$('#'+name+'-container' ).addClass("ac-selecting");       					
+					$('#'+name+'-container' ).addClass("ac-selecting");
 					return false;
 				}
-			}).data( "autocomplete" )._renderItem = function( ul, item ) {       					
+			}).data( "autocomplete" )._renderItem = function( ul, item ) {
 					var desc = item.description ? item.description : "";
 				return $( "<li></li>" )
 			.data( "item.autocomplete", item )
 			.append( "<a>" + item.label + "<br><span class=\"autocomplete-description\">" + desc + "</span></a>" )
 			.appendTo( ul );
 			};
-			
-			curMatch.blur(function() {       					
+
+			curMatch.blur(function() {
 				   var currentValue=$( this ).val();
 				   var label=$('[name="'+ submitName+'"]' ).attr("label");
-				   
+
 				   if (currentValue==="" || currentValue==="-") {
 					$('[name="'+ submitName+'"]' ).val("null");
 				   } else {
 					   $( this ).val( label );
 				   }
-				   
+
 				   $('#'+name+'-container' ).addClass("ac-selected");
 				   $('#'+name+'-container' ).removeClass("ac-idle");
 				   $('#'+name+'-container' ).removeClass("ac-selecting");
-				   
+
 				});
-			
+
 		}
 		);
 	return false;
@@ -95,5 +95,5 @@ dialog.autocomplete.open =function(e,params) {
 
 $(function() {
 	$("body").on("dialog-open",dialog.autocomplete.open);
-	
+
 });
