@@ -15,19 +15,6 @@ target(generateDialogMenu: "Set up a dialog-based grails application") {
 		</li>
         <dialog:dropdown code="${grailsAppName}">
 	"""
-	/*
-	grailsApp.allArtefacts.each {
-		def name=it.name
-		if (name.endsWith("Controller")) {
-			def shortControllerName=name.replaceAll("^.*\\.","")
-			def propertyControllerName= shortControllerName[0].toLowerCase()+shortControllerName.substring(1).replaceAll("Controller","")
-
-			//def controllerTitle=shortControllerName.replaceAll("Controller","").replaceAll("(\\w)([A-Z])",'$1 $2')
-			//menuText+="\nmenu.${propertyControllerName}.list.label=${controllerTitle}"
-			menuText+="""\n<dialog:menuitem controller="${propertyControllerName}" action="list" icon="icon-star"/>"""
-		}
-	}
-	*/
 	grailsApp.domainClasses.each { dc ->
 
 		def defaultDomainClass = dc //new DefaultGrailsDomainClass( artefact )

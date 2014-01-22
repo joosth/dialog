@@ -215,9 +215,9 @@ class DialogService {
 		def domainClassName=defaultDomainClass.getName()
 
 		def id=params.id
-		
+
 		def domainClassInstance = instance?instance:domainClass.get(params.id )
-		
+
 
         def theRefreshNodes=null
         def successFlag=true
@@ -261,6 +261,7 @@ class DialogService {
 
 	/**
 	* Pretty print a XML document
+    * 
 	* @param inputXml The text to be processed
 	* @return Pretty XML
 	*/
@@ -281,6 +282,7 @@ class DialogService {
 	/**
 	* Manage a join relationship. This is to accommodate the type of n:m relationship that the security plugin uses.
 	* This is meant to be invoked directly after the normal form submission
+    *
 	* @param params The request parameters
 	* @param instance The current domain instance to be used
 	* @param propertyName The 'property' that provides the related items from the target class
@@ -328,6 +330,7 @@ class DialogService {
 
 	/**
 	* Generates a JSON response to feed the datalist
+    *
 	* @param dc The domain class to be used
 	* @param params The parameters from the http request
 	* @param request the HTTPServletRequest
@@ -387,12 +390,25 @@ class DialogService {
 			return json
 		}
 
+    /**
+     * Check for condition and throw DialogException if it is false
+     *
+     * @param condition The condition to check
+     * @param code The message code to use in the exception
+     * @param args A List of arguments for the message in the code
+     */
 	def check(condition,code,args=[]) {
 		if (!condition) {
 			throw new DialogException(code,args)
 		}
 	}
 
+    /**
+     * Throw DialogException
+     *
+     * @param code The message code to use in the exception
+     * @param args A List of arguments for the message in the code
+     */
 	def error(code,args=[]) {
 		throw new DialogException(code,args)
 	}

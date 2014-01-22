@@ -68,7 +68,7 @@ class DialogTagLib {
 				nextText: "${message(code:'dialog.datepicker.nextText')}",
 				currentText: "${message(code:'dialog.datepicker.currentText')}",
 				monthNames: ${message(code:'dialog.datepicker.monthNames')},
-			
+
 				monthNamesShort: ${message(code:'dialog.datepicker.monthNamesShort')},
 				dayNames: ${message(code:'dialog.datepicker.dayNames')},
 				dayNamesShort: ${message(code:'dialog.datepicker.dayNamesShort')},
@@ -82,7 +82,7 @@ class DialogTagLib {
             };
         </script>
 		"""
-     
+
 	}
 
 	/**
@@ -292,7 +292,7 @@ class DialogTagLib {
 						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
 					}
-                    
+
 					out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 					break
@@ -314,7 +314,6 @@ class DialogTagLib {
 	*/
 
 	def dateTime = { attrs ->
-
 		out << row (object:attrs.object,propertyName:attrs.propertyName) {
 
 			switch(attrs.mode) {
@@ -331,7 +330,7 @@ class DialogTagLib {
 						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
 					}
-                    
+
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
 
@@ -339,7 +338,7 @@ class DialogTagLib {
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 
 					out << "&nbsp;"
-                    
+
                     def timeFormat=g.message(code:"dialog.time.format",default:"HH:mm")
 					def timeAttrs=[name:attrs.propertyName+'_time',value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time']
 					out << g.textField(timeAttrs)
@@ -393,8 +392,6 @@ class DialogTagLib {
 	* @param object The domain object
 	* @param class The CSS class to be supplied to the enclosing row
 	*/
-
-
 	def xml = { attrs ->
 		def skipAttrs=['object','propertyName','mode','type','value']
 		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}
@@ -453,9 +450,7 @@ class DialogTagLib {
 	* @param from A list of values to be used in lieu of all objects in the domain class
 	* @param sort The property to sort the domain class items in the list by (default: name)
 	*/
-
 	def domainObject = { attrs ->
-
 		out << row (class:attrs.class,object:attrs.object,propertyName:attrs.propertyName) {
 			switch(attrs.mode) {
 				case "show":
@@ -533,8 +528,6 @@ class DialogTagLib {
 	* @param multiple attribute to be supplied to the &lt;select&gt; element
 	* @param style attribute to be supplied to the &lt;select&gt; element
 	*/
-
-
 	def select = { attrs ->
 
 		out << row (object:attrs.object,propertyName:attrs.propertyName, vertical:attrs.vertical) {
@@ -587,7 +580,6 @@ class DialogTagLib {
 	* @param names Contains a comma separated string containing the names of the tabs
 	* @param object The domain object
 	*/
-
 	def tabs = { attrs,body ->
 
 		out << """<div id="dialogtabs" class="dialogtabs" >
@@ -618,7 +610,6 @@ class DialogTagLib {
 	* @param name The name of this tab
 	* @param object The domain object
 	*/
-
 	def tab = { attrs,body ->
 		def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
 		prefix=prefix.replace(".","_")
@@ -637,7 +628,6 @@ class DialogTagLib {
 	* @param heigt The CSS height of this dialog (default: auto)
 	* @param title The title of this dialog
 	*/
-
 	def form = { attrs,body ->
 		def width = attrs.width ? attrs.width : "600px"
 		def height = attrs.height ? attrs.height : "auto"
@@ -694,7 +684,6 @@ class DialogTagLib {
 	* @param width The CSS width of this dialog (default: 600px)
 	* @param title The title of this dialog
 	*/
-
 	def pageform = { attrs,body ->
 		def name = attrs.name ? attrs.name : "form"
 		def action = attrs.action ? attrs.action : "submit${name}"
@@ -728,10 +717,10 @@ class DialogTagLib {
 		out << "</form></div></div>"
 
 	}
-	/**
-	 * Navigation buttons
-	 */
 
+	/**
+	 * Displays a set of navigation buttons for a page form. The button actions are the same as their names, and the labels are messages with key navigation.${name}.
+	 */
 	def navigation = {attrs,body ->
 		if (grailsApplication.config.dialog?.bootstrap) {
 			out << """<div class="navigation navigation-form-actions">"""
@@ -846,7 +835,7 @@ class DialogTagLib {
         def id=attrs.id?:attrs.object.id
 		prefix=prefix.replace(".","_")
 		prefix=prefix.replace("class ","")
-        
+
         def actions=attrs.actions?:"none"
 
 
@@ -864,7 +853,9 @@ class DialogTagLib {
 
 	}
 
-
+    /**
+     * Displays an upload control in the dialog
+     */
 	def upload = { attrs,body ->
 		def copiedAttrs=""
 		def skipAttrs=['object','propertyName','mode','class','type','value']
@@ -908,6 +899,9 @@ class DialogTagLib {
 		out << html
 	}
 
+    /**
+     * Displays a dropdown menu in the menu bar. The key for the message is dropdown.code.label, with code replaced by the code attribute.
+     */
 	def dropdown = { attrs,body ->
 		out << """ <li class="dropdown">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -920,12 +914,16 @@ class DialogTagLib {
 		out <<"""</ul></li>"""
 	}
 
+    /**
+     *  Displays a submenu in a dropdown menu. Should be used within a <dialog:dropdown> element.
+     *  The key for the message is dropdown.code.label, with code replaced by the code attribute.
+     */
 	def submenu = { attrs,body ->
         def icon=""
 		if (attrs.icon) {
 			icon="""<i class="${attrs.icon}"></i> """
 		}
-        
+
 		out << """ <li class="dropdown-submenu">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 					 			${icon}${g.message(code:'dropdown.'+attrs.code+'.label')}
@@ -936,6 +934,10 @@ class DialogTagLib {
 		out <<"""</ul></li>"""
 	}
 
+    /**
+     * Displays a menu item in a dropdown menu. Should be used within a <dialog:dropdown> or <dialog:submenu> element.
+     * The key for the label message is menu.code.label, with code replaced by the code attribute. The key for the help message is menu.code.help, with code replaced by the code attribute.
+     */
 	def menuitem = { attrs,body ->
 		def icon=""
 		if (attrs.icon) {

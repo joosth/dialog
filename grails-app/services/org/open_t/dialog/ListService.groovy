@@ -86,6 +86,15 @@ class ListService {
 		}
 	}
 
+    /**
+	* Generates a JSON response to feed the datalist
+	* @param dc The domain class to be used
+	* @param params The parameters from the http request
+	* @param request the HTTPServletRequest
+	* @param filterColumnNames The name of the column to be used for filtering (can be null to disable)
+	* @param actions A closure that provides customized actions in the actions column of the table
+	* @return a map that is ready to be rendered as a JSON message
+	*/
 	@Transactional(readOnly=true)
 	def jsonlist(dc,params,request,filterColumnNames=null,actions=null) {
         	def title=dc.getName();
@@ -204,7 +213,7 @@ class ListService {
 	* @return a map that is ready to be rendered as a JSON message
 	*/
 	@Transactional(readOnly=true)
-	
+
 	def jsonquery(dc,params,request,query,countQuery=null,listProperties=null,filterColumnNames=null,actions=null,queryParams=[:]) {
 		def title=dc.getName();
 		title=title.replaceAll (".*\\.", "")
@@ -365,11 +374,12 @@ class ListService {
 
 	/**
 	 * Move position of an item in a sortable list
-	 * @param dc
-	 * @param params
+     * 
+	 * @param dc The domain class
+	 * @param params The parameters of the HTTP request. Should contain id and toPosition
 	 * @return
 	 */
-	@Transactional	
+	@Transactional
 	def position(dc,params) {
 		def defaultDomainClass = new DefaultGrailsDomainClass( dc )
 		Map belongsToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
