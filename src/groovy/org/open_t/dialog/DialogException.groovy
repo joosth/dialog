@@ -17,7 +17,9 @@
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
 package org.open_t.dialog
-
+/**
+ * Dialog exceptions provide a way to throw an exception that will be handled with a dialog
+ */
 class DialogException extends RuntimeException {
 
 	def args=[]

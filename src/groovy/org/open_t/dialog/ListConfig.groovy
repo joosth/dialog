@@ -44,18 +44,28 @@ class ListConfig {
 		return this
 	}
 
+    /**
+     * Class to hold column information
+     */
 	class ListConfigColumn {
 		String name
 		Boolean sortable=false
 		Boolean filter=false
 	}
 
+    /**
+     * Adds a column
+     * @param The params to populate the column with (name,sortable,filter)
+     */
 	def column (params){
 		columns.add (new ListConfigColumn(params))
 	}
 
 	def actions=['dialog','delete']
 
+    /**
+     * Renders out the actions column based on the actions list property
+     */
 	def renderActions = { props ->
 		def s="""<div class="btn-group">"""
 
@@ -83,6 +93,16 @@ class ListConfig {
 		return s
 	}
 
+    /**
+     * Renders a list with pagination of the entire datalist
+     * This requires the entire datalist to be present which is inefficient
+     * User renderList if you can fetch the appropriate list section and total in more efficient manner
+     *
+     * @param datalist The list of items
+     * @param params The params as provided to the controller
+     * @return ready-to-be-rendered-as-JSON data
+     */
+
 	def paginateList(datalist,params) {
 		def totalRecords=datalist.size()
 		if (totalRecords>0) {
@@ -106,14 +126,22 @@ class ListConfig {
 		renderList (datalist,totalRecords,params)
 	}
 
-
+    /**
+     * Renders a list as JSON
+     * Provides pagination controls based on the totalRecords value provided
+     * Which is the most effecive way of providing pagination but you need an api that supports this to fetch the actual data
+     *
+     * @param datalist The list of items to show
+     * @param totalRecords The total number of records (of which datalist is a subset)
+     * @param params The params as provided to the controller
+     * @return ready-to-be-rendered-as-JSON data
+     */
 	def renderList(datalist,totalRecords,params) {
 		def aaData=[]
 		datalist.each { item ->
 			def row=[:]
 			def col=0
 			this.columns.each { column ->
-				//row.put(col,item."${column.name}")
 				def val=item."${column.name}"
 
 				// Convert date to String -- if we don't do it here the JSON converter will do it AND correct it for locale
@@ -127,8 +155,6 @@ class ListConfig {
 			}
 
 			def props=[detailTableId:"detailTable_${this.name}",propName:controller,itemId:item."${idName}"]
-
-
 			def actionsString=renderActions(props)
 
 			row.put(col,actionsString)
@@ -138,6 +164,10 @@ class ListConfig {
 		return [sEcho:params.sEcho,iTotalRecords:totalRecords,iTotalDisplayRecords:totalRecords,aaData:aaData]
 	}
 
+    /**
+     * Get the columns that have filtering switched on
+     * @return The columns that have filtering switched on
+     */
 	def getFilterColumns() {
 		columns.findAll { it.filter }.collect { it.name }
 	}

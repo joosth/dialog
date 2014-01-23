@@ -21,47 +21,67 @@ package org.open_t.dialog.command
 import grails.validation.Validateable
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-
+/**
+ * Base class to derive dialog command classes from.
+ */
 @Validateable
 class Command  {
 	def id
 	def version
 
-	def getFrom (list) {
+    /**
+     * Populate properties from given map, ignoring id and value
+     *
+     * @param map The map of values to fetch
+     * @return The command object
+     */
+	def getFrom (map) {
 		DefaultGrailsDomainClass defaultDomainClass = new DefaultGrailsDomainClass( this.class )
 		def props=defaultDomainClass.getProperties()
 		props.each { property ->
-			//println "Properties: ${list.properties}"
-			//if ((property.name !="id") && (property.name !="version") && list."${property.name}") {
-			if ((property.name !="id") && (property.name !="version") && list.properties.containsKey(property.name)) {
-				this."${property.name}"=list."${property.name}"
+			if ((property.name !="id") && (property.name !="version") && map.properties.containsKey(property.name)) {
+				this."${property.name}"=map."${property.name}"
 			}
 		}
 		return this
 	}
 
-	def getAllFrom (list) {
+    /**
+     * Populate properties from given map
+     * Silently skip values that are not in the domain class
+     *
+     * @param map The map of values to fetch
+     * @return The command object
+     */
+	def getAllFrom (map) {
 		DefaultGrailsDomainClass defaultDomainClass = new DefaultGrailsDomainClass( this.class )
 		def props=defaultDomainClass.getProperties()
 		props.each { property ->
 			try {
-				if (list."${property.name}") {
-					this."${property.name}"=list."${property.name}"
+				if (map."${property.name}") {
+					this."${property.name}"=map."${property.name}"
 				}
 			}
 			catch (Exception e) {
-				// If the property does not exist in list we silently ignore it.
+				// If the property does not exist in map we silently ignore it.
 			}
 		}
 		return this
 	}
 
-	def storeTo(list) {
+    /**
+     * Store properties in map
+     * Excludes id and version
+     *
+     * @param map The map to store the values in
+     */
+
+	def storeTo(map) {
 		DefaultGrailsDomainClass defaultDomainClass = new DefaultGrailsDomainClass( this.class )
 		def props=defaultDomainClass.getProperties()
 		props.each { property ->
 			if ((property.name !="id") && (property.name !="version")){
-				list."${property.name}"=this."${property.name}"
+				map."${property.name}"=this."${property.name}"
 			}
 		}
 	}

@@ -33,7 +33,6 @@ import org.springframework.web.servlet.support.RequestContextUtils as RCU
 class DateEditor extends PropertyEditorSupport {
 
 	String getAsText() {
-		//def locale = new Locale('nl')
 		Date d = super.getValue()
 		log.debug "GetAsText: ${d}"
 		if (d) {
@@ -47,7 +46,6 @@ class DateEditor extends PropertyEditorSupport {
 		if (value=="") {
 			setValue(null)
 		} else {
-			def locale = new Locale('nl')
 			if (!value.contains('T')) {
 				value+="T00:00:00"
 			}

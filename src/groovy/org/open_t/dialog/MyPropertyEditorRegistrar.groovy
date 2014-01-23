@@ -29,7 +29,6 @@ import org.springframework.beans.PropertyEditorRegistry
 class MyPropertyEditorRegistrar implements PropertyEditorRegistrar {
 
 	void registerCustomEditors(PropertyEditorRegistry registry) {
-		//registry.registerCustomEditor(Date.class, new org.open_t.dialog.DateEditor())
 		registry.registerCustomEditor(BigDecimal, new BigDecimalEditor())
 		registry.registerCustomEditor(Date, new DateTimePropertyEditor("yyyy-MM-dd'T'HH:mm"))
 	}
