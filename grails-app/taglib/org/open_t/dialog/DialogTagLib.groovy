@@ -159,6 +159,15 @@ class DialogTagLib {
 		}
 	}
 
+    /**
+     * Provid a "simple" row that has no relation to a domain class
+     *
+     * @param label The label to show
+     * @param name The name that acts as the key for looking up the label and help title [name].label and [name].help)
+     * @param error Error message to show
+     * @param class CSS class to apply to the <tr> element
+     */
+
 	def simplerow = { attrs,body ->
 		def cssClass=attrs.class ? attrs.class : ""
 		def error=attrs.error ? attrs.error : ""
@@ -871,8 +880,23 @@ class DialogTagLib {
 		out << """</div>"""
 	}
 
-	// Only needed for full-page dialogs containing an upload.
+    /**
+     * Header element for upload
+	 * Only needed for full-page dialogs containing an upload.
+     * 
+     * @param action The action to use for the JSON data source (default: fileupload)
+     * @param object The domain object
+	 * @param propertyName The property of the domain object
+     * @param url The URL of the JSON data source (object and action are ignored)
+     */
 	def uploadHead = { attrs ->
+
+        def action=attrs.action?:"fileupload"
+        def domainClass = new DefaultGrailsDomainClass( attrs.object.class )
+        def property=domainClass.getPropertyByName(attrs.propertyName)
+        def dc = new DefaultGrailsDomainClass( property.getType())
+        def domainPropertyName=dc.getPropertyName()
+        def url=attrs.url?:"${request.contextPath}/${domainPropertyName}/${action}"
 
 		def html="""
 		 <script  type="text/javascript">
@@ -880,7 +904,7 @@ class DialogTagLib {
 			var uploader = new qq.FileUploader({
 				  element: document.getElementById('file-uploader'),
 				  // path to server-side upload script
-				  action: cmis.baseUrl+'/cmisDocument/fileupload',
+				  action: '${url}',
 				  params: {
 					  },
 				  onComplete: function(id, fileName, responseJSON){
@@ -937,6 +961,8 @@ class DialogTagLib {
     /**
      * Displays a menu item in a dropdown menu. Should be used within a <dialog:dropdown> or <dialog:submenu> element.
      * The key for the label message is menu.code.label, with code replaced by the code attribute. The key for the help message is menu.code.help, with code replaced by the code attribute.
+     *
+     * @param code The code key for lookup of messages
      */
 	def menuitem = { attrs,body ->
 		def icon=""
@@ -974,6 +1000,19 @@ class DialogTagLib {
 
 		out << """<li ${onclick}class="menu-item" >  ${link}</li>"""
 	}
+
+    /**
+     * Select from a tree popup
+     * This needs a JSON data source to provide information on tree nodes to the jstree component
+     *
+     * @param action The action to use for the JSON data source (default: treeJSON)
+     * @param width The width of the dialog
+     * @param height The height of the dialog
+     * @param root The id of the root element to show in the tree
+     * @param object The domain object
+	 * @param propertyName The property of the domain object
+     * @param url The URL of the JSON data source (object and action are ignored)
+     */
 
 	def treeselect = { attrs, body ->
 		out << row ("class":attrs.class,object:attrs.object,propertyName:attrs.propertyName) {

@@ -1,5 +1,5 @@
 class JqueryDialogGrailsPlugin {
-	def version = "2.0.2"
+	def version = "2.0.3"
 	def grailsVersion = "2.0 > *"
 
 	def author = "Joost Horward"
@@ -7,7 +7,7 @@ class JqueryDialogGrailsPlugin {
 	def title = "jQuery Dialog"
 	def description = 'Provides easy-to-maintain CRUD popup dialogs and lists with jQuery, jQuery DataTables and Twitter Bootstrap.'
 
-	def documentation = "http://www.open-t.nl/catviz/p/projects/dialog"
+	def documentation = "http://www.open-t.nl/projects/dialog"
 
 	def license = "AGPL3"
 	def organization = [ name: "Open-T", url: "http://www.open-t.nl" ]

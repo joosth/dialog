@@ -1,6 +1,6 @@
 /*
 * CKEditor module for dialog plugin
-*  
+*
 * Grails Dialog plug-in
 * Copyright 2011 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
@@ -21,9 +21,8 @@
 dialog.fileuploader = {};
 
 dialog.fileuploader.open =function open (e,params) {
- 	
+
 	$(e.target).find('.upload').each(function (index) {
-			var theAction=$(this).attr("action");
 			var uploader = new qq.FileUploader({
 			    // pass the dom node (ex. $(selector)[0] for jQuery users)
 			    element: $(this)[0],
@@ -31,13 +30,13 @@ dialog.fileuploader.open =function open (e,params) {
 			    action: $(this).attr("action"),
 			    params: {identifier: $(this).attr("identifier"),direct: $(this).attr("direct"),sFileName:$(this).attr("sFileName")},
 			    onProgress:function(id, fileName, loaded, total){
-			    	$(".qq-upload-list").show();       			    	
+			    	$(".qq-upload-list").show();
 			    },
-			    
-			 template: '<div class="qq-uploader well">' + 
+
+			 template: '<div class="qq-uploader well">' +
          '<div class="qq-upload-drop-area well"><span>'+dialog.messages.dropfileshere+'</span></div>' +
          '<div class="qq-upload-button btn btn-primary">'+dialog.messages.upload+'</div>' +
-         '<ul class="qq-upload-list nav nav-list"></ul>' + 
+         '<ul class="qq-upload-list nav nav-list"></ul>' +
       '</div>',
       fileTemplate: '<li>' +
       '<span class="qq-upload-file"></span>' +
@@ -45,7 +44,7 @@ dialog.fileuploader.open =function open (e,params) {
       '<span class="qq-upload-size"></span>' +
       '<a class="qq-upload-cancel" href="#">Cancel</a>' +
       '<span class="qq-upload-failed-text">Failed</span>' +
-  '</li>',        
+  '</li>',
 				onComplete: function(id, fileName, responseJSON){
 					var upload=fileName+"|"+responseJSON.path+"|"+responseJSON.mimetype+"|"+responseJSON.identifier+"|"+responseJSON.fileCategory+"|"+responseJSON.direct+"|"+responseJSON.sFileName;
 					// Preventing the submit-time copy is a bad idea for new entries
@@ -55,12 +54,12 @@ dialog.fileuploader.open =function open (e,params) {
 					$(".dialog-events").trigger("dialog-refresh",{dc:"ALL",id:id});
 					//$(".qq-upload-list").hide();
 				}
-			});       			
+			});
 		});
-		
-	return false
 
-}
+	return false;
+
+};
 
 
 
