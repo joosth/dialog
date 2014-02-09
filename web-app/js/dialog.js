@@ -55,17 +55,19 @@ dialog.obj2ParamStr = function obj2ParamStr(params) {
 /**
  * Modal JQuery UI confirmation dialog
  */
-dialog.confirm = function confirm(message,title,url) {
+dialog.confirm = function confirm(message,title,callback,data) {
 	var htmlMessage='<div id="dialog-confirm" title="'+title+'"><p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>'+message+'</p></div>';
-	
+	var dx=data;
 	var confirmDialog=$(htmlMessage).dialog({
 		resizable: true,
 		width:600,
-		//height:140,
 		modal: true,
 		buttons: {
-			"OK": function() {								
+			"OK": function(data) {	
 				$( this ).dialog( "close" );
+				if(callback){
+					callback(dx)
+				}
 			},
 			Cancel: function() {
 				$( this ).dialog( "close" );
@@ -74,8 +76,7 @@ dialog.confirm = function confirm(message,title,url) {
         close: function(event, ui) {      
             confirmDialog.remove();
             }
-        });			
-	
+        });
 }
 
 /**
@@ -158,7 +159,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 					 		theDialog.find("div.errors").show();				 		
 					 	
 				 		}
-				 	});
+				 	},"json");
 		 		
 		 		} else {
 		 			$( this ).dialog( "close" );
@@ -190,7 +191,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		// get z-index of dialog so we can put cluetips above it
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
        		
-       		$(this).find(".help").tooltip({container:'body',placement:'left'});
+       		$(this).find(".help").tooltip({container:'body',placement:'right'});
 
        		$(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
 
@@ -241,7 +242,7 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
 				 		theDialog.find("div.errors").html(result.message)
 				 		theDialog.find("div.errors").show();				 		
 				 	}			 		
-			 	});			 	
+			 	},"json");			 	
        	},
       	Cancel: function() {
 	        		$( this ).dialog( "close" );
