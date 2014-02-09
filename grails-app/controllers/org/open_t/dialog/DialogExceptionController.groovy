@@ -37,8 +37,9 @@ class DialogExceptionController {
 		}
 
 		try {
-			title=message(code:'exception.'+exceptionCode+'.title',args:args)
-			msg=message(code:'exception.'+exceptionCode+'.message',args:args)
+			def defaultTitle=message(code:'exception.default.title',args:args,default:"Error")
+			title=message(code:'exception.'+exceptionCode+'.title',args:args,default:defaultTitle)
+			msg=message(code:'exception.'+exceptionCode+'.message',args:args,default:exceptionCode)
 
 		} catch (Exception e) {
 			msg=e.message
@@ -48,9 +49,11 @@ class DialogExceptionController {
 
             def result = [
     		              	success:false,
-    		              	message:msg
+    		              	message:msg,
+							title:title
     		              ]
 			def res=[result:result]
+			response.status=200
             render res as JSON
         } else {
             [title:title,msg:msg]
