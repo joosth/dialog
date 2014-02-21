@@ -23,9 +23,13 @@ import grails.converters.JSON;
  * Controller for showing dialog exception messages
  */
 class DialogExceptionController {
+    def dialogService
 
 	def dialog() {
-        println "Request.accept: ${request.getHeader("Accept")}"
+        // If we have loglevel debug, output the stacktrace to the log.
+        if (request.exception) {
+            log.debug dialogService.exceptionMessage(request.exception)
+        }
 		def title="Error handling error"
 		def msg=""
 		def exceptionCode=request.exception?.message

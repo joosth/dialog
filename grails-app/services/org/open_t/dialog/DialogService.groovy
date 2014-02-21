@@ -261,7 +261,7 @@ class DialogService {
 
 	/**
 	* Pretty print a XML document
-    * 
+    *
 	* @param inputXml The text to be processed
 	* @return Pretty XML
 	*/
@@ -412,4 +412,16 @@ class DialogService {
 	def error(code,args=[]) {
 		throw new DialogException(code,args)
 	}
+
+    /**
+     * Get printable message for exception including stracktrace
+     * @param t The exception
+     * @return The exception message with stacktrace
+     */
+    String exceptionMessage(Throwable t) {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        t?.printStackTrace(printWriter);
+        return result.toString();
+    }
 }
