@@ -171,7 +171,7 @@ class FileService {
      */
 	def filelist(dc,params,fileCategory="images",linkType="external",actions=null) {
 		def format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",new Locale('nl'))
-        log.error "PARAMS: ${params}"
+        log.debug "PARAMS: ${params}"
 		def diUrl=fileUrl(dc,params.id,fileCategory)
 
 		def aaData=[:]
@@ -182,7 +182,7 @@ class FileService {
                 if (linkType=="external") {
                     downloadLink="${diUrl}/${file.name}"
                 } else {
-                    log.error "params: ${params}"
+                    log.debug "params: ${params}"
                     downloadLink=g.createLink(action:"streamfile",id:params.id,params:[filename:file.name])
                 }
 
@@ -221,13 +221,17 @@ class FileService {
      * @param fileCategory The file category, default is "images"
      * @return Map to be rendered as JSON
      */
-	def filemap(dc,params,fileCategory="images") {
+	def filemap(dc,params,fileCategory="images",linkType="external") {
 		def diUrl=fileUrl(dc,params.id,fileCategory)
 		def diPath=filePath(dc,params.id,fileCategory)
 		File dir = new File(diPath)
 
 		def map = dir.listFiles().collect { file ->
-			[file:file,url:"${diUrl}/${file.name}"]
+            if (linkType=="external") {
+    			[file:file,url:"${diUrl}/${file.name}"]
+            } else {
+                    [file:file,url:g.createLink(action:"streamfile",id:params.id,params:[filename:file.name])]
+            }
 		}
 		return map
 	}
