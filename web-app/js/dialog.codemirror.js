@@ -22,6 +22,10 @@ dialog.codemirror = {};
 dialog.codemirror.editors = {};
 
 dialog.codemirror.open =function open (e,params) {
+	$(e.target).find("pre").each( function() {
+		CodeMirror.colorize([this]);
+	});
+	
 	$(e.target).find("td.codemirror textarea").each( function() {
 		
 		var id=$(this).attr("id");
