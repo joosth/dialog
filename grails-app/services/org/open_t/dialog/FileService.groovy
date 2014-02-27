@@ -71,7 +71,8 @@ class FileService {
 
 		is.close()
 		os.close()
-		if (params.direct && dc!=null && (params.identifier!=null && params.identifier!="null")) {
+        def isDirect=(params.direct==true || params.direct=="true")
+		if (isDirect && dc!=null && (params.identifier!=null && params.identifier!="null" && params.identifier!="undefined")) {
 			def diPath=filePath(dc,params.identifier,fileCategory)
 			def destFile= new File("${diPath}/${filename}")
 			FileUtils.copyFile(tempFile,destFile)
@@ -117,12 +118,18 @@ class FileService {
      * @return The path
      */
 	def relativePath(dc,id,fileCategory) {
-        def name = dc.class==java.lang.String ? dc : dc.getName()
+        def name
+        def hasFolderPathMethod=false
+        if (dc.class==java.lang.String) {
+            name=dc
+        } else {
+            name=dc.getName()
+            hasFolderPathMethod = dc.methods.collect { method -> method.name }.contains("getFolderPath")
+        }
+
 		name=name.replaceAll (".*\\.", "")
 
-		Boolean flag=dc.methods.collect { method -> method.name }.contains("getFolderPath")
-
-		if (flag) {
+		if (hasFolderPathMethod) {
 			def dcInstance=dc.get(id)
 			return dcInstance.getFolderPath(fileCategory)
 		} else {
@@ -314,7 +321,7 @@ class FileService {
      * This allows files to be attached to the original submission of a form after the domain object is created
      *
      * @param dc The domain class
-     * @param id the id of the domain object
+     * @param params the controller params
      * @param fileupload Information on the uploaded file separated by |
      * @param fileCategory The file category, default is "images"
      */
