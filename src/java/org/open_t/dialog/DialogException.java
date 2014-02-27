@@ -16,20 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses
  */
-package org.open_t.dialog
+package org.open_t.dialog;
+
+import java.util.List;
+
 /**
  * Dialog exceptions provide a way to throw an exception that will be handled with a dialog
  */
 class DialogException extends RuntimeException {
 
-	def args=[]
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    List<String> args;
 
 	DialogException (String message) {
-		super(message)
+		super(message);
 	}
 
-	DialogException (String message,args) {
-		super(message)
-		this.args=args
+	DialogException (String message,List<String> args) {
+		super(message);
+		this.args=args;
 	}
 }
