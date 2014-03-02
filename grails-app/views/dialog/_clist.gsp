@@ -85,7 +85,7 @@
 		<div class="row-fluid">
 		<div class="span12">
    		<div class="datatable dialog-events" id="tableWrapper_${listConfig.name}">	      
-			<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered display${rowreordering?' rowreordering':''}" id="detailTable_${listConfig.name}" >
+			<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered display${listConfig.rowreordering?' rowreordering':''}" id="detailTable_${listConfig.name}" >
 				<thead>
 					<tr>
 						<g:each in="${listConfig.columns}" var="column">											 
