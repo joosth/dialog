@@ -86,13 +86,18 @@ class DialogService {
             return returnMap
         }
     }
-
-	def getMessage(code) {
+    
+    /**
+     * Get a message for the current locale
+     * @param code The code
+     * @param args The optional argument list
+     */
+	def getMessage(code,List args=null) {
 		def webUtils = WebUtils.retrieveGrailsWebRequest()
 		def request=webUtils.getCurrentRequest()
 		def locale = RCU.getLocale(request)
-
-		return messageSource.getMessage(code,null, code,locale)
+        def args2 = args == null ? null : args.toArray()
+		return messageSource.getMessage(code,args2,code,locale)
 	}
 
 	/**
