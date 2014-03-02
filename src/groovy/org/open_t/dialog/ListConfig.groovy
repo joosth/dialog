@@ -139,7 +139,7 @@ class ListConfig {
 	def renderList(datalist,totalRecords,params) {
 		def aaData=[]
 		datalist.each { item ->
-			def row=[:]
+            def row =[DT_RowId:item.id]
 			def col=0
 			this.columns.each { column ->
 				def val=item."${column.name}"
