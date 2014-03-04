@@ -47,12 +47,14 @@ dialog.fileuploader.open =function open (e,params) {
   '</li>',
 				onComplete: function(id, fileName, responseJSON){
 					var upload=fileName+"|"+responseJSON.path+"|"+responseJSON.mimetype+"|"+responseJSON.identifier+"|"+responseJSON.fileCategory+"|"+responseJSON.direct+"|"+responseJSON.sFileName;
-					// Preventing the submit-time copy is a bad idea for new entries
-					//if (!$(this).attr("direct") || $(this).attr("direct")=="false") {
-						$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
-					//}
-					$(".dialog-events").trigger("dialog-refresh",{dc:"ALL",id:id});
-					//$(".qq-upload-list").hide();
+					
+					$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
+					if (responseJSON.success==true) {
+						$(".dialog-events").trigger("dialog-refresh",{dc:"ALL",id:id});
+					} else {
+						$(".dialog-events").trigger("dialog-message",{message:responseJSON.message,alertType:"error"});
+					}
+				
 				}
 			});
 		});
