@@ -105,15 +105,31 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 	
 	 theUrl=dialog.baseUrl+'/'+controllerName+'/'+dialogName+'/'+urlId	 	
-	 
+	
+	 var errorMessage=null;
 	 var dialogHTML = $.ajax({
 		  url: theUrl,
 		  async: false,
 		  cache: false
-		 }).error(function(event, jqXHR, ajaxSettings, thrownError) { 
-				window.location.reload();
-			}).responseText;
+		 }).error(function(event, jqXHR, ajaxSettings, thrownError) {
+		        // If the error is authentication, reload the window to show the login dialog.
+		        if (event.status>=400 && event.status<500) {
+		            window.location.reload();
+		        } else {
+		            // If it is not authentication, something actually went wrong.
+		            // Store the errormessage so we can show it and bail out lateron
+		            errorMessage=event.getResponseHeader('X-Dialog-Error-Message');
+		        }
+	        }).responseText;
 	 
+	// If an error occurred, show it and bail out.
+    if (errorMessage) {
+        $(".dialog-events").trigger("dialog-message",{message:errorMessage,alertType:'error'});
+        return
+    }
+
+		 
+		 
 	 var formelements=$(dialogHTML).find('form')
 	 if (formelements.length==0) {
 		 window.location.reload()

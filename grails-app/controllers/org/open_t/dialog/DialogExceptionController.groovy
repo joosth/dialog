@@ -60,6 +60,7 @@ class DialogExceptionController {
 			response.status=200
             render res as JSON
         } else {
+            response.addHeader("X-Dialog-Error-Message",msg);
             [title:title,msg:msg]
         }
 	}
