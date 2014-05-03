@@ -355,8 +355,8 @@ $(function() {
 	// Initialize date picker input elements
  	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
   	
-  	$("a.confirm").live("click",function(){
-  	return confirm('Are you sure?')
+ 	$("body").on("click","a.confirm",function(){
+ 	    return confirm('Are you sure?')
   	});
   	
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);	
