@@ -1,6 +1,6 @@
 /*
 * Last module for dialog plugin
-*  
+*
 * Grails Dialog plug-in
 * Copyright 2011-2013 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
@@ -21,5 +21,5 @@
 
 
 $(function() {
-	$("body").trigger("dialog-open");
+	$("body").trigger("dialog-open",{});
 });

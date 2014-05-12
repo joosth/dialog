@@ -3,75 +3,23 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="list.${listConfig.name}.title" /></title>		
-        <r:script>
-          
-        	// Datatables list
-			$(document).ready(function() {
-	        	//Create Id for the table
-	        	var tableId="detailTable_${listConfig.name}";
-	        	var wrapperId="tableWrapper_${listConfig.name}";	        
-				dialog.dataTableHashList[tableId]=$("#"+tableId).dataTable( {			
-				/*
-				    sDom explanation:
-				    l - Length changing
-				    f - Filtering input
-				    t - The table!
-				    i - Information
-				    p - Pagination
-				    r - pRocessing
-				    < and > - div elements
-				    <"class" and > - div with a class
-				    Examples: <"wrapper"flipt>, <lf<t>ip>
-				*/							
-				"sDom": '<"toolbar"lf><"processing"r>tip',
-				"bProcessing": true,
-				"bServerSide": true,		
-				"sAjaxSource": "${createLink(controller:listConfig.controller,action: jsonlist ? jsonlist :listConfig.action,params:jsonlistparams?jsonlistparams:[:])}",
-				"sPaginationType": "bootstrap",	
-				"bFilter": ${listConfig.bFilter ? true : false},
-				"bJQueryUI": false,
-				"aoColumnDefs": [ 
-					{ "bSortable": false, "aTargets": [ ${listConfig.columns.size()} ,"nonsortable"] },
-                    { "sClass": "actions" , "aTargets": [ -1 ] }
-				] ,
-				"oLanguage": dialog.messages.datatables.oLanguage,
-		    	"fnInitComplete": function() {
-		    		 
-	   			<g:if test="${listConfig.toolbar}" >	
-					$('#'+wrapperId).find('.toolbar').prepend('${listConfig.toolbar}');
-				</g:if>
-				<g:else>
-					<g:if test="${listConfig.newButton}" >    		    							    							
-    					$('#'+wrapperId).find('.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\'${controllerName}\',{ }, null)"><g:message code="list.new" default="New" /></span></div>');
-    				</g:if>
-				</g:else>
-				<g:if test="${listConfig.rowreordering}">
-					dialog.dataTableHashList[tableId].rowReordering(       				
-	       			{
-	       				sURL:"${resource(dir:listConfig.controller,file: position ? position :'position')}",
-	                    sRequestType: "POST"
-	       			});       	
-				</g:if>
-				}
-				});	
-				$("#"+tableId).bind("dialog-refresh",dialog.datatables.refreshDatatableEvent);
-				$("#"+tableId).addClass("dialog-events");	       
-			});
-        
-		</r:script>
-	</head>    
-	<body>	
+		<title><g:message code="list.${listConfig.name}.title" /></title>
+	</head>
+	<body>
 		<h3><g:message code="list.${listConfig.name}.title" /></h3>
-		
+
 		<div class="row-fluid">
 		<div class="span12">
-   		<div class="datatable dialog-events" id="tableWrapper_${listConfig.name}">	      
-			<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered display${listConfig.rowreordering?' rowreordering':''}" id="detailTable_${listConfig.name}" >
+   		<div class="datatable dialog-events" id="tableWrapper_${listConfig.name}">
+			<table datatable-type="master" bFilter="${listConfig.bFilter ? true : false}" jsonUrl="${createLink(base:'/',controller:listConfig.controller,action: jsonlist ? jsonlist :listConfig.action,params:jsonlistparams?jsonlistparams:[:]).substring(1)}" cellpadding="0" cellspacing="0" border="0" class="detailTable table table-striped table-bordered display${listConfig.rowreordering?' rowreordering':''}" id="detailTable_${listConfig.name}"
+                   positionUrl="/${listConfig.controller}/${position ? position :'position'}"
+                   rowreordering="${listConfig.rowreordering}"
+                   toolbar="${listConfig.toolbar?:''}"
+                   >
 				<thead>
 					<tr>
-						<g:each in="${listConfig.columns}" var="column">											 
-							<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}"><g:message code="list.${listConfig.name}.${column.name}.label" /></th>		
+						<g:each in="${listConfig.columns}" var="column">
+							<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}"><g:message code="list.${listConfig.name}.${column.name}.label" /></th>
 						</g:each>
 						<th width="50px"><g:message code="dialog.list.actions.label" default="Actions" /></th>
 					</tr>
@@ -89,6 +37,6 @@
 			</table>
 		</div>
 		</div>
-		</div>		
+		</div>
     </body>
 </html>
