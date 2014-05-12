@@ -56,10 +56,7 @@ dialog.datatables.open =function open (e,params) {
 		*/
 		
 		"sDom": '<"toolbar"lf><"processing"r>tip',
-			
-			"oLanguage": {
-		     	 "sUrl": dialog.dataTablesLanguageUrl, 
-		    	},
+			"oLanguage": dialog.messages.datatables.oLanguage,
 	    	"fnInitComplete": function() {
 	    		if ( $(this).hasClass("rowreordering")) {
        				dialog.dataTableHashList[tableId].rowReordering(       				

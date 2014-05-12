@@ -3,11 +3,11 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="layout" content="main" />
-		<title><g:message code="list.${listConfig.name}.title" /></title>
+		<title><g:message code="list.${listConfig.name}.title" /></title>		
         <r:script>
           
         	// Datatables list
-			$(document).ready(function() {	        
+			$(document).ready(function() {
 	        	//Create Id for the table
 	        	var tableId="detailTable_${listConfig.name}";
 	        	var wrapperId="tableWrapper_${listConfig.name}";	        
@@ -35,25 +35,7 @@
 					{ "bSortable": false, "aTargets": [ ${listConfig.columns.size()} ,"nonsortable"] },
                     { "sClass": "actions" , "aTargets": [ -1 ] }
 				] ,
-				
-				"oLanguage": {      		
-                  "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",        
-                  "sLengthMenu":   "${message(code:'dialog.datatables.sLengthMenu')}",
-                  "sZeroRecords":  "${message(code:'dialog.datatables.sZeroRecords')}",
-                  "sInfo":         "${message(code:'dialog.datatables.sInfo')}",
-                  "sInfoEmpty":    "${message(code:'dialog.datatables.sInfoEmpty')}",
-                  "sInfoFiltered": "${message(code:'dialog.datatables.sInfoFiltered')}",
-                  "sInfoPostFix":  "${message(code:'dialog.datatables.sInfoPostFix')}",
-                  "sSearch":       "${message(code:'dialog.datatables.sSearch')}",
-                  "oPaginate": {
-                    "sFirst":    "${message(code:'dialog.datatables.oPaginate.sFirst')}",
-                    "sPrevious": "${message(code:'dialog.datatables.oPaginate.sPrevious')}",
-                    "sNext":     "${message(code:'dialog.datatables.oPaginate.sNext')}",
-                    "sLast":     "${message(code:'dialog.datatables.oPaginate.sLast')}"
-                  },
-                  "sNew":"${message(code:'dialog.datatables.sNew')}"
-
-                },
+				"oLanguage": dialog.messages.datatables.oLanguage,
 		    	"fnInitComplete": function() {
 		    		 
 	   			<g:if test="${listConfig.toolbar}" >	
