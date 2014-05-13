@@ -22,7 +22,7 @@ dialog.datatables = {};
 
 
 dialog.datatables.open =function open (e,params) {
-	$(e.target).find('.detailTable').each( function(index) {
+	$(e.target).find('.detailTable,table.datatable').each( function(index) {
 		var curMatch = $(this);
 		var tableId = curMatch.attr('id');
 		var jsonUrl = curMatch.attr("jsonUrl");
@@ -32,6 +32,7 @@ dialog.datatables.open =function open (e,params) {
 		var controller = jsonUrl.split('/')[1]; //extract controller name from json url
         var bFilter=curMatch.attr("bFilter")=="true";
         var toolbar=curMatch.attr("toolbar") || "";
+        var iDisplayLength=curMatch.attr("iDisplayLength") || 5;
 
 		dialog.dataTableHashList[tableId] = curMatch.dataTable({
 			"bProcessing": true,
@@ -45,7 +46,7 @@ dialog.datatables.open =function open (e,params) {
                     { "bSortable": true, "aTargets": ["_all"] },
                     { "sClass": "actions" , "aTargets": [ -1 ] }
 				] ,
-			"iDisplayLength":5,
+			"iDisplayLength":iDisplayLength,
 			"aLengthMenu": [[5,10, 25, 50], [5,10, 25, 50 ]],
 			/*
 		    sDom explanation:
