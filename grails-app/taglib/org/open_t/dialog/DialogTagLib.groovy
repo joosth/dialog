@@ -81,8 +81,8 @@ class DialogTagLib {
 				yearSuffix: "${message(code:'dialog.datepicker.yearSuffix')}"
             };
             dialog.messages.datatables = {
-                "oLanguage": {              
-                    "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",        
+                "oLanguage": {
+                    "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
                     "sLengthMenu":   "${message(code:'dialog.datatables.sLengthMenu')}",
                     "sZeroRecords":  "${message(code:'dialog.datatables.sZeroRecords')}",
                     "sInfo":         "${message(code:'dialog.datatables.sInfo')}",
@@ -96,13 +96,26 @@ class DialogTagLib {
                          "sNext":     "${message(code:'dialog.datatables.oPaginate.sNext')}",
                          "sLast":     "${message(code:'dialog.datatables.oPaginate.sLast')}"
                      },
-                    "sNew":"${message(code:'dialog.datatables.sNew')}"        
+                    "sNew":"${message(code:'dialog.datatables.sNew')}"
                 },
            };
         </script>
 		"""
 
 	}
+
+    /**
+     * dialog:last
+     * This tag should be after any other dialog modules
+     */
+
+    def last = {
+        out << """ <script type="text/javascript">
+                        \$(function() {
+                            \$("body").trigger("dialog-open",{});
+                        });
+                </script>"""
+    }
 
 	/**
 	 * This tag generates a 2-cell row in the dialog table. The first cell contains the property's label, the second one contains the edit element or display value.
@@ -902,7 +915,7 @@ class DialogTagLib {
     /**
      * Header element for upload
 	 * Only needed for full-page dialogs containing an upload.
-     * 
+     *
      * @param action The action to use for the JSON data source (default: fileupload)
      * @param object The domain object
 	 * @param propertyName The property of the domain object
