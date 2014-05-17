@@ -47,14 +47,14 @@ dialog.fileuploader.open =function open (e,params) {
   '</li>',
 				onComplete: function(id, fileName, responseJSON){
 					var upload=fileName+"|"+responseJSON.path+"|"+responseJSON.mimetype+"|"+responseJSON.identifier+"|"+responseJSON.fileCategory+"|"+responseJSON.direct+"|"+responseJSON.sFileName;
-					
+
 					$(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
 					if (responseJSON.success==true) {
 						$(".dialog-events").trigger("dialog-refresh",{dc:"ALL",id:id});
 					} else {
 						$(".dialog-events").trigger("dialog-message",{message:responseJSON.message,alertType:"error"});
 					}
-				
+
 				}
 			});
 		});
@@ -67,5 +67,4 @@ dialog.fileuploader.open =function open (e,params) {
 
 $(function() {
 	$("body").on("dialog-open",dialog.fileuploader.open);
-	//$("body").trigger("dialog-open");
 });
