@@ -112,7 +112,7 @@ class DialogTagLib {
     def last = {
         out << """ <script type="text/javascript">
                         \$(function() {
-                            \$("body").trigger("dialog-open",{});
+                            \$("body").trigger("dialog-open",{"page":true});
                         });
                 </script>"""
     }
