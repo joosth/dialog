@@ -1,7 +1,7 @@
 modules = {
 	dialog {
 		dependsOn 'jquery'
-		resource url:'/js/jquery/jquery-ui-1.9.2.custom.min.js'
+		resource url:'js/jquery/jquery-ui-1.9.2.custom.min.js'
 		resource url: 'css/bootstrap-theme/jquery-ui-1.9.2.custom.css'
 		resource url:'/js/dialog.js'
 		resource url:'/css/dialog.css'
@@ -97,9 +97,14 @@ modules = {
 		dependsOn 'dialog'
 		resource url:'/js/dialog.autocomplete.js'
 	}
-    
-    'dialog-datepicker' {
+
+    'dialog-maskedinput' {
 		dependsOn 'dialog'
+		resource url:'js/jquery/jquery.maskedinput.js'
+	}
+
+    'dialog-datepicker' {
+		dependsOn 'dialog,dialog-maskedinput'
 		resource url:'/js/dialog.datepicker.js'
 	}
 

@@ -80,6 +80,7 @@ class DialogTagLib {
 				showMonthAfterYear: ${message(code:'dialog.datepicker.showMonthAfterYear')},
 				yearSuffix: "${message(code:'dialog.datepicker.yearSuffix')}"
             };
+            dialog.messages.datepicker.mask="${message(code:'dialog.datepicker.mask')}";
             dialog.messages.datatables = {
                 "oLanguage": {
                     "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
