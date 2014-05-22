@@ -74,10 +74,7 @@ class DialogService {
 		def domainPropertyName=defaultDomainClass.propertyName
         def domainClassName=defaultDomainClass.getName()
         if (!domainClassInstance) {
-            flash.message = "${domainPropertyName}.not.found"
-            flash.args = [params.id]
-            flash.defaultMessage = "${domainClassName} not found with id ${params.id}"
-            redirect(action: "list")
+            throw new DialogException("dialogService.notfound",[domainClassName,params.id]);
         }
         else {
         	def returnMap=[:]
