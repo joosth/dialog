@@ -107,6 +107,7 @@ generateFile "${basedir}/grails-app/views/layouts/main.gsp" ,
 	   				</g:if>
 	    			<g:layoutBody />
 	    			<r:layoutResources />
+                    <dialog:last />
          		</div>
         	</div>
 		</div>
