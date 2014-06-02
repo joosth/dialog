@@ -1,6 +1,6 @@
 /*
 * Datepicker module for xml-forms plugin
-*  
+*
 * Grails xml-forms plug-in
 * Copyright 2013 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
@@ -20,29 +20,29 @@
 */
 
 if (!window.dialog) {
-	window.dialog={};	
+	window.dialog={};
 }
 
 if (!window.dialog.datepicker) {
-	window.dialog.datepicker={};	
+	window.dialog.datepicker={};
 }
 
 
-dialog.datepicker.open =function open (e,params) {     
+dialog.datepicker.open =function open (e,params) {
     $(this).find(".datepicker").each (function (i) {
         var id=this.id;
         var yearRange="c-10:c+10";
         if ($(this).attr('yearRange')) {
             yearRange=$(this).attr('yearRange');
         }
-        
+
         var updateElementId = $(this).attr('id').replace("entry-","")+'_date';
-        $(this).datepicker({    changeMonth: true, 
+        $(this).datepicker({    changeMonth: true,
                                 changeYear:true,
                                 altField:"#"+updateElementId,
                                 altFormat:"yy-mm-dd'T'00:00:00",
                                 yearRange:yearRange
-                            });
+                            }).mask(dialog.messages.datepicker.mask);
     });
 };
 
