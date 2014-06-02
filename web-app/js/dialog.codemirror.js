@@ -1,6 +1,6 @@
 /*
 * CodeMirror module for dialog plugin
-*  
+*
 * Grails Dialog plug-in
 * Copyright 2011 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
@@ -25,14 +25,14 @@ dialog.codemirror.open =function open (e,params) {
 	$(e.target).find("pre").each( function() {
 		CodeMirror.colorize([this]);
 	});
-	
+
 	$(e.target).find("td.codemirror textarea").each( function() {
-		
+
 		var id=$(this).attr("id");
 		var width=$(this).attr("width");
 		var height=$(this).attr("height");
-		if (id){		
-			var mode = $(this).attr('codeMirrorMode');		
+		if (id){
+			var mode = $(this).attr('codeMirrorMode');
 			var textarea = document.getElementById(id);
 
 			// Create editor based on codeMirrorMode attribute.
@@ -43,21 +43,21 @@ dialog.codemirror.open =function open (e,params) {
 					extraKeys: {
 						"'>'": function(cm) { cm.closeTag(cm, '>'); },
 						"'/'": function(cm) { cm.closeTag(cm, '/'); }
-					}				
+					}
 		      });
-				
+
 			}
 			//
 			if (mode=='text/x-groovy') {
 				dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
 					mode: 'text/x-groovy',
-					lineNumbers: true,
+					lineNumbers: false,
 					matchBrachets:true
-									
+
 		      });
 			}
 			dialog.codemirror.editors[id].setSize(width,height);
-			
+
 		}
 	});
 	return false
@@ -83,19 +83,14 @@ dialog.codemirror.close =function close (e,params) {
 			delete dialog.codemirror.editors[id];
 		}
 	});
-	
-	
+
+
 	return false;
 }
 
 
 $(function() {
 	$("body").on("dialog-open",dialog.codemirror.open);
-	$("body").on("dialog-submit",dialog.codemirror.submit);	
+	$("body").on("dialog-submit",dialog.codemirror.submit);
 	$("body").on("dialog-close",dialog.codemirror.close);
-	
-	$("td.codemirror textarea").each({
-		
-	});
-	CodeMirror.colorize();
 });
