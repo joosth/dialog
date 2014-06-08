@@ -15,6 +15,7 @@
                    positionUrl="/${listConfig.controller}/${position ? position :'position'}"
                    rowreordering="${listConfig.rowreordering}"
                    toolbar="${listConfig.toolbar?:''}"
+                   newButton="${listConfig.newButton}"
                    >
 				<thead>
 					<tr>
