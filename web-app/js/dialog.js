@@ -47,7 +47,7 @@ dialog.obj2ParamStr = function obj2ParamStr(params) {
 		 for (key in params) {
 			 paramStr=paramStr+sep+key+"="+params[key];
 			 sep="&";
-		 }		 
+		 }
 	 }
 	 return paramStr;
 }
@@ -63,7 +63,7 @@ dialog.confirm = function confirm(message,title,callback,data) {
 		width:600,
 		modal: true,
 		buttons: {
-			"OK": function(data) {	
+			"OK": function(data) {
 				$( this ).dialog( "close" );
 				if(callback){
 					callback(dx)
@@ -73,7 +73,7 @@ dialog.confirm = function confirm(message,title,callback,data) {
 				$( this ).dialog( "close" );
 			}
 		},
-        close: function(event, ui) {      
+        close: function(event, ui) {
             confirmDialog.remove();
             }
         });
@@ -89,23 +89,23 @@ dialog.confirm = function confirm(message,title,callback,data) {
  */
 dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
-	
+
 	var dialogName = (options != null && options["dialogname"] != null) ? options["dialogname"] : "dialog";
 	var submitName = (options != null && options["submitname"] != null) ? options["submitname"] : "submit"+dialogName;
-	
-	
+
+
 	var refreshTableKey = (options != null && options["refresh"] != null) ? options["refresh"] : "NO_REFRESH";
-	
+
 	// if true, form submit will be used instead of AJAX
 	var submitForm = (options != null && options["submitform"] != null) ? options["submitform"] : false;
-	
+
 	// if true, form will not be submitted at all
 	var noSubmit = (options != null && options["nosubmit"] != null) ? options["nosubmit"] : false;
-	
+
 	var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
-	
-	 theUrl=dialog.baseUrl+'/'+controllerName+'/'+dialogName+'/'+urlId	 	
-	
+
+	 theUrl=dialog.baseUrl+'/'+controllerName+'/'+dialogName+'/'+urlId
+
 	 var errorMessage=null;
 	 var dialogHTML = $.ajax({
 		  url: theUrl,
@@ -121,29 +121,29 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		            errorMessage=event.getResponseHeader('X-Dialog-Error-Message');
 		        }
 	        }).responseText;
-	 
+
 	// If an error occurred, show it and bail out.
     if (errorMessage) {
         $(".dialog-events").trigger("dialog-message",{message:errorMessage,alertType:'error'});
         return
     }
 
-		 
-		 
+
+
 	 var formelements=$(dialogHTML).find('form')
 	 if (formelements.length==0) {
 		 window.location.reload()
 	 } else {
-	 
+
 	 var theWidth=$(dialogHTML).css("width").replace("px","");
 	 var theHeight=$(dialogHTML).css("height").replace("px","");
 	 if (theHeight=="0") theHeight="auto";
-	 
-	 var theDialog=$(dialogHTML).dialog({ 
+
+	 var theDialog=$(dialogHTML).dialog({
 		 modal:true,
 		 width:theWidth,
-		 height:theHeight,		 
-		 buttons: 
+		 height:theHeight,
+		 buttons:
 			 [ { text: window.dialog.messages.ok, click: function(e,ui) {
 	        	$(this).trigger("dialog-submit",{event:e,ui:ui,'this':this,id:id,controllerName:controllerName});
 
@@ -154,13 +154,13 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		 		} else {
 		 		if (!noSubmit) {
 				 	var formData=theDialog.find("form").serialize();
-				 	$.post(dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId,formData, function(data) 
+				 	$.post(dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId,formData, function(data)
 				 		{
 				 		var jsonResponse = data.result;
-				 		
+
 				 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse})
 				 		$(".dialog-events").trigger("dialog-message",{message:jsonResponse.message})
-				 					 		
+
 				 		if(jsonResponse.success){
 					 		theDialog.dialog("close");
 					 		if (jsonResponse.nextDialog) {
@@ -169,14 +169,14 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 					 	} else  {
 					 		for (key in jsonResponse.errorFields) {
 					 			var errorField=jsonResponse.errorFields[key]
-					 			$("#"+errorField).parent().addClass("errors")				 			
+					 			$("#"+errorField).parent().addClass("errors")
 					 		}
 					 		theDialog.find("div.errors").html(jsonResponse.message)
-					 		theDialog.find("div.errors").show();				 		
-					 	
+					 		theDialog.find("div.errors").show();
+
 				 		}
 				 	},"json");
-		 		
+
 		 		} else {
 		 			$( this ).dialog( "close" );
 		 		}
@@ -191,34 +191,34 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
         open: function(event, ui) {
         	// This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
         	$(this).trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
-        	
+
     		 $(this).keyup(function(e) {
     		    if (e.keyCode == 13 && e.target.nodeName!="TEXTAREA") {
     		    	$(this).parents('.ui-dialog').first().find('.ui-button').first().click();
            		 return false;
     		    }
     		});
-    	        	
+
          	// Initialize date picker input elements
     		$.datepicker.setDefaults( $.datepicker.regional[ dialog.language ] );
        		$(this).find(".dialogtabs").tabs();
-       		$(this).find(".altselect").altselect();       	
-       		
+       		$(this).find(".altselect").altselect();
+
        		// get z-index of dialog so we can put cluetips above it
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
-       		
+
        		$(this).find(".help").tooltip({container:'body',placement:'right'});
 
        		$(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
 
-       		
+
          },
         close: function(event, ui) {
-        	$(this).trigger("dialog-close",{event:event,ui:ui,'this':this})       	
+        	$(this).trigger("dialog-close",{event:event,ui:ui,'this':this})
             theDialog.dialog("destroy").remove();
          }
        });
-	 
+
 	 }
 	 return false;
 }
@@ -232,39 +232,39 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
  */
 dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
-	var controllerTitle=controllerName.charAt(0).toUpperCase() + controllerName.slice(1); 
+	var controllerTitle=controllerName.charAt(0).toUpperCase() + controllerName.slice(1);
 	 var dialogHTML = '<div class="delete-dialog" title="'+dialog.messages.confirmdeleteTitle+'"><form><div class="errors" style="display:none;"></div><div>'+dialog.messages.confirmdelete+' '+controllerTitle+' '+id+' ?</div></form></div>'
 
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
-	 var theDialog=$(dialogHTML).dialog({ 
+	 var theDialog=$(dialogHTML).dialog({
 		 modal:true,
 		 width:400,
 		 height:200,
-		 buttons: { 
+		 buttons: {
 		 	"Delete": function(e) {
 			 	var formData=theDialog.find("form").serialize();
-			 	$.post(dialog.baseUrl+"/"+controllerName+"/delete/"+urlId,formData, function(data) 
+			 	$.post(dialog.baseUrl+"/"+controllerName+"/delete/"+urlId,formData, function(data)
 			 		{
-			 		var result=data.result			 		
+			 		var result=data.result
 
-			 		
+
 			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:result})
 			 		$(".dialog-events").trigger("dialog-message",{message:result.message})
-			 		
+
 			 		if(result.success){
 				 		theDialog.dialog("close");
-				 	} else  {				 		
+				 	} else  {
 				 		theDialog.find("div.errors").html(result.message)
-				 		theDialog.find("div.errors").show();				 		
-				 	}			 		
-			 	},"json");			 	
+				 		theDialog.find("div.errors").show();
+				 	}
+			 	},"json");
        	},
       	Cancel: function() {
 	        		$( this ).dialog( "close" );
 	        	}
       	},
-       close: function(event, ui) {      
+       close: function(event, ui) {
               theDialog.dialog("destroy").remove();
             }
         });
@@ -275,6 +275,10 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
  * Show status message event handler
  * @param event
  * @param eventData
+ * alert Types from http://getbootstrap.com/2.3.2/components.html#alerts :
+ * - success (default,green)
+ * - error
+ * - info (blue)
  */
 dialog.statusMessage = function statusMessage(event,eventData) {
 	if (eventData.message) {
@@ -298,46 +302,46 @@ dialog.statusMessage = function statusMessage(event,eventData) {
  * @param options
  */
 dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
-		 
-	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'	 
+
+	 var dialogHTML = '<div class="delete-dialog" title="Confirm delete"><form><div class="errors" style="display:none;"></div><div>Are you sure you want to delete '+filename+' from '+controllerName+' '+id+' ?</div></form></div>'
 	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
-	 var theDialog=$(dialogHTML).dialog({ 
+	 var theDialog=$(dialogHTML).dialog({
 		 modal:false,
 		 width:400,
 		 height:200,
          zIndex:10000,
-		 buttons: { 
+		 buttons: {
 		 	"Delete": function(e) {
 			 	var formData=theDialog.find("form").serialize();
-			 	$.post(dialog.baseUrl+"/"+controllerName+"/deletefile/"+id+"?filename="+filename,formData, function(data) 
+			 	$.post(dialog.baseUrl+"/"+controllerName+"/deletefile/"+id+"?filename="+filename,formData, function(data)
 			 		{
-			 		var result=data.result			 		
+			 		var result=data.result
 
-			 		
+
 			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
 			 		$(".dialog-events").trigger("dialog-message",{message:result.message})
-			 		
+
 			 		if(result.success){
 				 		theDialog.dialog("close");
-				 	} else  {				 		
+				 	} else  {
 				 		theDialog.find("div.errors").html(result.message)
-				 		theDialog.find("div.errors").show();				 		
-				 	}			 		
-			 	});			 	
+				 		theDialog.find("div.errors").show();
+				 	}
+			 	});
        	},
       	Cancel: function() {
 	        		$( this ).dialog( "close" );
 	        	}
       	},
-       close: function(event, ui) {      
+       close: function(event, ui) {
               theDialog.dialog("destroy").remove();
             }
         });
 }
 
 $(function() {
-	
+
 	jQuery.fn.center = function () {
 	    this.css("position","absolute");
 	    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
@@ -351,17 +355,17 @@ $(function() {
 	    return this;
 	}
 
-	
+
 	// Initialize date picker input elements
  	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
-  	
+
  	$("body").on("click","a.confirm",function(){
  	    return confirm('Are you sure?')
   	});
-  	
-	$("#statusmessage").bind("dialog-message",dialog.statusMessage);	
+
+	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
 	$("#statusmessage").addClass("dialog-events");
-	
+
 });
 
 
