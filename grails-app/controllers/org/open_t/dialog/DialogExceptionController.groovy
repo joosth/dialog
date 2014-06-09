@@ -26,6 +26,7 @@ class DialogExceptionController {
     def dialogService
 
 	def dialog() {
+
         // If we have loglevel debug, output the stacktrace to the log.
         if (request.exception) {
             log.debug dialogService.exceptionMessage(request.exception)
@@ -40,24 +41,30 @@ class DialogExceptionController {
 			exceptionCode=request.exception.cause.message
 		}
 
+
 		try {
 			def defaultTitle=message(code:'exception.default.title',args:args,default:"Error")
+            if (!exceptionCode) {
+                exceptionCode="empty"
+                args=[request?.exception?.toString()]
+            }
 			title=message(code:'exception.'+exceptionCode+'.title',args:args,default:defaultTitle)
-			msg=message(code:'exception.'+exceptionCode+'.message',args:args,default:exceptionCode)
 
+			msg=message(code:'exception.'+exceptionCode+'.message',args:args,default:exceptionCode)
 		} catch (Exception e) {
 			msg=e.message
 		}
+
         if (request && request.getHeader("Accept") && request.getHeader("Accept").contains("application/json")) {
-
-
             def result = [
     		              	success:false,
     		              	message:msg,
 							title:title
     		              ]
 			def res=[result:result]
+            // Because $.getJSON doesn't have a failure handler...
 			response.status=200
+            response.addHeader("X-Dialog-Error-Message",msg);
             render res as JSON
         } else {
             response.addHeader("X-Dialog-Error-Message",msg);
