@@ -26,21 +26,22 @@ class DialogExceptionController {
     def dialogService
 
 	def dialog() {
-
         // If we have loglevel debug, output the stacktrace to the log.
         if (request.exception) {
             log.debug dialogService.exceptionMessage(request.exception)
         }
 		def title="Error handling error"
 		def msg=""
-		def exceptionCode=request.exception?.message
+		def exceptionCode="dialogException.dialog"
+        if(request.exception?.message) {
+            exceptionCode=request.exception?.message
+        }
 		def args=[]
 
 		if (request.exception.cause.class==org.open_t.dialog.DialogException || request.exception.cause.class==AssertionError) {
 			args=request.exception.cause.args
 			exceptionCode=request.exception.cause.message
 		}
-
 
 		try {
 			def defaultTitle=message(code:'exception.default.title',args:args,default:"Error")
@@ -54,21 +55,22 @@ class DialogExceptionController {
 		} catch (Exception e) {
 			msg=e.message
 		}
-
+        def result = [
+                success:false,
+                message:msg,
+                title:title,
+                code:exceptionCode,
+                args:args
+        ]
+        def res=[result:result]
         if (request && request.getHeader("Accept") && request.getHeader("Accept").contains("application/json")) {
-            def result = [
-    		              	success:false,
-    		              	message:msg,
-							title:title
-    		              ]
-			def res=[result:result]
             // Because $.getJSON doesn't have a failure handler...
 			response.status=200
             response.addHeader("X-Dialog-Error-Message",msg);
             render res as JSON
         } else {
             response.addHeader("X-Dialog-Error-Message",msg);
-            [title:title,msg:msg]
+            return res
         }
 	}
 }

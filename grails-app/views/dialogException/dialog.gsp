@@ -1,29 +1,29 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="main" />		
-        <title>${title}</title>
+        <meta name="layout" content="main" />
+        <title>${result.title}</title>
          <r:script>
         // Dialog plugin -- list
         $(document).ready(function() {
             $("#exceptionDialog").modal();
         });
        </r:script>
-    </head>    
+    </head>
     <body>
-		<div class="body">			
+		<div class="body">
 			<div class="row-fluid">
 				<div class="span12">
-                  <div title="${title}" id="exceptionDialog" class="modal xfade hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div title="${result.title}" id="exceptionDialog" class="modal xfade hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 						<div id="myModalLabel">
-                            <span class="modal-header">${title}</span>
+                            <span class="modal-header">${result.title}</span>
                         </div>
                     </div>
                     <div class="modal-body">
                         <form>
-					       <div>${msg}</div>
+					       <div>${result.message}</div>
                         </form>
                     </div>
                     <div class="modal-footer">
