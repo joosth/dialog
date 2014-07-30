@@ -3,6 +3,9 @@ modules = {
 		dependsOn 'jquery'
 		resource url:'js/jquery/jquery-ui-1.9.2.custom.min.js'
 		resource url: 'css/bootstrap-theme/jquery-ui-1.9.2.custom.css'
+        resource url:'/js/jquery/jquery-ui-sliderAccess.js'
+        resource url:'/js/jquery/jquery-ui-timepicker-addon.js'
+        resource url:'/css/jquery-ui-timepicker-addon.css'
 		resource url:'/js/dialog.js'
 		resource url:'/css/dialog.css'
 

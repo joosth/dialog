@@ -81,6 +81,26 @@ class DialogTagLib {
 				yearSuffix: "${message(code:'dialog.datepicker.yearSuffix')}"
             };
             dialog.messages.datepicker.mask="${message(code:'dialog.datepicker.mask')}";
+            dialog.messages.timepicker = {};
+            dialog.messages.timepicker.regional = {
+                currentText: "${message(code:'dialog.timepicker.currentText')}",
+                closeText: "${message(code:'dialog.timepicker.closeText')}",
+                amNames: ${message(code:'dialog.timepicker.amNames')},
+                pmNames: ${message(code:'dialog.timepicker.pmNames')},
+                timeFormat: "${message(code:'dialog.timepicker.timeFormat')}",
+                timeSuffix: "${message(code:'dialog.timepicker.timeSuffix')}",
+                timeOnlyTitle: "${message(code:'dialog.timepicker.timeOnlyTitle')}",
+                timeText: "${message(code:'dialog.timepicker.timeText')}",
+                hourText: "${message(code:'dialog.timepicker.hourText')}",
+                minuteText: "${message(code:'dialog.timepicker.minuteText')}",
+                secondText: "${message(code:'dialog.timepicker.secondText')}",
+                millisecText: "${message(code:'dialog.timepicker.millisecText')}",
+                microsecText: "${message(code:'dialog.timepicker.microsecText')}",
+                timezoneText: "${message(code:'dialog.timepicker.timezoneText')}",
+                isRTL: ${message(code:'dialog.timepicker.isRTL')}
+            };
+            dialog.messages.timepicker.mask="${message(code:'dialog.timepicker.mask')}";
+            dialog.messages.timepicker.invalidTime="${message(code:'dialog.timepicker.invalidTime')}"
             dialog.messages.datatables = {
                 "oLanguage": {
                     "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
