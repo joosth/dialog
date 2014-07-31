@@ -100,10 +100,8 @@ class DialogTagLib {
                 isRTL: ${message(code:'dialog.timepicker.isRTL')}
             };
             dialog.messages.timepicker.mask="${message(code:'dialog.timepicker.mask')}";
-            dialog.messages.timepicker.invalidTime="${message(code:'dialog.timepicker.invalidTime')}"
             dialog.messages.datetimepicker = {};
             dialog.messages.datetimepicker.mask="${message(code:'dialog.datetimepicker.mask')}";
-            dialog.messages.datetimepicker.invalidDateTime="${message(code:'dialog.datetimepicker.invalidDateTime')}"
             dialog.messages.datatables = {
                 "oLanguage": {
                     "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
@@ -123,6 +121,9 @@ class DialogTagLib {
                     "sNew":"${message(code:'dialog.datatables.sNew')}"
                 },
            };
+            dialog.messages.validation = {};
+            dialog.messages.validation.invalidTime="${message(code:'dialog.validation.invalidTime')}"
+            dialog.messages.validation.invalidDateTime="${message(code:'dialog.validation.invalidDateTime')}"
         </script>
 		"""
 
