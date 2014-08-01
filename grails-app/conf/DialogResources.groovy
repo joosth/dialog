@@ -106,6 +106,31 @@ modules = {
 		resource url:'js/jquery/jquery.maskedinput.js'
 	}
 
+    'dialog-mobiscroll' {
+		dependsOn 'jquery'
+		resource url:'/js/mobiscroll/mobiscroll.core.js'
+		resource url:'/js/mobiscroll/mobiscroll.widget.js'
+		resource url:'/js/mobiscroll/mobiscroll.scroller.js'
+		resource url:'/js/mobiscroll/mobiscroll.datetime.js'
+		resource url:'/js/mobiscroll/mobiscroll.widget.android.js'
+		resource url:'/js/mobiscroll/mobiscroll.widget.android-holo.js'
+		resource url:'/js/mobiscroll/mobiscroll.widget.ios.js'
+		resource url:'/js/mobiscroll/mobiscroll.widget.ios7.js'
+		resource url:'/css/mobiscroll/mobiscroll.icons.css'
+		resource url:'/css/mobiscroll/mobiscroll.widget.css'
+		resource url:'/css/mobiscroll/mobiscroll.widget.android.css'
+		resource url:'/css/mobiscroll/mobiscroll.widget.android-holo.css'
+		resource url:'/css/mobiscroll/mobiscroll.widget.ios.css'
+		resource url:'/css/mobiscroll/mobiscroll.widget.ios7.css'
+		resource url:'/css/mobiscroll/mobiscroll.scroller.css'
+		resource url:'/css/mobiscroll/mobiscroll.scroller.android.css'
+		resource url:'/css/mobiscroll/mobiscroll.scroller.android-holo.css'
+		resource url:'/css/mobiscroll/mobiscroll.scroller.ios.css'
+		resource url:'/css/mobiscroll/mobiscroll.scroller.ios7.css'
+		resource url:'/css/mobiscroll/mobiscroll.animation.css'
+		resource url:'/js/dialog.mobiscroll.js'
+	}
+
     'dialog-datepicker' {
 		dependsOn 'dialog,dialog-maskedinput'
 		resource url:'/js/dialog.datepicker.js'

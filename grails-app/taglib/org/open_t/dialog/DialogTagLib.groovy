@@ -124,6 +124,32 @@ class DialogTagLib {
             dialog.messages.validation = {};
             dialog.messages.validation.invalidTime="${message(code:'dialog.validation.invalidTime')}"
             dialog.messages.validation.invalidDateTime="${message(code:'dialog.validation.invalidDateTime')}"
+            dialog.messages.mobiscroll = {};
+            dialog.messages.mobiscroll.regional = {
+                setText: "${message(code:'dialog.mobiscroll.setText')}",
+                cancelText: "${message(code:'dialog.mobiscroll.cancelText')}",
+                clearText: "${message(code:'dialog.mobiscroll.clearText')}",
+                selectedText: "${message(code:'dialog.mobiscroll.selectedText')}",
+                closeText: "${message(code:'dialog.mobiscroll.closeText')}",
+                dateFormat: "${message(code:'dialog.mobiscroll.dateFormat')}",
+                dateOrder: "${message(code:'dialog.mobiscroll.dateOrder')}",
+                dayNames: ${message(code:'dialog.mobiscroll.dayNames')},
+                dayNamesShort: ${message(code:'dialog.mobiscroll.dayNamesShort')},
+                dayNamesMin: ${message(code:'dialog.mobiscroll.dayNamesMin')},
+                dayText: "${message(code:'dialog.mobiscroll.dayText')}",
+                hourText: "${message(code:'dialog.mobiscroll.hourText')}",
+                minuteText: "${message(code:'dialog.mobiscroll.minuteText')}",
+                monthNames: ${message(code:'dialog.mobiscroll.monthNames')},
+                monthNamesShort: ${message(code:'dialog.mobiscroll.monthNamesShort')},
+                monthText: "${message(code:'dialog.mobiscroll.monthText')}",
+                secText: "${message(code:'dialog.mobiscroll.secText')}",
+                timeFormat: "${message(code:'dialog.mobiscroll.timeFormat')}",
+                timeWheels: "${message(code:'dialog.mobiscroll.timeWheels')}",
+                yearText: "${message(code:'dialog.mobiscroll.yearText')}",
+                nowText: "${message(code:'dialog.mobiscroll.nowText')}",
+                pmText: "${message(code:'dialog.mobiscroll.pmText')}",
+                amText: "${message(code:'dialog.mobiscroll.amText')}"
+            };
         </script>
 		"""
 
