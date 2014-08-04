@@ -960,7 +960,7 @@ class DialogTagLib {
      * Displays a dropdown menu in the menu bar. The key for the message is dropdown.code.label, with code replaced by the code attribute.
      */
 	def dropdown = { attrs,body ->
-		out << """ <li class="dropdown">
+		out << """ <li class="dropdown ${attrs.class?:''}">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 					 			${g.message(code:'dropdown.'+attrs.code+'.label')}
 								<b class="caret"></b>
@@ -981,7 +981,7 @@ class DialogTagLib {
 			icon="""<i class="${attrs.icon}"></i> """
 		}
 
-		out << """ <li class="dropdown-submenu">
+		out << """ <li class="dropdown-submenu ${attrs.class?:''}">
 		              			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 					 			${icon}${g.message(code:'dropdown.'+attrs.code+'.label')}
 								</a>
@@ -1035,7 +1035,7 @@ class DialogTagLib {
 			link=g.link(linkParams) { icon+label }
 		}
 
-		out << """<li ${onclick}class="menu-item" >  ${link}</li>"""
+		out << """<li ${onclick}class="menu-item ${attrs.class?:''}" >  ${link}</li>"""
 	}
 
     /**
