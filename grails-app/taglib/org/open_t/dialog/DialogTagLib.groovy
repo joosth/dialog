@@ -619,20 +619,19 @@ class DialogTagLib {
 	/**
 	* tabs tag - create a &lt;tabs&gt; enclosure for &lt;tab&gt; elements
 	*
-	* @param names Contains a comma separated string containing the names of the tabs
 	* @param object The domain object
 	*/
 	def tabs = { attrs,body ->
-
+        this.pageScope.dialogTabNames=[]
+        def bodyText=body()
 		out << """<div id="dialogtabs" class="dialogtabs" >
 			<ul>"""
 			def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
 			prefix=prefix.replace(".","_")
-			def names=attrs.names.split(",")
 			def defaultDomainClass = new DefaultGrailsDomainClass( attrs.object.class )
 			def domainPropertyName=defaultDomainClass.propertyName
 
-			for (name in names) {
+			for (name in this.pageScope.dialogTabNames) {
 				def defaultTabLabel=g.message(code:"dialog.tab.${name}", default:name)
 				def tabLabel=g.message(code:"dialog.tab.${domainPropertyName}.${name}", default:defaultTabLabel)
 				out <<"""
@@ -642,7 +641,7 @@ class DialogTagLib {
 				"""
 			}
 		out <<"""</ul>"""
-		out << body()
+		out << bodyText
 		out << "</div>"
 	}
 
@@ -653,6 +652,7 @@ class DialogTagLib {
 	* @param object The domain object
 	*/
 	def tab = { attrs,body ->
+        this.pageScope.dialogTabNames+=attrs.name
 		def prefix="dialog_"+attrs.object.getClass().getName()+"_"+attrs.object.id+"_"
 		prefix=prefix.replace(".","_")
 		out << """<div id="${prefix}${attrs.name}">
