@@ -89,6 +89,9 @@ class FileService {
      * @return The formatted String
      */
 	def pack(n) {
+        if (!n || n=="null") {
+            n=0
+        }
 		String s= Long.toString(new Long(n),36)
 		return String.format("%1\$8s", s).replace(' ', '0')
 	}
