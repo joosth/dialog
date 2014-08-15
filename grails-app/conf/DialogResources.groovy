@@ -108,4 +108,10 @@ modules = {
 		resource url:'/js/dialog.datepicker.js'
 	}
 
+    'dialog-timepicker' {
+		dependsOn 'dialog'
+        resource url:'/js/jquery/jquery-ui-sliderAccess.js'
+        resource url:'/js/jquery/jquery-ui-timepicker-addon.js'
+        resource url:'/css/jquery-ui-timepicker-addon.css'
+	}
 }
