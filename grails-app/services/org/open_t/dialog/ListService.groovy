@@ -68,7 +68,7 @@ class ListService {
 				return messageSource.getMessage("dialog.checkBox.${value}.label".toString(),null, value.toString(),locale)
 			}
 
-			if (type== "java.lang.Date" || type=="java.sql.Timestamp") {
+			if (type== "java.util.Date" || type=="java.sql.Timestamp") {
 				def dateFormat
 				if (value.format ("HH:mm:ss")=="00:00:00") {
 					dateFormat= messageSource.getMessage("dialog.date.format".toString(),null, "yyyy-MM-dd",locale)
@@ -374,7 +374,7 @@ class ListService {
 
 	/**
 	 * Move position of an item in a sortable list
-     * 
+     *
 	 * @param dc The domain class
 	 * @param params The parameters of the HTTP request. Should contain id and toPosition
 	 * @return
