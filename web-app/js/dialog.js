@@ -340,10 +340,6 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
         });
 }
 
-dialog.isTouchDevice = function isTouchDevice() {
-    return ('ontouchstart' in document.documentElement);
-}
-
 $(function() {
 
 	jQuery.fn.center = function () {

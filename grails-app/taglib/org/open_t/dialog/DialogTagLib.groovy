@@ -100,9 +100,6 @@ class DialogTagLib {
                 isRTL: ${message(code:'dialog.timepicker.isRTL')}
             };
             dialog.messages.timepicker.mask="${message(code:'dialog.timepicker.mask')}";
-            dialog.messages.timepicker.invalidTime="${message(code:'dialog.timepicker.invalidTime')}"
-  			dialog.messages.datetimepicker = {};
-            dialog.messages.datetimepicker.mask="${message(code:'dialog.datetimepicker.mask')}";
             dialog.messages.datatables = {
                 "oLanguage": {
                     "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
@@ -125,32 +122,6 @@ class DialogTagLib {
             dialog.messages.validation = {};
             dialog.messages.validation.invalidTime="${message(code:'dialog.validation.invalidTime')}"
             dialog.messages.validation.invalidDateTime="${message(code:'dialog.validation.invalidDateTime')}"
-            dialog.messages.mobiscroll = {};
-            dialog.messages.mobiscroll.regional = {
-                setText: "${message(code:'dialog.mobiscroll.setText')}",
-                cancelText: "${message(code:'dialog.mobiscroll.cancelText')}",
-                clearText: "${message(code:'dialog.mobiscroll.clearText')}",
-                selectedText: "${message(code:'dialog.mobiscroll.selectedText')}",
-                closeText: "${message(code:'dialog.mobiscroll.closeText')}",
-                dateFormat: "${message(code:'dialog.mobiscroll.dateFormat')}",
-                dateOrder: "${message(code:'dialog.mobiscroll.dateOrder')}",
-                dayNames: ${message(code:'dialog.mobiscroll.dayNames')},
-                dayNamesShort: ${message(code:'dialog.mobiscroll.dayNamesShort')},
-                dayNamesMin: ${message(code:'dialog.mobiscroll.dayNamesMin')},
-                dayText: "${message(code:'dialog.mobiscroll.dayText')}",
-                hourText: "${message(code:'dialog.mobiscroll.hourText')}",
-                minuteText: "${message(code:'dialog.mobiscroll.minuteText')}",
-                monthNames: ${message(code:'dialog.mobiscroll.monthNames')},
-                monthNamesShort: ${message(code:'dialog.mobiscroll.monthNamesShort')},
-                monthText: "${message(code:'dialog.mobiscroll.monthText')}",
-                secText: "${message(code:'dialog.mobiscroll.secText')}",
-                timeFormat: "${message(code:'dialog.mobiscroll.timeFormat')}",
-                timeWheels: "${message(code:'dialog.mobiscroll.timeWheels')}",
-                yearText: "${message(code:'dialog.mobiscroll.yearText')}",
-                nowText: "${message(code:'dialog.mobiscroll.nowText')}",
-                pmText: "${message(code:'dialog.mobiscroll.pmText')}",
-                amText: "${message(code:'dialog.mobiscroll.amText')}"
-            };
         </script>
 		"""
 
@@ -380,13 +351,13 @@ class DialogTagLib {
 					out << g.hiddenField(hiddenAttrs)
 					def dateValue
                     def submitDateValue
-                    def dateFormat=g.message(code:"dialog.date.format",default:"yyyy-MM-dd")
+                    def dateFormat="yyyy-MM-dd"
 					if (attrs.object."${attrs.propertyName}") {
 						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
 					}
 
-					out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker')
+					out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 					break
 			}
