@@ -354,13 +354,13 @@ class DialogTagLib {
 					out << g.hiddenField(hiddenAttrs)
 					def dateValue
                     def submitDateValue
-                    def dateFormat=g.message(code:"dialog.date.format",default:"yyyy-MM-dd")
+                    def dateFormat="yyyy-MM-dd"
 					if (attrs.object."${attrs.propertyName}") {
 						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
 					}
 
-					out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker')
+					out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker input input-medium')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 					break
 			}
@@ -392,7 +392,7 @@ class DialogTagLib {
 				case "edit":
 					def dateValue=null
                     def submitDateValue
-                    def dateFormat=g.message(code:"dialog.date.format",default:"yyyy-MM-dd")
+                    def dateFormat="yyyy-MM-dd"
                     if (attrs.object."${attrs.propertyName}") {
 						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
@@ -401,14 +401,14 @@ class DialogTagLib {
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
 
-                    out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker')
+                    out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker input input-medium')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 
 					out << "&nbsp;"
 
-                    def timeFormat=g.message(code:"dialog.time.format",default:"HH:mm")
-					def timeAttrs=[name:attrs.propertyName+'_time',value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time']
-					out << g.textField(timeAttrs)
+                    def timeFormat="HH:mm"
+					def timeAttrs=[name:attrs.propertyName+'_time',type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-medium']
+					out << g.field(timeAttrs)
 
 					break
 			}
