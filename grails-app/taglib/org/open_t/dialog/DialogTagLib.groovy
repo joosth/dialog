@@ -81,6 +81,28 @@ class DialogTagLib {
 				yearSuffix: "${message(code:'dialog.datepicker.yearSuffix')}"
             };
             dialog.messages.datepicker.mask="${message(code:'dialog.datepicker.mask')}";
+            dialog.messages.timepicker = {};
+            dialog.messages.timepicker.regional = {
+                currentText: "${message(code:'dialog.timepicker.currentText')}",
+                closeText: "${message(code:'dialog.timepicker.closeText')}",
+                amNames: ${message(code:'dialog.timepicker.amNames')},
+                pmNames: ${message(code:'dialog.timepicker.pmNames')},
+                timeFormat: "${message(code:'dialog.timepicker.timeFormat')}",
+                timeSuffix: "${message(code:'dialog.timepicker.timeSuffix')}",
+                timeOnlyTitle: "${message(code:'dialog.timepicker.timeOnlyTitle')}",
+                timeText: "${message(code:'dialog.timepicker.timeText')}",
+                hourText: "${message(code:'dialog.timepicker.hourText')}",
+                minuteText: "${message(code:'dialog.timepicker.minuteText')}",
+                secondText: "${message(code:'dialog.timepicker.secondText')}",
+                millisecText: "${message(code:'dialog.timepicker.millisecText')}",
+                microsecText: "${message(code:'dialog.timepicker.microsecText')}",
+                timezoneText: "${message(code:'dialog.timepicker.timezoneText')}",
+                isRTL: ${message(code:'dialog.timepicker.isRTL')}
+            };
+            dialog.messages.timepicker.mask="${message(code:'dialog.timepicker.mask')}";
+            dialog.messages.timepicker.invalidTime="${message(code:'dialog.timepicker.invalidTime')}"
+  			dialog.messages.datetimepicker = {};
+            dialog.messages.datetimepicker.mask="${message(code:'dialog.datetimepicker.mask')}";
             dialog.messages.datatables = {
                 "oLanguage": {
                     "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
@@ -100,6 +122,9 @@ class DialogTagLib {
                     "sNew":"${message(code:'dialog.datatables.sNew')}"
                 },
            };
+            dialog.messages.validation = {};
+            dialog.messages.validation.invalidTime="${message(code:'dialog.validation.invalidTime')}";
+            dialog.messages.validation.invalidDateTime="${message(code:'dialog.validation.invalidDateTime')}";           
         </script>
 		"""
 
@@ -335,7 +360,7 @@ class DialogTagLib {
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
 					}
 
-					out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker input input-small')
+					out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 					break
 			}
@@ -367,7 +392,7 @@ class DialogTagLib {
 				case "edit":
 					def dateValue=null
                     def submitDateValue
-                    def dateFormat=g.message(code:"dialog.date.format",default:"yyyy-MM-dd HH:mm:ss")
+                    def dateFormat=g.message(code:"dialog.date.format",default:"yyyy-MM-dd")
                     if (attrs.object."${attrs.propertyName}") {
 						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
@@ -376,13 +401,13 @@ class DialogTagLib {
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
 
-                    out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker input input-small')
+                    out << g.textField(name:'entry-'+attrs.propertyName,value:dateValue,class:'datepicker')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 
 					out << "&nbsp;"
 
                     def timeFormat=g.message(code:"dialog.time.format",default:"HH:mm")
-					def timeAttrs=[name:attrs.propertyName+'_time',value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-mini']
+					def timeAttrs=[name:attrs.propertyName+'_time',value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time']
 					out << g.textField(timeAttrs)
 
 					break

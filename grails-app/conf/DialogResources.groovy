@@ -3,7 +3,7 @@ modules = {
 		dependsOn 'jquery'
 		resource url:'js/jquery/jquery-ui-1.9.2.custom.min.js'
 		resource url: 'css/bootstrap-theme/jquery-ui-1.9.2.custom.css'
-		resource url:'/js/dialog.js'
+	    resource url:'/js/dialog.js'
 		resource url:'/css/dialog.css'
 
 	}
@@ -103,9 +103,21 @@ modules = {
 		resource url:'js/jquery/jquery.maskedinput.js'
 	}
 
+
     'dialog-datepicker' {
-		dependsOn 'dialog,dialog-maskedinput'
+		dependsOn 'dialog,dialog-maskedinput,dialog-modernizr'
 		resource url:'/js/dialog.datepicker.js'
 	}
 
+    'dialog-timepicker' {
+		dependsOn 'dialog'
+        resource url:'/js/jquery/jquery-ui-sliderAccess.js'
+        resource url:'/js/jquery/jquery-ui-timepicker-addon.js'
+        resource url:'/css/jquery-ui-timepicker-addon.css'
+	}
+
+	'dialog-modernizr' {
+		dependsOn 'dialog'
+		resource url:'/js/modernizr.js'
+	}
 }

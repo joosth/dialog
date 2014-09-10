@@ -20,33 +20,59 @@
 */
 
 if (!window.dialog) {
-	window.dialog={};
+    window.dialog = {};
 }
 
 if (!window.dialog.datepicker) {
-	window.dialog.datepicker={};
+    window.dialog.datepicker = {};
 }
 
 
-dialog.datepicker.open =function open (e,params) {
-    $(this).find(".datepicker").each (function (i) {
-        var id=this.id;
-        var yearRange="c-10:c+10";
-        if ($(this).attr('yearRange')) {
-            yearRange=$(this).attr('yearRange');
-        }
+dialog.datepicker.open = function open (e, params) {
 
-        var updateElementId = $(this).attr('id').replace("entry-","")+'_date';
-        $(this).datepicker({    changeMonth: true,
-                                changeYear:true,
-                                altField:"#"+updateElementId,
-                                altFormat:"yy-mm-dd'T'00:00:00",
-                                yearRange:yearRange
-                            }).mask(dialog.messages.datepicker.mask);
+    $(this).find(".datepicker").each( function (i) {
+
+        var updateElementId = $(this).attr('id').replace("entry-", "") + '_date';
+
+        //Check browser support for HTML5 date widget..
+        if (Modernizr.inputtypes.date) {
+
+            //HTML5 date widget
+            $(this).on('change', function() {
+                var dateValue = $.datepicker.parseDate("yy-mm-dd", $(this).val());
+                if (dateValue) {
+                    $("#" + updateElementId).val( $.datepicker.formatDate("yy-mm-dd'T'00:00:00", dateValue) );
+                }
+                else {
+                    $("#" + updateElementId).val('');
+                }
+            });
+        }
+        else {
+
+            //jQuery UI Datepicker with mask
+            var dateValue = $.datepicker.parseDate("yy-mm-dd", $(this).val());
+            if (dateValue) {
+                $(this).val( $.datepicker.formatDate($.datepicker._defaults.dateFormat, dateValue) );
+            }
+            else {
+                $(this).val('');
+            }
+
+            var yearRange = $(this).attr('yearRange') ? $(this).attr('yearRange') : "c-10:c+10";
+
+            $(this).datepicker({
+                altField: "#" + updateElementId,
+                altFormat: "yy-mm-dd'T'00:00:00",
+                changeMonth: true,
+                changeYear: true,
+                yearRange: yearRange
+            }).mask(dialog.messages.datepicker.mask);
+        }
     });
 };
 
 $(function() {
     $.datepicker.setDefaults( window.dialog.messages.datepicker.regional );
-	$("body").on("dialog-open",window.dialog.datepicker.open);
+    $("body").on("dialog-open", window.dialog.datepicker.open);
 });
