@@ -100,9 +100,6 @@ class DialogTagLib {
                 isRTL: ${message(code:'dialog.timepicker.isRTL')}
             };
             dialog.messages.timepicker.mask="${message(code:'dialog.timepicker.mask')}";
-            dialog.messages.timepicker.invalidTime="${message(code:'dialog.timepicker.invalidTime')}"
-  			dialog.messages.datetimepicker = {};
-            dialog.messages.datetimepicker.mask="${message(code:'dialog.datetimepicker.mask')}";
             dialog.messages.datatables = {
                 "oLanguage": {
                     "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
@@ -121,7 +118,7 @@ class DialogTagLib {
                      },
                     "sNew":"${message(code:'dialog.datatables.sNew')}"
                 },
-           };
+            };
             dialog.messages.validation = {};
             dialog.messages.validation.invalidTime="${message(code:'dialog.validation.invalidTime')}";
             dialog.messages.validation.invalidDateTime="${message(code:'dialog.validation.invalidDateTime')}";           
@@ -360,7 +357,7 @@ class DialogTagLib {
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
 					}
 
-					out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker input input-medium')
+					out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker input input-small')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 					break
 			}
@@ -401,13 +398,13 @@ class DialogTagLib {
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
 
-                    out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker input input-medium')
+                    out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker input input-small')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 
 					out << "&nbsp;"
 
                     def timeFormat="HH:mm"
-					def timeAttrs=[name:attrs.propertyName+'_time',type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-medium']
+					def timeAttrs=[name:attrs.propertyName+'_time',type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-mini']
 					out << g.field(timeAttrs)
 
 					break
