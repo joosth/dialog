@@ -36,7 +36,8 @@ dialog.datepicker.open = function open (e, params) {
 
         //Check browser support for HTML5 date widget..
         if (Modernizr.inputtypes.date) {
-
+            $(this).removeClass('input-small');
+            $(this).addClass('input-medium');
             //HTML5 date widget
             $(this).on('change', function() {
                 var dateValue = $.datepicker.parseDate("yy-mm-dd", $(this).val());
