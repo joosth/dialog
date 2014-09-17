@@ -8,6 +8,14 @@ input:required:valid { background-image: url(/dialog/css/theme/images/validation
 .wide input { width:300px;}
 .extrawide input { width:600px;}
 
+.input-mini input { width: 60px;}
+.input-small input { width: 90px;}
+.input-medium input { width: 150px;}
+.input-medium input { width: 150px;}
+.input-large input { width: 210px;}
+.input-xlarge input { width: 270px;}
+.input-xxlarge input { width: 530px;}
+
 .autocomplete-description {font-size:10px;}
 .ac-idle { border: 0px solid #ffffff;padding:0px;}
 .ac-selected { border: 1px solid #888;padding:3px; background: url("theme/images/ui-bg_highlight.png") repeat-x scroll 50% 50% #CCCCCC;
@@ -43,10 +51,10 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
     padding: 5px;
 }
 .prop .name {
-    text-align: left;    
+    text-align: left;
 }
 .prop .value {
-    text-align: left;    
+    text-align: left;
 }
 
 
@@ -59,7 +67,7 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
 
 .btn:focus {outline:none;}
 
-.processing { 
+.processing {
 	float:right; color:#888;
 	font-size: 14px;
     line-height: 20px;
