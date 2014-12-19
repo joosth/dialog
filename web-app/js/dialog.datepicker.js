@@ -50,9 +50,8 @@ dialog.datepicker.open = function open (e, params) {
             });
         }
         else {
-
             //jQuery UI Datepicker with mask
-            var dateValue = $.datepicker.parseDate("yy-mm-dd", $(this).val());
+            var dateValue = $.datepicker.parseDate("yy-mm-dd'T'00:00:00", $("#"+updateElementId).val());
             if (dateValue) {
                 $(this).val( $.datepicker.formatDate($.datepicker._defaults.dateFormat, dateValue) );
             }
