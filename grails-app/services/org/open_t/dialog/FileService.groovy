@@ -210,7 +210,7 @@ class FileService {
                     }
         		}
 
-				[0:"""<a href="${downloadLink}">${file.name}</a>""",
+				[0:"""<a href="${downloadLink}" target="_blank">${file.name}</a>""",
 				 1:file.length(),
 				 2:format.format(file.lastModified()),
                  3: actions(params,file)]
