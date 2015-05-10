@@ -222,15 +222,20 @@ class FileService {
 			}
 			iTotalRecords=aaData.size()
 
-			Integer firstResult=params.iDisplayStart?new Integer(params.iDisplayStart):0
-			Integer maxResults=params.iDisplayLength?new Integer(params.iDisplayLength):10
+			if (iTotalRecords>0) {
 
+				Integer firstResult = params.iDisplayStart ? new Integer(params.iDisplayStart) : 0
+				Integer maxResults = params.iDisplayLength ? new Integer(params.iDisplayLength) : 10
 
-			// pagination
-			if (firstResult>iTotalRecords) { firstResult=iTotalRecords }
-			if ((firstResult+maxResults)>iTotalRecords) {maxResults=iTotalRecords-firstResult}
-			aaData=aaData[firstResult..firstResult+maxResults-1]
-
+				// pagination
+				if (firstResult > iTotalRecords) {
+					firstResult = iTotalRecords
+				}
+				if ((firstResult + maxResults) > iTotalRecords) {
+					maxResults = iTotalRecords - firstResult
+				}
+				aaData = aaData[firstResult..firstResult + maxResults - 1]
+			}
 
 		}
 		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalRecords,aaData:aaData]
