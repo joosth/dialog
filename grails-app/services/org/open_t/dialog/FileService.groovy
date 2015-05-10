@@ -185,6 +185,7 @@ class FileService {
 		def diUrl=fileUrl(dc,params.id,fileCategory)
 
 		def aaData=[:]
+		Integer iTotalRecords=0
 		if(params.id&& params.id!="null") {
 			File dir = new File(filePath(dc,params.id,fileCategory))
 			aaData=dir.listFiles().collect { file ->
@@ -219,8 +220,20 @@ class FileService {
 			if (params.sSortDir_0=="desc") {
 				aaData=aaData.reverse()
 			}
+			iTotalRecords=aaData.size()
+
+			Integer firstResult=params.iDisplayStart?new Integer(params.iDisplayStart):0
+			Integer maxResults=params.iDisplayLength?new Integer(params.iDisplayLength):10
+
+
+			// pagination
+			if (firstResult>iTotalRecords) { firstResult=iTotalRecords }
+			if ((firstResult+maxResults)>iTotalRecords) {maxResults=iTotalRecords-firstResult}
+			aaData=aaData[firstResult..firstResult+maxResults-1]
+
+
 		}
-		def json = [sEcho:params.sEcho,iTotalRecords:aaData.size(),iTotalDisplayRecords:aaData.size(),aaData:aaData]
+		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalRecords,aaData:aaData]
 	}
 
     /**
