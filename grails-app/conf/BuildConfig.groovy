@@ -10,7 +10,7 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
-		runtime 'org.grails.plugins:twitter-bootstrap:2.3.2',':resources:1.1.5'
+		runtime 'org.grails.plugins:twitter-bootstrap:2.3.2'
 
 		build ':release:2.2.1', ':rest-client-builder:1.0.3', {
 			export = false

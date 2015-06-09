@@ -22,82 +22,79 @@ dialog.datatables = {};
 
 
 dialog.datatables.open =function open (e,params) {
-	$(e.target).find('.detailTable,table.datatable').each( function(index) {
-		var curMatch = $(this);
-		var tableId = curMatch.attr('id');
-		var jsonUrl = curMatch.attr("jsonUrl");
-		var newButton=curMatch.attr("newButton");
-        var datatableType=curMatch.attr("datatable-type") || "detail";
-		var positionUrl = curMatch.attr("positionUrl");
-		var controller = jsonUrl.split('/')[1]; //extract controller name from json url
-        var bFilter=curMatch.attr("bFilter")=="true";
-        var toolbar=curMatch.attr("toolbar") || "";
-        var iDisplayLength=curMatch.attr("iDisplayLength") || 5;
+    var curMatch = $(this);
+    var tableId = curMatch.attr('id');
+    var jsonUrl = curMatch.attr("jsonUrl");
+    var newButton=curMatch.attr("newButton");
+    var datatableType=curMatch.attr("datatable-type") || "detail";
+    var positionUrl = curMatch.attr("positionUrl");
+    var controller = jsonUrl.split('/')[1]; //extract controller name from json url
+    var bFilter=curMatch.attr("bFilter")=="true";
+    var toolbar=curMatch.attr("toolbar") || "";
+    var iDisplayLength=curMatch.attr("iDisplayLength") || 5;
 
-		dialog.dataTableHashList[tableId] = curMatch.dataTable({
-			"bProcessing": true,
-			"bServerSide": true,
-			"sAjaxSource": dialog.baseUrl+jsonUrl,
-			"sPaginationType": "bootstrap",
-			"bFilter": bFilter,
-			"bJQueryUI": false,
-            "aoColumnDefs": [
-                    { "bSortable": false, "aTargets": [ -1 ,"nonsortable"] },
-                    { "bSortable": true, "aTargets": ["_all"] },
-                    { "sClass": "actions" , "aTargets": [ -1 ] }
-				] ,
-			"iDisplayLength":iDisplayLength,
-			"aLengthMenu": [[5,10, 25, 50], [5,10, 25, 50 ]],
-			/*
-		    sDom explanation:
-		    l - Length changing
-		    f - Filtering input
-		    t - The table!
-		    i - Information
-		    p - Pagination
-		    r - pRocessing
-		    < and > - div elements
-		    <"class" and > - div with a class
-		    Examples: <"wrapper"flipt>, <lf<t>ip>
-		*/
+    dialog.dataTableHashList[tableId] = curMatch.dataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": dialog.baseUrl+jsonUrl,
+        "sPaginationType": "bootstrap",
+        "bFilter": bFilter,
+        "bJQueryUI": false,
+        "aoColumnDefs": [
+                { "bSortable": false, "aTargets": [ -1 ,"nonsortable"] },
+                { "bSortable": true, "aTargets": ["_all"] },
+                { "sClass": "actions" , "aTargets": [ -1 ] }
+            ] ,
+        "iDisplayLength":iDisplayLength,
+        "aLengthMenu": [[5,10, 25, 50], [5,10, 25, 50 ]],
+        /*
+        sDom explanation:
+        l - Length changing
+        f - Filtering input
+        t - The table!
+        i - Information
+        p - Pagination
+        r - pRocessing
+        < and > - div elements
+        <"class" and > - div with a class
+        Examples: <"wrapper"flipt>, <lf<t>ip>
+    */
 
-		"sDom": '<"toolbar"lf><"processing"r>tip',
-			"oLanguage": dialog.messages.datatables.oLanguage,
-	    	"fnInitComplete": function() {
-	    		if ( $(this).hasClass("rowreordering")) {
-       				dialog.dataTableHashList[tableId].rowReordering(
-       				{
-       					 sURL:dialog.baseUrl+positionUrl,
-                         sRequestType: "POST"
+    "sDom": '<"toolbar"lf><"processing"r>tip',
+        "oLanguage": dialog.messages.datatables.oLanguage,
+        "fnInitComplete": function() {
+            if ( $(this).hasClass("rowreordering")) {
+                dialog.dataTableHashList[tableId].rowReordering(
+                {
+                     sURL:dialog.baseUrl+positionUrl,
+                     sRequestType: "POST"
 
-       				});
-       			};
+                });
+            };
 
-               curMatch.parent().find('div.toolbar').prepend(toolbar);
+           curMatch.parent().find('div.toolbar').prepend(toolbar);
 
-                // Add NEW button ("parent()" is the div with class dataTables_wrapper)
+            // Add NEW button ("parent()" is the div with class dataTables_wrapper)
 
-                var newString=this.dataTableSettings[0].oLanguage.sNew;
-                if (!newString) {
-                    newString="new";
-                }
-                if (!newButton || newButton!="false") {
-                    if (datatableType=="detail") {
-                        // only show detail table if parent is present
-                        if (params != null && (params.id != null)) {
-                            curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+params.id+'})">'+newString+'</span></span>&nbsp;');
-                        }
-                    } else {
-                        curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, {})">'+newString+'</span></span>&nbsp;');
+            var newString=this.dataTableSettings[0].oLanguage.sNew;
+            if (!newString) {
+                newString="new";
+            }
+            if (!newButton || newButton!="false") {
+                if (datatableType=="detail") {
+                    // only show detail table if parent is present
+                    if (params != null && (params.id != null)) {
+                        curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+params.id+'})">'+newString+'</span></span>&nbsp;');
                     }
+                } else {
+                    curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, {})">'+newString+'</span></span>&nbsp;');
                 }
-	    	}
-		});
-		// refresh dialog on event
-		$("#"+tableId).bind("dialog-refresh",dialog.datatables.refreshDatatableEvent);
-		$("#"+tableId).addClass("dialog-events");
-	});
-	return false;
+            }
+        }
+    });
+    // refresh dialog on event
+    $("#"+tableId).bind("dialog-refresh",dialog.datatables.refreshDatatableEvent);
+    $("#"+tableId).addClass("dialog-events");
 }
 
 /**
@@ -137,8 +134,8 @@ dialog.datatables.refreshDataTable = function refreshDataTable(key, list, lastPa
 			curTable.fnPageChange( 'last' );
 		}
 	}
-}
+};
 
 $(function() {
-	$("body").on("dialog-open",dialog.datatables.open);
+	$(document).on("dialog-open",".detailTable,table.datatable",dialog.datatables.open);
 });

@@ -1,6 +1,6 @@
 /*
 * TinyMCE module for dialog plugin
-*  
+*
 * Grails Dialog plug-in
 * Copyright 2011 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
@@ -21,17 +21,16 @@
 dialog.tinymce = {};
 
 dialog.tinymce.open =function open (e,params) {
-	$(e.target).find("td.tinymce textarea").each( function() {
 		var theme = $(this).attr('theme');
 		var plugins=$(this).attr('plugins');
 
 
 		$(this).tinymce({theme : theme,
             //mode : "textareas",
-            plugins : plugins,                    
-            media_external_list_url:dialog.baseUrl+"/"+params.controllerName+"/medialist/"+params.id,               
+            plugins : plugins,
+            media_external_list_url:dialog.baseUrl+"/"+params.controllerName+"/medialist/"+params.id,
             external_image_list_url:dialog.baseUrl+"/"+params.controllerName+"/imagelist/"+params.id,
-            theme_advanced_buttons1_add : "media,fullscreen", 
+            theme_advanced_buttons1_add : "media,fullscreen",
 
            	valid_elements : "*[*]",
        		verify_html : false,
@@ -39,11 +38,8 @@ dialog.tinymce.open =function open (e,params) {
        		forced_root_block : false,
 
        		cleanup: false,
-            	
+
     	});
-    	        		
-	});
-	return false
 
 }
 
@@ -57,9 +53,9 @@ dialog.tinymce.close =function close (e,params) {
 
 
 $(function() {
-	$("body").on("dialog-open",dialog.tinymce.open);
-	$("body").on("dialog-close",dialog.tinymce.close);
-	
+	$(document).on("dialog-open","td.tinymce textarea",dialog.tinymce.open);
+	$(document).on("dialog-close","td.tinymce textarea",dialog.tinymce.close);
+
 	$("td.tinymce textarea").tinymce({
 		valid_elements : "*[*]",
 		verify_html : false,

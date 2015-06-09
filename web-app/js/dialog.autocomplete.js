@@ -20,80 +20,72 @@
 */
 dialog.autocomplete = {};
 
-
 dialog.autocomplete.open =function(e,params) {
-	$(e.target).find('input.autocomplete').each( function(index) {
-			var curMatch = $(this);
-			var jsonUrl = curMatch.attr("jsonUrl");
-            var entryName=curMatch.attr("name");
-			var name=entryName.replace("-entry","");
+    var curMatch = $(this);
+    var jsonUrl = curMatch.attr("jsonUrl");
+    var entryName=curMatch.attr("name");
+    var name=entryName.replace("-entry","");
 
-            var submitName=curMatch.attr("submitName") ? curMatch.attr("submitName") : name+'.id';
+    var submitName=curMatch.attr("submitName") ? curMatch.attr("submitName") : name+'.id';
 
-			curMatch.autocomplete({source:jsonUrl,
-									minLength:0,
-				select: function( event, ui ) {
-					$( this ).val( ui.item.label );
-					$('[name="'+ submitName+'"]' ).val( ui.item.value );
-					$('[name="'+ submitName+'"]' ).attr("label", ui.item.label );
-					if (ui.item.description) {
-						$('#'+name+'-description' ).html( ui.item.description);
-					}
-					$('#'+name+'-container' ).addClass("ac-selected");
-					$('#'+name+'-container' ).removeClass("ac-idle");
-					$('#'+name+'-container' ).removeClass("ac-selecting");
-					// nice idea! should use this.
-					//$( "#project-icon" ).attr( "src", "images/" + ui.item.icon );
+    curMatch.autocomplete({source:jsonUrl,
+                            minLength:0,
+        select: function( event, ui ) {
+            $( this ).val( ui.item.label );
+            $('[name="'+ submitName+'"]' ).val( ui.item.value );
+            $('[name="'+ submitName+'"]' ).attr("label", ui.item.label );
+            if (ui.item.description) {
+                $('#'+name+'-description' ).html( ui.item.description);
+            }
+            $('#'+name+'-container' ).addClass("ac-selected");
+            $('#'+name+'-container' ).removeClass("ac-idle");
+            $('#'+name+'-container' ).removeClass("ac-selecting");
+            // nice idea! should use this.
+            //$( "#project-icon" ).attr( "src", "images/" + ui.item.icon );
 
-					return false;
-				},
-			   change: function(event, ui) {
-				   var currentValue=$( this ).val();
-				   var label=$('[name="'+ submitName+'"]' ).attr("label");
-				   $(this).trigger("change");
-				   $('[name="'+ submitName+'"]' ).trigger("change",this);
-				   return false;
-			   },
+            return false;
+        },
+       change: function(event, ui) {
+           var currentValue=$( this ).val();
+           var label=$('[name="'+ submitName+'"]' ).attr("label");
+           $(this).trigger("change");
+           $('[name="'+ submitName+'"]' ).trigger("change",this);
+           return false;
+       },
 
-				focus: function( event, ui ) {
-					$( this ).val( ui.item.label );
-					$('#'+name+'-container' ).removeClass("ac-selected");
-					$('#'+name+'-container' ).removeClass("ac-idle");
-					$('#'+name+'-container' ).addClass("ac-selecting");
-					return false;
-				}
-			}).data( "autocomplete" )._renderItem = function( ul, item ) {
-					var desc = item.description ? item.description : "";
-				return $( "<li></li>" )
-			.data( "item.autocomplete", item )
-			.append( "<a>" + item.label + "<br><span class=\"autocomplete-description\">" + desc + "</span></a>" )
-			.appendTo( ul );
-			};
+        focus: function( event, ui ) {
+            $( this ).val( ui.item.label );
+            $('#'+name+'-container' ).removeClass("ac-selected");
+            $('#'+name+'-container' ).removeClass("ac-idle");
+            $('#'+name+'-container' ).addClass("ac-selecting");
+            return false;
+        }
+    }).data( "autocomplete" )._renderItem = function( ul, item ) {
+            var desc = item.description ? item.description : "";
+        return $( "<li></li>" )
+    .data( "item.autocomplete", item )
+    .append( "<a>" + item.label + "<br><span class=\"autocomplete-description\">" + desc + "</span></a>" )
+    .appendTo( ul );
+    };
 
-			curMatch.blur(function() {
-				   var currentValue=$( this ).val();
-				   var label=$('[name="'+ submitName+'"]' ).attr("label");
+    curMatch.blur(function() {
+           var currentValue=$( this ).val();
+           var label=$('[name="'+ submitName+'"]' ).attr("label");
 
-				   if (currentValue==="" || currentValue==="-") {
-					$('[name="'+ submitName+'"]' ).val("null");
-				   } else {
-					   $( this ).val( label );
-				   }
+           if (currentValue==="" || currentValue==="-") {
+            $('[name="'+ submitName+'"]' ).val("null");
+           } else {
+               $( this ).val( label );
+           }
 
-				   $('#'+name+'-container' ).addClass("ac-selected");
-				   $('#'+name+'-container' ).removeClass("ac-idle");
-				   $('#'+name+'-container' ).removeClass("ac-selecting");
-
-				});
-
-		}
-		);
-	return false;
+           $('#'+name+'-container' ).addClass("ac-selected");
+           $('#'+name+'-container' ).removeClass("ac-idle");
+           $('#'+name+'-container' ).removeClass("ac-selecting");
+    });
 };
 
 
 
 $(function() {
-	$("body").on("dialog-open",dialog.autocomplete.open);
-
+	$(document).on("dialog-open","input.autocomplete",dialog.autocomplete.open);
 });

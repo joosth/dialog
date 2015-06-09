@@ -190,7 +190,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        	],
         open: function(event, ui) {
         	// This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
-        	$(this).trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
+        	$(this).find(".dialog-events").trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
 
     		 $(this).keyup(function(e) {
     		    if (e.keyCode == 13 && e.target.nodeName!="TEXTAREA") {

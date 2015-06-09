@@ -13,7 +13,7 @@
             <g:if test="${title}">${title}</g:if>
             <g:else><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></g:else>
         </h3>
-        <div class="datatable" id="tableWrapper_${dc.getName().replace('.','_').replace('class ','')}">
+        <div class="datatable dialog-events" id="tableWrapper_${dc.getName().replace('.','_').replace('class ','')}">
             <table iDisplayLength="10" datatable-type="master" bFilter="${bFilter ? true : false}"
                     jsonUrl="${createLink(base:'/',controller:controllerName,action: jsonlist ? jsonlist :'jsonlist',params:jsonlistparams?jsonlistparams:[:]).substring(1)}"
                     cellpadding="0" cellspacing="0" border="0" class="detailTable datatable table table-striped table-bordered display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace('.','_').replace('class ','')}"
