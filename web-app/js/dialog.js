@@ -124,7 +124,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 
 	// If an error occurred, show it and bail out.
     if (errorMessage) {
-        $(".dialog-events").trigger("dialog-message",{message:errorMessage,alertType:'error'});
+        $(".dialog-message-events").trigger("dialog-message",{message:errorMessage,alertType:'error'});
         return
     }
 
@@ -158,8 +158,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 				 		{
 				 		var jsonResponse = data.result;
 
-				 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse})
-				 		$(".dialog-events").trigger("dialog-message",{message:jsonResponse.message})
+				 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse})
+				 		$(".dialog-message-events").trigger("dialog-message",{message:jsonResponse.message})
 
 				 		if(jsonResponse.success){
 					 		theDialog.dialog("close");
@@ -190,7 +190,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        	],
         open: function(event, ui) {
         	// This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
-        	$(this).find(".dialog-events").trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
+        	$(this).find(".dialog-open-events").trigger("dialog-open",{event:event,ui:ui,'this':this,id:id,controllerName:controllerName});
 
     		 $(this).keyup(function(e) {
     		    if (e.keyCode == 13 && e.target.nodeName!="TEXTAREA") {
@@ -249,8 +249,8 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
 			 		var result=data.result
 
 
-			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:result})
-			 		$(".dialog-events").trigger("dialog-message",{message:result.message})
+			 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:result})
+			 		$(".dialog-message-events").trigger("dialog-message",{message:result.message})
 
 			 		if(result.success){
 				 		theDialog.dialog("close");
@@ -319,8 +319,8 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 			 		var result=data.result
 
 
-			 		$(".dialog-events").trigger("dialog-refresh",{dc:domainClass,id:id})
-			 		$(".dialog-events").trigger("dialog-message",{message:result.message})
+			 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id})
+			 		$(".dialog-message-events").trigger("dialog-message",{message:result.message})
 
 			 		if(result.success){
 				 		theDialog.dialog("close");
@@ -364,7 +364,7 @@ $(function() {
   	});
 
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
-	$("#statusmessage").addClass("dialog-events");
+	$("#statusmessage").addClass("dialog-message-events");
 
 });
 

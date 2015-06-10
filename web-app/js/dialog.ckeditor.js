@@ -56,6 +56,8 @@ dialog.ckeditor.open =function open (e,params) {
         toolbar:toolbar,
         height:height
     });
+    $(this).addClass("dialog-submit-events");
+    $(this).addClass("dialog-close-events");
 };
 
 dialog.ckeditor.submit =function submit (e,params) {

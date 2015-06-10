@@ -62,6 +62,10 @@ dialog.codemirror.open =function open (e,params) {
         }
         dialog.codemirror.editors[id].setSize(width,height);
     }
+    
+    $(this).addClass("dialog-submit-events");
+    $(this).addClass("dialog-close-events");
+
 }
 
 dialog.codemirror.submit =function submit (e,params) {

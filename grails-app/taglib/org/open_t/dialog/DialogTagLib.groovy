@@ -136,7 +136,7 @@ class DialogTagLib {
         out << """ <script type="text/javascript">
                         \$(function() {
                             \$(document).trigger("dialog-init",{});\n\
-                            \$(".dialog-events").trigger("dialog-open",{"page":true});
+                            \$(".dialog-open-events").trigger("dialog-open",{"page":true});
                         });
                 </script>"""
     }
@@ -358,7 +358,7 @@ class DialogTagLib {
                         submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
 					}
 
-					out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker dialog-events input input-small')
+					out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker dialog-open-events input input-small')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 					break
 			}
@@ -399,7 +399,7 @@ class DialogTagLib {
 					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
 					out << g.hiddenField(hiddenAttrs)
 
-                    out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker dialog-events input input-small')
+                    out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker dialog-open-events input input-small')
                     out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 
 					out << "&nbsp;"
@@ -433,9 +433,9 @@ class DialogTagLib {
 		def skipAttrs=['object','propertyName','mode','type','value']
 		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}
         if (newAttrs['class']) {
-            newAttrs['class']+=' dialog-events'
+            newAttrs['class']+=' dialog-open-events'
         } else {
-            newAttrs['class']='dialog-events'
+            newAttrs['class']='dialog-open-events'
         }
 
         
@@ -473,9 +473,9 @@ class DialogTagLib {
 		newAttrs.value = xmltext ? dialogService.prettyPrint(xmltext) : ""
 		newAttrs.name=attrs.propertyName
         if (newAttrs['class']) {
-            newAttrs['class']+=' dialog-events'
+            newAttrs['class']+=' dialog-open-events'
         } else {
-            newAttrs['class']='dialog-events'
+            newAttrs['class']='dialog-open-events'
         }
 
 	out << row (attrs) {
@@ -583,7 +583,7 @@ class DialogTagLib {
 					}
 					def containerClass = value ? "ac-selected" : "ac-idle"
 					// input+hidden field
-					"""<input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete dialog-events" jsonUrl="${jsonUrl}" />
+					"""<input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete dialog-open-events" jsonUrl="${jsonUrl}" />
 						${descriptionText}
 						<input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}"/>"""
 					break
@@ -878,7 +878,7 @@ class DialogTagLib {
 		}
 
 		out << """<div class="datatable">
-					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table dialog-events table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
+					<table id="${prefix}" ${copiedAttrs} class="${cssClass} table dialog-open-events table-striped table-bordered table-hover" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}"><thead><tr>"""
 			if (listConfig) {
 				listConfig.columns.each { column ->
 					out << """<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}">${g.message(code:"list.${listConfig.name}.${column.name}.label")}</th>"""
@@ -920,7 +920,7 @@ class DialogTagLib {
 
 		def cssClass="detailTable"
 
-		out << """<table id="${prefix}" class="${cssClass} table dialog-events table-striped table-bordered table-hover xxx" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
+		out << """<table id="${prefix}" class="${cssClass} table dialog-open-events table-striped table-bordered table-hover xxx" jsonUrl="${jsonUrl}" newButton="false"><thead><tr>"""
 		out << """<th>${g.message(code:"filestable.filename.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.size.label")}</th>"""
 		out << """<th>${g.message(code:"filestable.date.label")}</th>"""
@@ -943,7 +943,7 @@ class DialogTagLib {
 			 }
 		}
 
-		out <<"""<div class="upload dialog-events" ${copiedAttrs}>"""
+		out <<"""<div class="upload dialog-open-events" ${copiedAttrs}>"""
 		out << body()
 		out << """</div>"""
 	}

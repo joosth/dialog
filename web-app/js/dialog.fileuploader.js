@@ -50,9 +50,9 @@ dialog.fileuploader.open =function open (e,params) {
 
                 $(this.element).append('<input type=\"hidden\" name=\"fileupload\" value=\"'+upload+'\" />');
                 if (responseJSON.success==true) {
-                    $(".dialog-events").trigger("dialog-refresh",{dc:"ALL",id:id});
+                    $(".dialog-refresh-events").trigger("dialog-refresh",{dc:"ALL",id:id});
                 } else {
-                    $(".dialog-events").trigger("dialog-message",{message:responseJSON.message,alertType:"error"});
+                    $(".dialog-message-events").trigger("dialog-message",{message:responseJSON.message,alertType:"error"});
                 }
 
             }
