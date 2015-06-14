@@ -22,16 +22,13 @@ dialog.codemirror = {};
 dialog.codemirror.editors = {};
 
 dialog.codemirror.openpre =function open (e,params) {
-    // TODO check if this is still correct (catviz?)
-    CodeMirror.colorize([this]);
+    $(this).find("pre").each( function() {
+        CodeMirror.colorize([this]);
+	});
+    return false;
 };
 
 dialog.codemirror.open =function open (e,params) {
-    // TODO
-	$(e.target).find("pre").each( function() {
-		CodeMirror.colorize([this]);
-	});
-
     var id=$(this).attr("id");
     var width=$(this).attr("width");
     var height=$(this).attr("height");
@@ -62,7 +59,7 @@ dialog.codemirror.open =function open (e,params) {
         }
         dialog.codemirror.editors[id].setSize(width,height);
     }
-    
+
     $(this).addClass("dialog-submit-events");
     $(this).addClass("dialog-close-events");
 
@@ -80,14 +77,14 @@ dialog.codemirror.close =function close (e,params) {
     var id=$(this).attr("id");
     if (id) {
         dialog.codemirror.editors[id].toTextArea();
-        delete dialog.codemirror.editors[id];
+        dialog.codemirror.editors[id].delete();
     }
 };
 
 
 $(function() {
 	$(document).on("dialog-open",".codemirror textarea", dialog.codemirror.open);
-    $(document).on("dialog-open","pre.codemirror", dialog.codemirror.openpre);
+    $(document).on("dialog-open",".dialog-open-events", dialog.codemirror.openpre);
 	$(document).on("dialog-submit",".codemirror textarea",dialog.codemirror.submit);
 	$(document).on("dialog-close",".codemirror textarea",dialog.codemirror.close);
 });
