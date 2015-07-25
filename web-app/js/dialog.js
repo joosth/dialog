@@ -146,6 +146,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		 buttons:
 			 [ { text: window.dialog.messages.ok, click: function(e,ui) {
 	        	$(this).trigger("dialog-submit",{event:e,ui:ui,'this':this,id:id,controllerName:controllerName});
+                $(this).find(".dialog-submit-events").trigger("dialog-submit",{event:e,ui:ui,'this':this,id:id,controllerName:controllerName});
 
 		 		if (submitForm) {
 		 			theDialog.find("form").attr("action",dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId);
@@ -215,6 +216,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
          },
         close: function(event, ui) {
         	$(this).trigger("dialog-close",{event:event,ui:ui,'this':this})
+            $(this).find(".dialog-close-events").trigger("dialog-close",{event:event,ui:ui,'this':this})
             theDialog.dialog("destroy").remove();
          }
        });
