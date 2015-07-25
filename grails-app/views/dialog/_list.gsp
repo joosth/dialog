@@ -16,7 +16,7 @@
         <div class="datatable dialog-open-events" id="tableWrapper_${dc.getName().replace('.','_').replace('class ','')}">
             <table iDisplayLength="10" datatable-type="master" bFilter="${bFilter ? true : false}"
                     jsonUrl="${createLink(base:'/',controller:controllerName,action: jsonlist ? jsonlist :'jsonlist',params:jsonlistparams?jsonlistparams:[:]).substring(1)}"
-                    cellpadding="0" cellspacing="0" border="0" class="detailTable datatable table table-striped table-bordered display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace('.','_').replace('class ','')}"
+                    cellpadding="0" cellspacing="0" border="0" class="detailTable dialog-open-events datatable table table-striped table-bordered display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace('.','_').replace('class ','')}"
                     positionUrl="/${controllerName}/${position ? position :'position'}" toolbar="${toolbar?:''}" >
                 <thead>
                     <tr>
