@@ -21,7 +21,6 @@
 dialog.ckeditor = {};
 
 dialog.ckeditor.init =function open (e,params) {
- 	CKEDITOR.config.filebrowserImageBrowseUrl = dialog.baseUrl+"/"+params.controllerName+"/filemap/"+params.id;
 	CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
 	CKEDITOR.config.protectedSource.push( /<g:[.\s\S]*>[.\s\S]*<\/g:[.\s\S]*>/gi );	 // Grails Tags
 	CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*>[.\s\S]*<\/c:[.\s\S]*>/gi );	 // Catviz Tags
@@ -48,6 +47,7 @@ dialog.ckeditor.init =function open (e,params) {
 };
 
 dialog.ckeditor.open =function open (e,params) {
+    CKEDITOR.config.filebrowserImageBrowseUrl = dialog.baseUrl+"/"+params.controllerName+"/filemap/"+params.id;
     var toolbar = $(this).attr("toolbar");
     if (!toolbar) { toolbar="Compact" ; };
     var height = $(this).attr("height");
@@ -65,7 +65,6 @@ dialog.ckeditor.submit =function submit (e,params) {
 	for ( instance in CKEDITOR.instances )
 		    CKEDITOR.instances[instance].updateElement();
 	return false;
-
 };
 
 dialog.ckeditor.close =function close (e,params) {
