@@ -93,7 +93,7 @@ dialog.datatables.open =function open (e,params) {
         }
     });
     // refresh dialog on event
-    $("#"+tableId).bind("dialog-refresh-events",dialog.datatables.refreshDatatableEvent);
+    $("#"+tableId).bind("dialog-refresh",dialog.datatables.refreshDatatableEvent);
     $("#"+tableId).addClass("dialog-refresh-events");
 }
 
