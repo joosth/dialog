@@ -38,7 +38,7 @@ target(setupDialogApp: "Set up a dialog-based grails application") {
 """
 modules = {
     ${grailsAppName} {
-        dependsOn 'dialog,dialog-altselect,dialog-dataTables,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal,dialog-bootstrap,dialog-autocomplete,dialog-datepicker,dialog-last'
+        dependsOn 'dialog,dialog-altselect,dialog-dataTables,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal,dialog-bootstrap,dialog-autocomplete,dialog-datepicker'
     }
 }
 """
