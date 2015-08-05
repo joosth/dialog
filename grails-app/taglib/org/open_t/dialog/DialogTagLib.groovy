@@ -342,25 +342,17 @@ class DialogTagLib {
 			switch(attrs.mode) {
 				case "show":
 					def value=attrs.object."${attrs.propertyName}"
-
 					return listService.getDisplayString(value)
-
 					break
 
 				case "edit":
-					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
-					out << g.hiddenField(hiddenAttrs)
-					def dateValue
-                    def submitDateValue
-                    def dateFormat="yyyy-MM-dd"
-					if (attrs.object."${attrs.propertyName}") {
-						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
-                        submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
-					}
+                    def value=attrs.object."${attrs.propertyName}"
+                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss") : ""
+                    def inputValue = value ? value.format("yyyy-MM-dd") : ""
 
-					out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker dialog-open-events input input-small')
-                    out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
-					break
+                    out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation input input-small" value="${inputValue}" />"""
+                    out << """<input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />"""
+                    break
 			}
 		}
 	}
@@ -388,24 +380,18 @@ class DialogTagLib {
 					break
 
 				case "edit":
-					def dateValue=null
-                    def submitDateValue
-                    def dateFormat="yyyy-MM-dd"
-                    if (attrs.object."${attrs.propertyName}") {
-						dateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:dateFormat)
-                        submitDateValue=formatDate(date:attrs.object."${attrs.propertyName}",format:"yyyy-MM-dd'T'HH:mm:ss")
-					}
+                    def value=attrs.object."${attrs.propertyName}"
+                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss") : ""
+                    def inputValue = value ? value.format("yyyy-MM-dd") : ""
 
-					def hiddenAttrs=[name:attrs.propertyName,value:'struct']
-					out << g.hiddenField(hiddenAttrs)
+                    out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation input input-small" value="${inputValue}" />"""
+                    out << """<input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />"""
 
-                    out << g.field(name:'entry-'+attrs.propertyName,type:"date",value:dateValue,class:'datepicker dialog-open-events input input-small')
-                    out << g.hiddenField(name:attrs.propertyName+'_date',value:submitDateValue)
 
 					out << "&nbsp;"
 
                     def timeFormat="HH:mm"
-					def timeAttrs=[name:attrs.propertyName+'_time',type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-mini']
+					def timeAttrs=[id:"entry-${attrs.propertyName}-time",name:"entry-${attrs.propertyName}-time",type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-mini timepicker dialog-open-events']
 					out << g.field(timeAttrs)
 
 					break
@@ -438,7 +424,7 @@ class DialogTagLib {
             newAttrs['class']='dialog-open-events'
         }
 
-        
+
 
 		out << row (attrs) {
 			switch(attrs.mode) {
