@@ -18,7 +18,7 @@
  */
 package org.open_t.dialog
 
-import java.beans.PropertyEditorSupport
+import org.grails.databinding.converters.ValueConverter
 
 /**
  * Big Decimal property editor
@@ -28,22 +28,24 @@ import java.beans.PropertyEditorSupport
  *
  * @author Joost Horward
  */
-class BigDecimalEditor extends PropertyEditorSupport {
 
-	String getAsText() {
-		if( super.getValue()) {
-			def s = String.format("%01.2f",(BigDecimal) super.getValue())
-			return s.replace( '.', ',')
-		}
-		return "0,00"
-	}
+class BigDecimalConvertor implements ValueConverter {
 
-	void setAsText(String value) {
-		if (value=="") {
-			setValue(null)
+    boolean canConvert(value) {
+        value instanceof String
+    }
+
+    def convert(value) {
+
+        if (value=="") {
+			return null
 		} else {
 			def s=value.replace( ',', '.')
-			setValue(new BigDecimal(s))
+			return new BigDecimal(s)
 		}
-	}
+    }
+
+    Class<?> getTargetType() {
+        BigDecimal
+    }
 }
