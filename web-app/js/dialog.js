@@ -373,6 +373,10 @@ $(function() {
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
 	$("#statusmessage").addClass("dialog-message-events");
 
+
+    // Deconflict button() function of twitter bootstrap, see http://stackoverflow.com/questions/13809847/button-classes-not-added-in-jquery-ui-bootstrap-dialog
+    var btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
+    $.fn.btn = btn;
 });
 
 
