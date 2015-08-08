@@ -22,6 +22,7 @@ grails.project.dependency.resolution = {
 	}
 
 	plugins {
+        build ":release:3.1.1"
 		runtime 'org.grails.plugins:twitter-bootstrap:2.3.2.2',':resources:1.2.14'
         compile ":resources:1.2.14"
     }
