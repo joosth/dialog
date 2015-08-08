@@ -204,12 +204,16 @@ class DialogTagLib {
 			out << """</td>"""
 			if (attrs.noHelp!="true"){
 				if (g.message(code:"${domainPropertyName}.${propertyName}.help",default:'')) {
-					out << """<td>&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></td>"""
-				}
-			}
+					out << """<td class="help-icon-column">&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></td>"""
+				} else {
+                out << """<td>&nbsp;</td>"""
+                }
+			} else {
+                out << """<td>&nbsp;</td>"""
+            }
 
 			if (attrs.noErrors!="true"){
-				out <<"""<td class="text-error">${errors}</td>"""
+				out <<"""<td class="text-error error-message"><p class="error-message">${errors}</p></td>"""
 			}
 			out <<"""</tr>"""
 		}

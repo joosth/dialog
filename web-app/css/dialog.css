@@ -1,10 +1,3 @@
-
-/*
-input:required:invalid, input:focus:invalid { background-image: url(/dialog/css/theme/images/validation/invalid.png); background-position: right top; background-repeat: no-repeat; }
-input:required:valid { background-image: url(/dialog/css/theme/images/validation/valid.png); background-position: right top; background-repeat: no-repeat; }
-*/
-
-
 .wide input { width:300px;}
 .extrawide input { width:600px;}
 
@@ -23,9 +16,35 @@ input:required:valid { background-image: url(/dialog/css/theme/images/validation
 .ac-selected input { border: 0px solid #ddd;padding:0px;background-color: transparent;}
 .ac-selecting { border: 0px solid #223311;padding:1px;}
 .ac-icon {display: inline-block;vertical-align:middle;}
-td.name { padding-top:4px;font-size:14px;padding-right:4px;}
-td.value { padding-top:4px;;font-size:14px;}
+
 div.dialog-message {margin-bottom:10px;font-style:italic}
+
+label {margin-top:4px;}
+
+tr.prop td {
+    padding-top:8px;
+    padding-right:4px;
+    font-size: 14px;
+    font-weight: normal;
+    vertical-align: top;
+}
+
+p.error-message {
+    font-size: 14px;
+    color:red;
+    padding-top:4px;
+}
+
+tr.error input {
+    border-color: red;
+    outline: 0 none;
+}
+
+tr.error td input:focus {
+    border-color: red;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset, 0 0 8px rgba(236,168,82,0.6) !important;
+    outline: 0 none;
+}
 
 .autocomplete-container { height:18px;display: inline-block;}
 
@@ -34,7 +53,13 @@ td.tinymce textarea {width:100%;}
 
 table.rowreordering tr { cursor:pointer;}
 div.errors {color:red;}
-.help-icon,.help { background-image: url(../images/help-16x16.png);width:16px;height:16px;cursor:pointer;background-position:5px 5px;display:inline-block;}
+.help-icon,.help { background-image: url(../images/help-16x16.png);
+                   width:16px;
+                   height:16px;
+                   cursor:pointer;background-position:5px 5px;
+                   display:inline-block;
+                   padding-bottom:5px;
+}
 .dialog-horizontal-wrapper {display: inline-block; white-space: nowrap;}
 div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;width:100%;}
 
@@ -57,11 +82,6 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
     text-align: left;
 }
 
-
-
-
-
-
 .error {color: red;}
 .action {min-height:16px; padding:2px 0 2px 13px;background-repeat:no-repeat;display:inline-block;}
 
@@ -78,7 +98,7 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
 .dialog-form-table { width:100%;}
 #progressbar { width:800px;}
 input.cke_dialog_ui_input_text { height: 26px !important; }
-za.cke_dialog_ui_button { height: 18px !important; }
+a.cke_dialog_ui_button { height: 18px !important; }
 
 .delete-dialog { height:200px;}
 

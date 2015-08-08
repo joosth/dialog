@@ -22,7 +22,7 @@
  */
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
-}
+};
 
 /**
  * Removed leading and trailing spaces
@@ -33,7 +33,7 @@ dialog.trim = function trim(value) {
 	  value = value.replace(/^\s+/,'');
 	  value = value.replace(/\s+$/,'');
 	  return value;
-}
+};
 
 /**
  * Pack params in an url-friendly String
@@ -50,7 +50,7 @@ dialog.obj2ParamStr = function obj2ParamStr(params) {
 		 }
 	 }
 	 return paramStr;
-}
+};
 
 /**
  * Modal JQuery UI confirmation dialog
@@ -66,7 +66,7 @@ dialog.confirm = function confirm(message,title,callback,data) {
 			"OK": function(data) {
 				$( this ).dialog( "close" );
 				if(callback){
-					callback(dx)
+					callback(dx);
 				}
 			},
 			Cancel: function() {
@@ -77,7 +77,7 @@ dialog.confirm = function confirm(message,title,callback,data) {
             confirmDialog.remove();
             }
         });
-}
+};
 
 /**
  * Show dialog
@@ -125,7 +125,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 	// If an error occurred, show it and bail out.
     if (errorMessage) {
         $(".dialog-message-events").trigger("dialog-message",{message:errorMessage,alertType:'error'});
-        return
+        return;
     }
 
 
@@ -155,26 +155,31 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 		 		} else {
 		 		if (!noSubmit) {
 				 	var formData=theDialog.find("form").serialize();
+                    // Clear out error messages from any previous attempt
+                    theDialog.find("div.errors").html("");
+                    theDialog.find("p.error-message").html("");
+                    theDialog.find(".error").removeClass("error");
+
 				 	$.post(dialog.baseUrl+"/"+controllerName+"/"+submitName+"/"+urlId,formData, function(data)
 				 		{
 				 		var jsonResponse = data.result;
 
-				 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse})
-				 		$(".dialog-message-events").trigger("dialog-message",{message:jsonResponse.message})
+				 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:jsonResponse});
+				 		$(".dialog-message-events").trigger("dialog-message",{message:jsonResponse.message});
 
 				 		if(jsonResponse.success){
 					 		theDialog.dialog("close");
 					 		if (jsonResponse.nextDialog) {
-					 			dialog.formDialog(jsonResponse.nextDialog.id,jsonResponse.nextDialog.controllerName,jsonResponse.nextDialog.options,jsonResponse.nextDialog.urlParams)
+					 			dialog.formDialog(jsonResponse.nextDialog.id,jsonResponse.nextDialog.controllerName,jsonResponse.nextDialog.options,jsonResponse.nextDialog.urlParams);
 					 		}
 					 	} else  {
-					 		for (key in jsonResponse.errorFields) {
-					 			var errorField=jsonResponse.errorFields[key]
-					 			$("#"+errorField).parent().addClass("errors")
+					 		for (fieldName in jsonResponse.errorFields) {
+                                var errorMessage=jsonResponse.errorFields[fieldName];
+                                $(".property-"+fieldName).addClass("error");
+                                $(".property-"+fieldName).find("p.error-message").html(errorMessage);
 					 		}
-					 		theDialog.find("div.errors").html(jsonResponse.message)
+					 		theDialog.find("div.errors").html(jsonResponse.message);
 					 		theDialog.find("div.errors").show();
-
 				 		}
 				 	},"json");
 
@@ -215,15 +220,15 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 
          },
         close: function(event, ui) {
-        	$(this).trigger("dialog-close",{event:event,ui:ui,'this':this})
-            $(this).find(".dialog-close-events").trigger("dialog-close",{event:event,ui:ui,'this':this})
+        	$(this).trigger("dialog-close",{event:event,ui:ui,'this':this});
+            $(this).find(".dialog-close-events").trigger("dialog-close",{event:event,ui:ui,'this':this});
             theDialog.dialog("destroy").remove();
          }
        });
 
 	 }
 	 return false;
-}
+};
 
 /**
  * Show a delete dialog
@@ -235,11 +240,11 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParams) {
 	var urlId=id+dialog.obj2ParamStr(urlParams);
 	var controllerTitle=controllerName.charAt(0).toUpperCase() + controllerName.slice(1);
-	 var dialogHTML = '<div class="delete-dialog" title="'+dialog.messages.confirmdeleteTitle+'"><form><div class="errors" style="display:none;"></div><div>'+dialog.messages.confirmdelete+' '+controllerTitle+' '+id+' ?</div></form></div>'
+    var dialogHTML = '<div class="delete-dialog" title="'+dialog.messages.confirmdeleteTitle+'"><form><div class="errors" style="display:none;"></div><div>'+dialog.messages.confirmdelete+' '+controllerTitle+' '+id+' ?</div></form></div>';
 
-	 var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
+    var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
-	 var theDialog=$(dialogHTML).dialog({
+	var theDialog=$(dialogHTML).dialog({
 		 modal:true,
 		 width:400,
 		 height:200,
@@ -248,16 +253,16 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
 			 	var formData=theDialog.find("form").serialize();
 			 	$.post(dialog.baseUrl+"/"+controllerName+"/delete/"+urlId,formData, function(data)
 			 		{
-			 		var result=data.result
+			 		var result=data.result;
 
 
-			 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:result})
-			 		$(".dialog-message-events").trigger("dialog-message",{message:result.message})
+			 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id,jsonResponse:result});
+			 		$(".dialog-message-events").trigger("dialog-message",{message:result.message});
 
 			 		if(result.success){
 				 		theDialog.dialog("close");
 				 	} else  {
-				 		theDialog.find("div.errors").html(result.message)
+				 		theDialog.find("div.errors").html(result.message);
 				 		theDialog.find("div.errors").show();
 				 	}
 			 	},"json");
@@ -270,7 +275,7 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
               theDialog.dialog("destroy").remove();
             }
         });
-}
+};
 
 
 /**
@@ -318,16 +323,16 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 			 	var formData=theDialog.find("form").serialize();
 			 	$.post(dialog.baseUrl+"/"+controllerName+"/deletefile/"+id+"?filename="+filename,formData, function(data)
 			 		{
-			 		var result=data.result
+			 		var result=data.result;
 
 
-			 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id})
-			 		$(".dialog-message-events").trigger("dialog-message",{message:result.message})
+			 		$(".dialog-refresh-events").trigger("dialog-refresh",{dc:domainClass,id:id});
+			 		$(".dialog-message-events").trigger("dialog-message",{message:result.message});
 
 			 		if(result.success){
 				 		theDialog.dialog("close");
 				 	} else  {
-				 		theDialog.find("div.errors").html(result.message)
+				 		theDialog.find("div.errors").html(result.message);
 				 		theDialog.find("div.errors").show();
 				 	}
 			 	});
@@ -340,7 +345,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
               theDialog.dialog("destroy").remove();
             }
         });
-}
+};
 
 $(function() {
 
@@ -349,20 +354,20 @@ $(function() {
 	    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
 	    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
 	    return this;
-	}
+	};
 
 	jQuery.fn.hcenter = function () {
 	    this.css("position","absolute");
 	    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
 	    return this;
-	}
+	};
 
 
 	// Initialize date picker input elements
  	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
 
  	$("body").on("click","a.confirm",function(){
- 	    return confirm('Are you sure?')
+ 	    return confirm('Are you sure?');
   	});
 
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
