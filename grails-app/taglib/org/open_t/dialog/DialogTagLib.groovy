@@ -530,12 +530,11 @@ class DialogTagLib {
 					def property=domainClass.getPropertyByName(attrs.propertyName)
 					if (attrs.from) {
 						optionValues=attrs.from
-					} else {
-						//optionValues= attrs.object."${attrs.propertyName}".class.findAll([sort:'name',order:'asc'])
+					} else {						
 						if (attrs.sort)
-							optionValues= property.getType().findAll([sort:attrs.sort,order:'asc'])
+							optionValues= property.getType().findAll([sort:attrs.sort,order:'asc']) {}
 						else
-							optionValues= property.getType().findAll([sort:'name',order:'asc'])
+							optionValues= property.getType().findAll([sort:'name',order:'asc']) {}
 					}
 
 

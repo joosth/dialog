@@ -398,7 +398,7 @@ class ListService {
 				items=dc.findAll("from ${dc.getName()} where ${parentname} is null order by position asc")
 			}
 		} else {
-			items=dc.findAll([sort:'position',order:'asc'])
+			items=dc.findAll([sort:'position',order:'asc']) {}
 		}
 		int idx=1
 		items.each { item ->
