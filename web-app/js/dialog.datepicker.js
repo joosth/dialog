@@ -1,8 +1,8 @@
 /*
-* Datepicker module for xml-forms plugin
+* Datepicker module for dialog plugin
 *
-* Grails xml-forms plug-in
-* Copyright 2013 Open-T B.V., and individual contributors as indicated
+* Grails dialog plug-in
+* Copyright 2013-2015 Open-T B.V., and individual contributors as indicated
 * by the @author tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -29,8 +29,8 @@ if (!window.dialog.datepicker) {
 
 
 dialog.datepicker.open = function open (e, params) {
-
-    //var updateElementId = $(this).attr('id').replace("entry-", "") + '_date';
+    var dateEntryElementId = $(this).attr('id');
+    var timeEntryElementId = $(this).attr('id')+"-time";
     var updateElementId = $(this).attr('id').replace("entry-", "update-");
 
     //Check browser support for HTML5 date widget..
@@ -40,22 +40,24 @@ dialog.datepicker.open = function open (e, params) {
         $(this).addClass('input-medium');
 
         $(this).parent().find('.input-mini').removeClass("input-mini").addClass("input-medium");
-        //HTML5 date widget
+
+        // Need to copy value to update field on change
         $(this).on('change', function() {
-            var dateValue = $.datepicker.parseDate("yy-mm-dd", $(this).val());
+            var dateValue = $(this).val();
             if (dateValue) {
-                $("#" + updateElementId).val( $.datepicker.formatDate("yy-mm-dd'T'00:00:00", dateValue) );
-            }
-            else {
+                var timeValue=$("#"+timeEntryElementId).val();
+                // needs more checking
+                if (timeValue) {
+                    $("#" + updateElementId).val( dateValue+'T'+timeValue+':00');
+                } else {
+                    $("#" + updateElementId).val( dateValue+'T00:00:00');
+                }
+            } else {
                 $("#" + updateElementId).val('');
             }
         });
     }
     else {
-        //jQuery UI Datepicker with mask
-
-        //var dateValue = $.datepicker.parseDate("yy-mm-dd", $(this).val());
-
         var dateVal=$("#"+updateElementId).val();
         $(this).val('');
         if (dateVal && dateVal!="null") {
@@ -66,7 +68,6 @@ dialog.datepicker.open = function open (e, params) {
             }
         }
 
-
         var yearRange = $(this).attr('yearRange') ? $(this).attr('yearRange') : "c-10:c+10";
 
         $(this).datepicker({
@@ -74,92 +75,39 @@ dialog.datepicker.open = function open (e, params) {
             altFormat: "yy-mm-dd'T'00:00:00",
             changeMonth: true,
             changeYear: true,
-            yearRange: yearRange
+            yearRange: yearRange,
+            onClose:function(dateText,obj) {
+                var updateValue=$("#" + updateElementId).val();
+                updateValue=updateValue.substring(0,updateValue.lastIndexOf('T'));
+                var timeValue=$("#"+timeEntryElementId).val();
+                // needs more checking
+                if (timeValue) {
+                    $("#" + updateElementId).val( updateValue+'T'+timeValue+':00');
+                } else {
+                    $("#" + updateElementId).val( updateValue+'T00:00:00');
+                }
+            }
         }).mask(dialog.messages.datepicker.mask);
     }
 };
 
-
-dialog.datepicker.update = function update (entryDateElementId, entryTimeElementId, updateElementId, entryDateFormat, entryTimeFormat, entryDateValue, entryTimeValue) {
-    var dateValue;
-    try {
-        entryDateValue  = entryDateValue.replace(/_/g, "");
-        if (entryDateValue.length == (entryDateFormat.length + 2)) {
-            dateValue = $.datepicker.parseDate(entryDateFormat, entryDateValue);
-        }
-    }
-    catch (error) {
-        //incorrect date.. leave dateValue undefined..
-    }
-
-    if (!dateValue) {
-        $("#" + entryDateElementId).val('');
-    }
-
-    var timeValue;
-    try {
-        entryTimeValue = entryTimeValue.replace(/_/g, "");
-        if (entryTimeValue.length == (entryTimeFormat.length)) {
-            timeValue = $.datepicker.parseTime(entryTimeFormat, entryTimeValue);
-        }
-    }
-    catch (error) {
-        //incorrect time.. leave timeValue undefined..
-    }
-
-    if (!timeValue) {
-        $("#" + entryTimeElementId).val('');
-    }
-
-    var updateValue = dateValue ? $.datepicker.formatDate("yy-mm-dd", dateValue) : "";
-    updateValue += dateValue && timeValue ? "T" : "";
-    updateValue += timeValue ? $.datepicker.formatTime("HH:mm:ss", timeValue) : "";
-
-    if (updateValue) {
-        $("#" + updateElementId).val(updateValue);
-    }
-    else {
-        $("#" + updateElementId).val('');
-    }
-    $("#" + updateElementId).valid();
-};
-
-
 dialog.datepicker.openTime = function open (e, params) {
     var timeEntryElementId = $(this).attr('id').replace(/\./g, "\\.").replace(/\[/g, "\\[").replace(/\]/g, "\\]");
-    var dateEntryElementId = timeEntryElementId.replace("-time", "");
-    var updateElementId = timeEntryElementId.replace("entry-", "update-").replace("-time", "");
+    // Note we don't use replace here as the name of the property may start with 'time' which would match.
+    var dateEntryElementId = timeEntryElementId.substring(0,timeEntryElementId.lastIndexOf("-time"));
+    var updateElementId = dateEntryElementId.replace("entry-", "update-");
 
-    //Check browser support for HTML5 date widget..
-    if (Modernizr.inputtypes.time) {
+    $(this).on('change', function() {
+        var timeValue=$(this).val();
+        var updateValue=$("#" + updateElementId).val();
+        updateValue=updateValue.substring(0,updateValue.lastIndexOf('T'));
+        $("#" + updateElementId).val( updateValue+'T'+timeValue+':00');
+    });
 
-        //HTML5 time widget
-        $(this).on('change', function() {
-            dialog.datepicker.update(dateEntryElementId, timeEntryElementId, updateElementId, "yy-mm-dd", "HH:mm", $("#" + dateEntryElementId).val(), $(this).val());
-        });
-    }
-    else {
-
-        // jQuery UI Timepicker with mask
-        var timeValue = $.datepicker.parseTime("HH:mm", $(this).val());
-        if (timeValue) {
-            $(this).val( $.datepicker.formatTime($.timepicker._defaults.timeFormat, timeValue) );
-        }
-        else {
-            $(this).val('');
-        }
-
-        $(this).on('change', function() {
-            dialog.datepicker.update(dateEntryElementId, timeEntryElementId, updateElementId, "yy-mm-dd", "HH:mm", $("#" + dateEntryElementId).val(), $(this).val());
-        });
-    }
 };
-
-
 
 $(function() {
     $.datepicker.setDefaults( window.dialog.messages.datepicker.regional );
-    $.timepicker.setDefaults( window.dialog.messages.timepicker.regional );
     $(document).on("dialog-open",".datepicker", window.dialog.datepicker.open);
     $(document).on("dialog-open",'.timepicker', window.dialog.datepicker.openTime);
 });
