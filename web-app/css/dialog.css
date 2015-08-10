@@ -35,13 +35,13 @@ p.error-message {
     padding-top:4px;
 }
 
-tr.error input {
-    border-color: red;
+tr.error input,tr.error textarea,tr.error select {
+    border-color: red !important;
     outline: 0 none;
 }
 
-tr.error td input:focus {
-    border-color: red;
+tr.error td input:focus,tr.error td textarea:focus,tr.error td select:focus {
+    border-color: red !important;
     box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset, 0 0 8px rgba(236,168,82,0.6) !important;
     outline: 0 none;
 }
