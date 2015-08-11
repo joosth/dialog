@@ -113,18 +113,17 @@ dialog.datatables.refreshDatatableEvent = function refreshDatatableEvent(event,e
 	        var tableId="detailTable_" + eventData.dc.replace(".","_").replace("class ","");
 
 	        for(key in dialog.dataTableHashList) {
-	        	// TODO this is a crude measure. All datatables will refresh.
-	        	// The logic between messages, dialogs and datatables needs to be fixed
-	        	if (eventData.dc=="ALL" || key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
-	        		dialog.datatables.refreshDataTable(key,dialog.dataTableHashList,lastPage)
-	        	}
+	        	// TODO this is a crude measure. Commented the check out so that all datatables will refresh.
+	        	//if (eventData.dc=="ALL" || key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
+	        		dialog.datatables.refreshDataTable(key,dialog.dataTableHashList,lastPage);
+	        	//}
 	        }
 		}
 	}
-}
+};
 
 
-dialog.datatables.refreshDataTable = function refreshDataTable(key, list, lastPage) {
+dialog.datatables.refreshDataTable = function (key, list, lastPage) {
 	var curTable = list[key];
 	if (typeof(curTable) !== 'undefined' && curTable != null) {
 		if (lastPage == false) {

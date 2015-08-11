@@ -329,9 +329,7 @@ class DialogTagLib {
 	/**
 	* Date input field tag
 	* This generates an text input element that pops up a calendar
-	* Currently the format to be used is fixed yyyy-MM-dd
-	* It uses the DateTimePropertyEditor to process the text
-	* Generates a hidden field which triggers the use of the structured property editor
+	* The format to be used is fixed yyyy-MM-ddTHH:mm:ssZ	in the update field
 	*
 	* @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
 	* @param propertyName The property of the domain object
@@ -351,7 +349,7 @@ class DialogTagLib {
 
 				case "edit":
                     def value=attrs.object."${attrs.propertyName}"
-                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss") : ""
+                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
                     def inputValue = value ? value.format("yyyy-MM-dd") : ""
 
                     out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation input input-small" value="${inputValue}" />"""
@@ -385,7 +383,7 @@ class DialogTagLib {
 
 				case "edit":
                     def value=attrs.object."${attrs.propertyName}"
-                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss") : ""
+                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
                     def inputValue = value ? value.format("yyyy-MM-dd") : ""
 
                     out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation input input-small" value="${inputValue}" />"""
@@ -395,7 +393,7 @@ class DialogTagLib {
 					out << "&nbsp;"
 
                     def timeFormat="HH:mm"
-					def timeAttrs=[id:"entry-${attrs.propertyName}-time",name:"entry-${attrs.propertyName}-time",type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-mini timepicker dialog-open-events']
+					def timeAttrs=[id:"time-${attrs.propertyName}",name:"time-${attrs.propertyName}",type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-mini timepicker dialog-open-events']
 					out << g.field(timeAttrs)
 
 					break
@@ -530,7 +528,7 @@ class DialogTagLib {
 					def property=domainClass.getPropertyByName(attrs.propertyName)
 					if (attrs.from) {
 						optionValues=attrs.from
-					} else {						
+					} else {
 						if (attrs.sort)
 							optionValues= property.getType().findAll([sort:attrs.sort,order:'asc']) {}
 						else

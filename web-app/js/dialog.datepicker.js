@@ -27,11 +27,15 @@ if (!window.dialog.datepicker) {
     window.dialog.datepicker = {};
 }
 
-
+/**
+ * Initialize datepicker entry element
+ * @param e
+ * @param params
+ */
 dialog.datepicker.open = function open (e, params) {
     var dateEntryElementId = $(this).attr('id');
-    var timeEntryElementId = $(this).attr('id')+"-time";
-    var updateElementId = $(this).attr('id').replace("entry-", "update-");
+    var updateElementId = dateEntryElementId.replace("entry-", "update-");
+    var timeEntryElementId = dateEntryElementId.replace("entry-", "time-");
 
     //Check browser support for HTML5 date widget..
     if (Modernizr.inputtypes.date) {
@@ -46,11 +50,11 @@ dialog.datepicker.open = function open (e, params) {
             var dateValue = $(this).val();
             if (dateValue) {
                 var timeValue=$("#"+timeEntryElementId).val();
-                // needs more checking
+                // If there is a time input box, use it.
                 if (timeValue) {
-                    $("#" + updateElementId).val( dateValue+'T'+timeValue+':00');
+                    $("#" + updateElementId).val( dateValue+'T'+timeValue+':00Z');
                 } else {
-                    $("#" + updateElementId).val( dateValue+'T00:00:00');
+                    $("#" + updateElementId).val( dateValue+'T00:00:00Z');
                 }
             } else {
                 $("#" + updateElementId).val('');
@@ -72,7 +76,7 @@ dialog.datepicker.open = function open (e, params) {
 
         $(this).datepicker({
             altField: "#" + updateElementId,
-            altFormat: "yy-mm-dd'T'00:00:00",
+            altFormat: "yy-mm-dd'T'00:00:00'Z'",
             changeMonth: true,
             changeYear: true,
             yearRange: yearRange,
@@ -80,30 +84,33 @@ dialog.datepicker.open = function open (e, params) {
                 var updateValue=$("#" + updateElementId).val();
                 updateValue=updateValue.substring(0,updateValue.lastIndexOf('T'));
                 var timeValue=$("#"+timeEntryElementId).val();
-                // needs more checking
+                // If there is a time input element, use it.
                 if (timeValue) {
-                    $("#" + updateElementId).val( updateValue+'T'+timeValue+':00');
+                    $("#" + updateElementId).val( updateValue+'T'+timeValue+':00Z');
                 } else {
-                    $("#" + updateElementId).val( updateValue+'T00:00:00');
+                    $("#" + updateElementId).val( updateValue+'T00:00:00Z');
                 }
             }
         }).mask(dialog.messages.datepicker.mask);
     }
 };
 
+/**
+ * Initialize time entry element
+ * @param e
+ * @param params
+ */
 dialog.datepicker.openTime = function open (e, params) {
-    var timeEntryElementId = $(this).attr('id').replace(/\./g, "\\.").replace(/\[/g, "\\[").replace(/\]/g, "\\]");
-    // Note we don't use replace here as the name of the property may start with 'time' which would match.
-    var dateEntryElementId = timeEntryElementId.substring(0,timeEntryElementId.lastIndexOf("-time"));
-    var updateElementId = dateEntryElementId.replace("entry-", "update-");
+    var timeEntryElementId = $(this).attr('id');
+    var updateElementId    = timeEntryElementId.replace("time-", "update-");
 
+    // Update the time in the updateElement when it changes in the entry element
     $(this).on('change', function() {
         var timeValue=$(this).val();
         var updateValue=$("#" + updateElementId).val();
         updateValue=updateValue.substring(0,updateValue.lastIndexOf('T'));
-        $("#" + updateElementId).val( updateValue+'T'+timeValue+':00');
+        $("#" + updateElementId).val( updateValue+'T'+timeValue+':00Z');
     });
-
 };
 
 $(function() {
