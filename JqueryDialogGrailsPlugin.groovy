@@ -1,5 +1,5 @@
 class JqueryDialogGrailsPlugin {
-	def version = "2.5.0"
+	def version = "2.5.1"
 	def grailsVersion = "2.5 > *"
 
 	def author = "Joost Horward"
