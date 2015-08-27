@@ -357,10 +357,6 @@ $(function() {
 	    return this;
 	}
 
-
-	// Initialize date picker input elements
- 	$(".datepicker").datepicker({ dateFormat: "yyyy-MM-dd'T'HH:mm:ss" , changeMonth: true, changeYear:true});
-
  	$("body").on("click","a.confirm",function(){
  	    return confirm('Are you sure?')
   	});
