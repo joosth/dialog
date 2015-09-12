@@ -57,6 +57,14 @@ dialog.codemirror.open =function open (e,params) {
 
           });
         }
+
+        if (mode=='text/x-sql') {
+            dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-sql',
+                lineNumbers: true
+          });
+        }
+
         dialog.codemirror.editors[id].setSize(width,height);
     }
 
@@ -77,7 +85,7 @@ dialog.codemirror.close =function close (e,params) {
     var id=$(this).attr("id");
     if (id) {
         dialog.codemirror.editors[id].toTextArea();
-        dialog.codemirror.editors[id].delete();
+        delete dialog.codemirror.editors[id];
     }
 };
 

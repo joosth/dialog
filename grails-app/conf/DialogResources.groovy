@@ -45,6 +45,7 @@ modules = {
 		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/less/',file:'less.js']
 		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/shell/',file:'shell.js']
 		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/clike/',file:'clike.js']
+        resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/sql/',file:'sql.js']
 		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.codemirror.js']
 
 	}
