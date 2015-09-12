@@ -426,7 +426,8 @@ class DialogTagLib {
             newAttrs['class']='dialog-open-events'
         }
 
-
+        def rows=attrs.rows?:5
+        def cols=attrs.cols?:40
 
 		out << row (attrs) {
 			switch(attrs.mode) {
@@ -436,7 +437,7 @@ class DialogTagLib {
 
 				case "edit":
 					// Hack to assign unique ID's and keep tinyMCE happy
-					newAttrs+=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:40,rows:5,id:"id${new Random().nextInt(10000000)}"]
+					newAttrs+=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",cols:cols,rows:rows,id:"id${new Random().nextInt(10000000)}"]
 
 					"""${g.textArea(newAttrs)}"""
 					break
