@@ -63,21 +63,21 @@ dialog.codemirror.open =function open (e,params) {
     $(this).addClass("dialog-submit-events");
     $(this).addClass("dialog-close-events");
 
-}
+};
 
 dialog.codemirror.submit =function submit (e,params) {
     var id=$(this).attr("id");
     if (id) {
         dialog.codemirror.editors[id].save();
     }
-}
+};
 
 
 dialog.codemirror.close =function close (e,params) {
     var id=$(this).attr("id");
     if (id) {
         dialog.codemirror.editors[id].toTextArea();
-        dialog.codemirror.editors[id].delete();
+        delete dialog.codemirror.editors[id];
     }
 };
 
