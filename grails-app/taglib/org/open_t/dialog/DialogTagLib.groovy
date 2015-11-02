@@ -351,7 +351,7 @@ class DialogTagLib {
 
 				case "edit":
                     def value=attrs.object."${attrs.propertyName}"
-                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
+                    def dateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
                     def inputValue = value ? value.format("yyyy-MM-dd") : ""
 
                     out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation input input-small" value="${inputValue}" />"""
