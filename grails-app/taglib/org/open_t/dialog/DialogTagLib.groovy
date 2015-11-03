@@ -792,6 +792,10 @@ class DialogTagLib {
 		if (grailsApplication.config.dialog?.bootstrap) {
 			out << """<div class="navigation navigation-form-actions">"""
 			def buttons=attrs.buttons.split(",")
+            // By default, the last button is the default.
+            def defaultButton=attrs.default?:buttons[buttons.size()-1]
+            out <<"""<button style="overflow: visible !important; height: 0 !important; width: 0 !important; margin: 0 !important; border: 0 !important; padding: 0 !important; display: block !important;" type="submit" value="${defaultButton}"/>"""
+
 			buttons.each { name ->
 					out << """<button type="submit" name="${name}" class="${name} btn" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button>"""
 			}
