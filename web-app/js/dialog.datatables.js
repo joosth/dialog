@@ -84,7 +84,7 @@ dialog.datatables.open =function open (e,params) {
                 if (datatableType=="detail") {
                     // only show detail table if parent is present
                     if (params != null && (params.id != null)) {
-                        curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : '+params.id+'})">'+newString+'</span></span>&nbsp;');
+                        curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : \''+params.id+'\'})">'+newString+'</span></span>&nbsp;');
                     }
                 } else {
                     curMatch.parent().find('div.toolbar').prepend('<div style="float:left;margin-right:10px;" class="btn-group"><span class="btn" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, {})">'+newString+'</span></span>&nbsp;');
