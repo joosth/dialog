@@ -258,6 +258,10 @@ class DialogTagLib {
 				</td>
 			</tr>"""
 		} else {
+			if (attrs.separator == "true"){
+				out <<"""
+						<tr><td colspan="3"><hr/></td></tr>"""
+			}
 			out <<"""<tr class="prop ${cssClass}">
 					<td valign="top" class="name">
 					<label for="name">${label}</label>
