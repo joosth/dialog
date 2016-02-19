@@ -147,7 +147,7 @@ class DialogService {
 	    		domainClassInstance.properties = params
     		}
 			// check for position and update if necessary
-			if ((action=='created') && (defaultDomainClass.hasProperty("position")) && (domainClassInstance.position==0)) {
+            if ((defaultDomainClass.hasProperty("position")) && (domainClassInstance.position==0)) {
 				def maxPosition=0
 				if (defaultDomainClass.hasProperty("belongsTo") && domainClassInstance.belongsTo?.size() == 1) {
 					domainClassInstance.belongsTo.each {key,value ->
