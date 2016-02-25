@@ -22,6 +22,15 @@ dialog.fileuploader = {};
 
 dialog.fileuploader.open =function open (e,params) {
 
+    //iOS workaround, iOS photos always have filename "image.jpg", lets give them a timestamp then..
+    qq.extend(qq.UploadHandlerXhr.prototype, {
+        getName: function(id) {
+            var file = this._files[id];
+            // fix missing name in Safari 4
+            var fileName = file.fileName != null ? file.fileName : file.name;
+            return fileName == "image.jpg" ? "image_" + (new Date()).getTime().toString() + ".jpg" : fileName;
+        }
+    });
 
         var uploader = new qq.FileUploader({
             // pass the dom node (ex. $(selector)[0] for jQuery users)
