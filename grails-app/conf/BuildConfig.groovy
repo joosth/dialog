@@ -3,11 +3,11 @@ grails.project.work.dir = 'target'
 grails.project.dependency.resolver = "maven"
 grails.project.dependency.resolution = {
 
-	inherits 'global'
-	log 'warn'
+    inherits 'global'
+    log 'warn'
 
-	repositories {
-		grailsCentral()
+    repositories {
+        grailsCentral()
 
         grailsPlugins()
         grailsHome()
@@ -17,13 +17,11 @@ grails.project.dependency.resolution = {
         mavenRepo "http://download.java.net/maven/2/"
         mavenRepo "http://repository.jboss.com/maven2/"
         mavenRepo "https://repo.grails.org/grails/plugins"
-
-
-	}
-
-	plugins {
-        build ":release:3.1.1"
-		runtime 'org.grails.plugins:twitter-bootstrap:2.3.2.2',':resources:1.2.14'
-        compile ":resources:1.2.14"
     }
+
+    plugins {
+        build "org.grails.plugins:release:3.1.1"
+        runtime "org.grails.plugins:resources:1.2.14"
+    }
+
 }

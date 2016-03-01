@@ -77,7 +77,8 @@ modules = {
 
 	'dialog-bootstrap' {
 		dependsOn 'dialog'
-
+	    resource url: [plugin: 'jquery-dialog', dir:'bootstrap/css', file:'bootstrap.css']
+	    resource url: [plugin: 'jquery-dialog', dir:'bootstrap/js', file:'bootstrap.js']
 	}
 
 	'dialog-last' {
