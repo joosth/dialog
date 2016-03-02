@@ -1006,6 +1006,27 @@ class DialogTagLib {
 	}
 
     /**
+     *  Displays a header in a dropdown menu. Should be used within a <dialog:dropdown> element.
+     *  The key for the message is dropdown.code.label, with code replaced by the code attribute.
+     */
+    def dropdownHeader = { attrs,body ->
+        def icon = ""
+        if (attrs.icon) {
+            icon = """<i class="${attrs.icon}"></i> """
+        }
+
+        out << """<li class="dropdown-header">${icon}${g.message(code:'dropdown.'+attrs.code+'.label')}</li>"""
+    }
+
+    /**
+     *  Displays a divider in a dropdown menu. Should be used within a <dialog:dropdown> element.
+     *  The key for the message is dropdown.code.label, with code replaced by the code attribute.
+     */
+    def dropdownDivider = { attrs, body ->
+        out << """<li role="separator" class="divider"></li>"""
+    }
+
+    /**
      *  Displays a submenu in a dropdown menu. Should be used within a <dialog:dropdown> element.
      *  The key for the message is dropdown.code.label, with code replaced by the code attribute.
      */

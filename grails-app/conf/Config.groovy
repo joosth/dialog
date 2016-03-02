@@ -4,4 +4,5 @@ log4j = {
 	      'org.hibernate',
 	      'net.sf.ehcache.hibernate'
 }
-grails.resources.adhoc.patterns = ['/images/**', '/css/**', '/js/**', '/plugins/**', '/angularjs/**', '/font-awesome/**']
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*', '/bootstrap/*', '/angularjs/*', '/font-awesome/*']
+grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/**', '/bootstrap/**', '/angularjs/**', '/font-awesome/**']
