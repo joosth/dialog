@@ -79,7 +79,7 @@ dialog.datatables.open =function open (e,params) {
                 { "targets": [-1], "className": "actions" }
             ] ,
         "pageLength": pageLength,
-        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+        "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
         "dom": "<'row toolbar'<'col-sm-6'l><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
