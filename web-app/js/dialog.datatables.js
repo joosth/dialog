@@ -61,10 +61,10 @@ dialog.datatables.open =function open (e,params) {
             if (datatableType == "detail") {
                 // only show detail table if parent is present
                 if (params != null && (params.id != null)) {
-                    curMatch.closest("div.dataTables_wrapper").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : \''+params.id+'\'})">'+newString+'</span></label</div>');
+                    curMatch.closest("div.dataTables_wrapper").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : \''+params.id+'\'})">'+newString+'</span></label></div>');
                 }
             } else {
-                curMatch.closest("div.dataTables_wrapper").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, {})">'+newString+'</span></label</div>');
+                curMatch.closest("div.dataTables_wrapper").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, {})">'+newString+'</span></label></div>');
             }
         }
     }).DataTable({
@@ -79,7 +79,7 @@ dialog.datatables.open =function open (e,params) {
                 { "targets": [-1], "className": "actions" }
             ] ,
         "pageLength": pageLength,
-        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+        "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
         "dom": "<'row toolbar'<'col-sm-6'l><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
@@ -122,9 +122,8 @@ dialog.datatables.refreshDataTable = function (key, list, lastPage) {
 	if (typeof(curTable) !== 'undefined' && curTable != null) {
 		if (lastPage == false) {
 			curTable.draw(false);
-			//curTable.fnReloadAjax();
 		} else {
-			curTable.page( 'last' );
+			curTable.page('last').draw(false);
 		}
 	}
 };
