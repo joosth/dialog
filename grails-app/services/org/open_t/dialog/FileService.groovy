@@ -184,11 +184,11 @@ class FileService {
         log.debug "PARAMS: ${params}"
 		def diUrl=fileUrl(dc,params.id,fileCategory)
 
-		def aaData=[:]
-		Integer iTotalRecords=0
+		def data=[:]
+		Integer recordsTotal=0
 		if(params.id&& params.id!="null") {
 			File dir = new File(filePath(dc,params.id,fileCategory))
-			aaData=dir.listFiles().collect { file ->
+			data=dir.listFiles().collect { file ->
                 def downloadLink
                 if (linkType=="external") {
                     downloadLink="${diUrl}/${file.name}"
@@ -215,30 +215,30 @@ class FileService {
 				 1:file.length(),
 				 2:format.format(file.lastModified()),
                  3: actions(params,file)]
-			}.sort { file -> file[new Integer(params.iSortCol_0)] }
+			}.sort { file -> file[new Integer(params."order[0][column]")] }
 
-			if (params.sSortDir_0=="desc") {
-				aaData=aaData.reverse()
+			if (params."order[0][dir]"=="desc") {
+				data=data.reverse()
 			}
-			iTotalRecords=aaData.size()
+			recordsTotal=data.size()
 
-			if (iTotalRecords>0) {
+			if (recordsTotal>0) {
 
-				Integer firstResult = params.iDisplayStart ? new Integer(params.iDisplayStart) : 0
-				Integer maxResults = params.iDisplayLength ? new Integer(params.iDisplayLength) : 10
+				Integer firstResult = params.start ? new Integer(params.start) : 0
+				Integer maxResults = params.length ? new Integer(params.length) : 10
 
 				// pagination
-				if (firstResult > iTotalRecords) {
-					firstResult = iTotalRecords
+				if (firstResult > recordsTotal) {
+					firstResult = recordsTotal
 				}
-				if ((firstResult + maxResults) > iTotalRecords) {
-					maxResults = iTotalRecords - firstResult
+				if ((firstResult + maxResults) > recordsTotal) {
+					maxResults = recordsTotal - firstResult
 				}
-				aaData = aaData[firstResult..firstResult + maxResults - 1]
+				data = data[firstResult..firstResult + maxResults - 1]
 			}
 
 		}
-		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalRecords,aaData:aaData]
+		def json = [draw:params.draw,recordsTotal:recordsTotal,recordsFiltered:recordsTotal,data:data]
 	}
 
     /**

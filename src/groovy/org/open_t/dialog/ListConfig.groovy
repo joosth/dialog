@@ -30,7 +30,7 @@ class ListConfig {
 	String name
 	String controller
 	String action='jsonlist'
-	Boolean bFilter=false
+	Boolean filter=false
 	def toolbar=false
 	def newButton=true
 	def rowreordering=false
@@ -106,17 +106,17 @@ class ListConfig {
 	def paginateList(datalist,params) {
 		def totalRecords=datalist.size()
 		if (totalRecords>0) {
-			if (params.iSortCol_0 && params.iSortCol_0.length()>0) {
-				def columnName=params.iSortCol_0
+			if (params."order[0][column]" && params."order[0][column]".length()>0) {
+				def columnName=params."order[0][column]"
 				def name=this.columns[new Integer(columnName)].name
 				datalist=datalist.sort { it."${name}" }
 			}
-			if (params.sSortDir_0=='desc') {
+			if (params."order[0][dir]"=='desc') {
 				datalist=datalist.reverse()
 			}
 
-			Integer firstResult=params.iDisplayStart?new Integer(params.iDisplayStart):0
-			Integer maxResults=params.iDisplayLength?new Integer(params.iDisplayLength):10
+			Integer firstResult=params.start?new Integer(params.start):0
+			Integer maxResults=params.length?new Integer(params.length):10
 
 			// pagination
 			if (firstResult>totalRecords) { firstResult=totalRecords }
@@ -137,7 +137,7 @@ class ListConfig {
      * @return ready-to-be-rendered-as-JSON data
      */
 	def renderList(datalist,totalRecords,params) {
-		def aaData=[]
+		def data=[]
 		datalist.each { item ->
             def row =[DT_RowId:item.id]
 			def col=0
@@ -158,10 +158,10 @@ class ListConfig {
 			def actionsString=renderActions(props)
 
 			row.put(col,actionsString)
-			aaData+=row
+			data+=row
 		}
 
-		return [sEcho:params.sEcho,iTotalRecords:totalRecords,iTotalDisplayRecords:totalRecords,aaData:aaData]
+		return [draw:params.draw,recordsTotal:totalRecords,recordsFiltered:totalRecords,data:data]
 	}
 
     /**
