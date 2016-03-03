@@ -59,6 +59,7 @@ class DialogTagLib {
 			dialog.messages.cancel="${message(code:'dialog.messages.cancel')}";
 			dialog.messages.upload="${message(code:'dialog.messages.upload')}";
 			dialog.messages.dropfileshere="${message(code:'dialog.messages.dropfileshere')}";
+			dialog.messages.new="${message(code:'dialog.messages.new')}";
 			dialog.messages.confirmdelete="${message(code:'dialog.messages.confirmdelete')}";
 			dialog.messages.confirmdeleteTitle="${message(code:'dialog.messages.confirmdeleteTitle')}";
 
@@ -102,23 +103,30 @@ class DialogTagLib {
             };
             dialog.messages.timepicker.mask="${message(code:'dialog.timepicker.mask')}";
             dialog.messages.datatables = {
-                "oLanguage": {
-                    "sProcessing":   "${message(code:'dialog.datatables.sProcessing')}",
-                    "sLengthMenu":   "${message(code:'dialog.datatables.sLengthMenu')}",
-                    "sZeroRecords":  "${message(code:'dialog.datatables.sZeroRecords')}",
-                    "sInfo":         "${message(code:'dialog.datatables.sInfo')}",
-                    "sInfoEmpty":    "${message(code:'dialog.datatables.sInfoEmpty')}",
-                    "sInfoFiltered": "${message(code:'dialog.datatables.sInfoFiltered')}",
-                    "sInfoPostFix":  "${message(code:'dialog.datatables.sInfoPostFix')}",
-                    "sSearch":       "${message(code:'dialog.datatables.sSearch')}",
-                    "oPaginate": {
-                        "sFirst":    "${message(code:'dialog.datatables.oPaginate.sFirst')}",
-                         "sPrevious": "${message(code:'dialog.datatables.oPaginate.sPrevious')}",
-                         "sNext":     "${message(code:'dialog.datatables.oPaginate.sNext')}",
-                         "sLast":     "${message(code:'dialog.datatables.oPaginate.sLast')}"
-                     },
-                    "sNew":"${message(code:'dialog.datatables.sNew')}"
-                },
+                "language": {
+                    "decimal":        "${message(code:'dialog.datatables.decimal')}",
+                    "emptyTable":     "${message(code:'dialog.datatables.emptyTable')}",
+                    "info":           "${message(code:'dialog.datatables.info')}",
+                    "infoEmpty":      "${message(code:'dialog.datatables.infoEmpty')}",
+                    "infoFiltered":   "${message(code:'dialog.datatables.infoFiltered')}",
+                    "infoPostFix":    "${message(code:'dialog.datatables.infoPostFix')}",
+                    "thousands":      "${message(code:'dialog.datatables.thousands')}",
+                    "lengthMenu":     "${message(code:'dialog.datatables.lengthMenu')}",
+                    "loadingRecords": "${message(code:'dialog.datatables.loadingRecords')}",
+                    "processing":     "${message(code:'dialog.datatables.processing')}",
+                    "search":         "${message(code:'dialog.datatables.search')}",
+                    "zeroRecords":    "${message(code:'dialog.datatables.zeroRecords')}",
+                    "paginate": {
+                        "first":      "${message(code:'dialog.datatables.paginate.first')}",
+                        "last":       "${message(code:'dialog.datatables.paginate.last')}",
+                        "next":       "${message(code:'dialog.datatables.paginate.next')}",
+                        "previous":   "${message(code:'dialog.datatables.paginate.previous')}"
+                    },
+                    "aria": {
+                        "sortAscending":  "${message(code:'dialog.datatables.aria.sortAscending')}",
+                        "sortDescending": "${message(code:'dialog.datatables.aria.sortDescending')}"
+                    }
+                }
             };
             dialog.messages.validation = {};
             dialog.messages.validation.invalidTime="${message(code:'dialog.validation.invalidTime')}";

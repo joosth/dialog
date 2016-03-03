@@ -11,7 +11,7 @@
 		<div class="row-fluid">
 		<div class="span12">
    		<div class="datatable dialog-open-events" id="tableWrapper_${listConfig.name}">
-			<table iDisplayLength="10" datatable-type="master" bFilter="${listConfig.bFilter ? true : false}" jsonUrl="${createLink(base:'/',controller:listConfig.controller,action: jsonlist ? jsonlist :listConfig.action,params:jsonlistparams?jsonlistparams:[:]).substring(1)}" cellpadding="0" cellspacing="0" border="0" class="dialog-open-events detailTable datatable table table-striped table-bordered display${listConfig.rowreordering?' rowreordering':''}" id="detailTable_${listConfig.name}"
+			<table pageLength="10" datatable-type="master" filter="${listConfig.filter ? true : false}" jsonUrl="${createLink(base:'/',controller:listConfig.controller,action: jsonlist ? jsonlist :listConfig.action,params:jsonlistparams?jsonlistparams:[:]).substring(1)}" cellpadding="0" cellspacing="0" border="0" class="dialog-open-events detailTable datatable table table-striped table-bordered display${listConfig.rowreordering?' rowreordering':''}" id="detailTable_${listConfig.name}"
                    positionUrl="/${listConfig.controller}/${position ? position :'position'}"
                    rowreordering="${listConfig.rowreordering}"
                    toolbar="${listConfig.toolbar?:''}"

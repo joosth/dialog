@@ -110,12 +110,12 @@ class ListService {
 				columns=dc.listProperties
 			}
 
-			def sortName=columns[new Integer(params.iSortCol_0)]
+			def sortName=columns[new Integer(params."order[0][column]")]
      		sortName=sortName? sortName:columns[0]
 
 			def documentList
-			def iTotalRecords=dc.count()
-			def iTotalDisplayRecords
+			def recordsTotal=dc.count()
+			def recordsFiltered
 
 			//Create Id for the table
 			def detailTableId="detailTable_"+dc
@@ -126,16 +126,16 @@ class ListService {
 				if (params.objectId !='null') {
 					def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
 					def masterDomainObj = grailsApplication.getClassForName(params.objectClass).get(params.objectId)
-					documentList=dc."$filterMethod"(masterDomainObj, [max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
-					iTotalRecords =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object",[object:masterDomainObj])
-					iTotalDisplayRecords=iTotalRecords
+					documentList=dc."$filterMethod"(masterDomainObj, [max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
+					recordsTotal =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object",[object:masterDomainObj])
+					recordsFiltered=recordsTotal
 
 				} else {
-					iTotalRecords=0
-					iTotalDisplayRecords=0
+					recordsTotal=0
+					recordsFiltered=0
 				}
 			} else {
-				if (filterColumnNames && params.sSearch) {
+				if (filterColumnNames && params."search[value]") {
 					def fields
 					if (String.isInstance(filterColumnNames)) {
 						fields=[filterColumnNames]
@@ -144,15 +144,15 @@ class ListService {
 					}
 					def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 					def order=fields.collect {"dc.${it}"}.join(",")
-					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params.sSearch+'%'],[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
-					iTotalDisplayRecords =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}",[term:'%'+params.sSearch+'%'])
+					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params."search[value]"+'%'],[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
+					recordsFiltered =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}",[term:'%'+params."search[value]"+'%'])
 				} else {
-					documentList=dc.list([max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
-					iTotalDisplayRecords = iTotalRecords
+					documentList=dc.list([max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
+					recordsFiltered = recordsTotal
 				}
 			}
 
-    		def aaData=[]
+    		def data=[]
             documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
 				def i=0
@@ -189,10 +189,10 @@ class ListService {
 					actionsString=actions(doc,['detailTableId':detailTableId])
         		}
         		inLine+=["${i}":actionsString]
-				aaData+=inLine
+				data+=inLine
     		}
 
-    		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
+    		def json = [draw:params.draw,recordsTotal:recordsTotal,recordsFiltered:recordsFiltered,data:data]
         	return json
         }
 
@@ -231,7 +231,7 @@ class ListService {
 			columns=dc.listProperties
 		}
 
-		def sortName=columns[new Integer(params.iSortCol_0)]
+		def sortName=columns[new Integer(params."order[0][column]")]
 		sortName=sortName? sortName:columns[0]
 
 		def documentList
@@ -245,9 +245,9 @@ class ListService {
 			query = "${query} and (${params.property}.id=${params.objectId})"
 			countQuery= "${countQuery} and (${params.property}.id=${params.objectId})"
 		}
-		def iTotalRecords=dc.executeQuery(countQuery,queryParams)[0]
-		def iTotalDisplayRecords=iTotalRecords
-		if (filterColumnNames && params.sSearch) {
+		def recordsTotal=dc.executeQuery(countQuery,queryParams)[0]
+		def recordsFiltered=recordsTotal
+		if (filterColumnNames && params."search[value]") {
 			def fields
 			if (String.isInstance(filterColumnNames)) {
 				fields=[filterColumnNames]
@@ -259,17 +259,17 @@ class ListService {
 
 			query = "${query} and (${where})"
 			countQuery= "${countQuery} and (${where})"
-			queryParams.put('term','%'+params.sSearch+'%')
+			queryParams.put('term','%'+params."search[value]"+'%')
 
 
-			iTotalDisplayRecords=dc.executeQuery(countQuery,queryParams)[0]
+			recordsFiltered=dc.executeQuery(countQuery,queryParams)[0]
 		}
 
-		query="${query} order by ${sortName} ${params.sSortDir_0}"
+		query="${query} order by ${sortName} ${params."order[0][dir]"}"
 
-		documentList=dc.executeQuery(query,queryParams,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
+		documentList=dc.executeQuery(query,queryParams,[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
 
-		def aaData=[]
+		def data=[]
             documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
 				def i=0
@@ -297,10 +297,10 @@ class ListService {
         			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small  xlist-action-button xui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
         		}
         		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
-				aaData+=inLine
+				data+=inLine
     		}
 
-    		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
+    		def json = [draw:params.draw,recordsTotal:recordsTotal,recordsFiltered:recordsFiltered,data:data]
     	return json
 	}
 
@@ -326,7 +326,7 @@ class ListService {
 
 		def columns=listProperties ? listProperties : dc.listProperties
 		//def columns= dc.listProperties
-		def sortName=columns[new Integer(params.iSortCol_0)]
+		def sortName=columns[new Integer(params."order[0][column]")]
 		sortName=sortName? sortName:columns[0]
 
 		def documentList
@@ -337,18 +337,18 @@ class ListService {
 		detailTableId=detailTableId.replace("class ","")
 
 
-		if (params.sSearch) {
-			query = params.sSearch
+		if (params."search[value]") {
+			query = params."search[value]"
 		}
-		def res=dc.search(query,[max:params.iDisplayLength,offset:params.iDisplayStart,order:params.sSortDir_0,sort:sortName])
+		def res=dc.search(query,[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
 		documentList=res.results
 
-		def iTotalRecords=res.total
-		def iTotalDisplayRecords=iTotalRecords
+		def recordsTotal=res.total
+		def recordsFiltered=recordsTotal
 
 
 
-		def aaData=[]
+		def data=[]
 			documentList.each { doc ->
 				def inLine=[DT_RowId:doc.id]
 				def i=0
@@ -361,10 +361,10 @@ class ListService {
 					actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
 				}
 				inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
-				aaData+=inLine
+				data+=inLine
 			}
 
-			def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalDisplayRecords,aaData:aaData]
+			def json = [draw:params.draw,recordsTotal:recordsTotal,recordsFiltered:recordsFiltered,data:data]
 		return json
 	}
 

@@ -124,7 +124,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 
 	// If an error occurred, show it and bail out.
     if (errorMessage) {
-        $(".dialog-message-events").trigger("dialog-message",{message:errorMessage,alertType:'error'});
+        $(".dialog-message-events").trigger("dialog-message",{message:errorMessage,alertType:'danger'});
         return;
     }
 
@@ -290,7 +290,7 @@ dialog.deleteDialog = function deleteDialog(id,controllerName, options ,urlParam
 dialog.statusMessage = function statusMessage(event,eventData) {
 	if (eventData.message) {
         var alertType="success";
-        if (eventData.alertType!==null) {
+        if (eventData.alertType!==undefined) {
             alertType=eventData.alertType;
         }
 		var msg='<div id="alertmessage" class="alert alert-'+alertType+' fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>';

@@ -60,11 +60,12 @@ modules = {
 
 	'dialog-dataTables' {
 		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'/js/jquery/',file:'jquery.dataTables.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/jquery/',file:'jquery.dataTables.rowReordering.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/jquery/',file:'dataTables/DT_bootstrap.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/css/',file:'DT_bootstrap.css']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.datatables.js']
+		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/css/', file: 'dataTables.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/css/', file: 'rowReorder.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/js/', file: 'jquery.dataTables.js']
+		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/js/', file: 'dataTables.bootstrap.js']
+		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/js/', file: 'dataTables.rowReorder.js']
+		resource url: [plugin: 'jquery-dialog', dir: '/js/', file: 'dialog.datatables.js']
 	}
 
 	'dialog-tree' {
@@ -79,6 +80,11 @@ modules = {
 		dependsOn 'dialog'
 	    resource url: [plugin: 'jquery-dialog', dir:'bootstrap/css', file:'bootstrap.css']
 	    resource url: [plugin: 'jquery-dialog', dir:'bootstrap/js', file:'bootstrap.js']
+	}
+	
+	'dialog-fontawesome' {
+		dependsOn 'dialog'
+	    resource url: [plugin: 'jquery-dialog', dir: 'font-awesome/css', file: 'font-awesome.css']
 	}
 
 	'dialog-last' {
