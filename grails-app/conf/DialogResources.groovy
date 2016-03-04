@@ -1,13 +1,20 @@
 modules = {
-	dialog {
-		dependsOn 'jquery'
 
+    dialog {
+        dependsOn 'dialog-jquery,dialog-jqueryui'
+
+        resource url: [plugin: 'jquery-dialog', dir:'js', file:'dialog.js']
+        resource url: [plugin: 'jquery-dialog', dir:'css', file:'dialog.css']
+    }
+
+    'dialog-jquery' {
+        resource url: [plugin: 'jquery-dialog', dir:'jquery', file: 'jquery-1.12.1.js']
+    }
+
+    'dialog-jqueryui' {
         resource url: [plugin: 'jquery-dialog', dir:'js/jquery', file: 'jquery-ui-1.9.2.custom.min.js']
-		resource url: [plugin: 'jquery-dialog', dir:'css/bootstrap-theme', file:'jquery-ui-1.9.2.custom.css']
-	    resource url: [plugin: 'jquery-dialog', dir:'js', file:'dialog.js']
-		resource url: [plugin: 'jquery-dialog', dir:'css', file:'dialog.css']
-
-	}
+        resource url: [plugin: 'jquery-dialog', dir:'css/bootstrap-theme', file:'jquery-ui-1.9.2.custom.css']
+    }
 
 	'dialog-altselect' {
 		dependsOn 'dialog'
@@ -93,12 +100,12 @@ modules = {
 	}
 
 	'dialog-bootbox' {
-		dependsOn 'jquery'
+		dependsOn 'dialog-jquery'
 		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'bootbox.js']
 	}
 
 	'dialog-flot' {
-		dependsOn 'jquery'
+		dependsOn 'dialog-jquery'
 		resource url: [plugin: 'jquery-dialog', dir:'/js/flot/',file:'jquery.flot.js']
 	}
 
