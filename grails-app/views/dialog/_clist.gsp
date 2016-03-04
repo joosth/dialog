@@ -22,7 +22,7 @@
 						<g:each in="${listConfig.columns}" var="column">
 							<th class="${column.sortable?'sortable':'nonsortable'} ${listConfig.name}-${column.name}"><g:message code="list.${listConfig.name}.${column.name}.label" /></th>
 						</g:each>
-						<th width="50px"><g:message code="dialog.list.actions.label" default="Actions" /></th>
+						<th><g:message code="dialog.list.actions.label" default="Actions" /></th>
 					</tr>
 				</thead>
 				<tbody>

@@ -68,6 +68,7 @@ dialog.datatables.open =function open (e,params) {
             }
         }
     }).DataTable({
+        "autoWidth": false,
         "processing": true,
         "serverSide": true,
         "ajax": dialog.baseUrl + jsonUrl,

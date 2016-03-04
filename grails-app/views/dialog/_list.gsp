@@ -28,7 +28,7 @@
                                 <th class="${(property=='id' || new DefaultGrailsDomainClass(dc).hasPersistentProperty(property))?'sortable':'nonsortable'} ${controllerName}-${property}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
                             </g:else>
 						</g:each>
-						<th width="50px"><g:message code="dialog.list.actions.label" default="Actions" /></th>
+						<th><g:message code="dialog.list.actions.label" default="Actions" /></th>
                     </tr>
                 </thead>
                 <tbody>
