@@ -8,7 +8,7 @@ modules = {
     }
 
     'dialog-jquery' {
-        resource url: [plugin: 'jquery-dialog', dir:'jquery', file: 'jquery-1.12.1.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.1.js']
     }
 
     'dialog-jqueryui' {
@@ -67,11 +67,11 @@ modules = {
 
 	'dialog-dataTables' {
 		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/css/', file: 'dataTables.bootstrap.css']
-		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/css/', file: 'rowReorder.bootstrap.css']
-		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/js/', file: 'jquery.dataTables.js']
-		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/js/', file: 'dataTables.bootstrap.js']
-		resource url: [plugin: 'jquery-dialog', dir: '/DataTables/js/', file: 'dataTables.rowReorder.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'dataTables.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'rowReorder.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'jquery.dataTables.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.bootstrap.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.rowReorder.js']
 		resource url: [plugin: 'jquery-dialog', dir: '/js/', file: 'dialog.datatables.js']
 	}
 
@@ -85,13 +85,13 @@ modules = {
 
 	'dialog-bootstrap' {
 		dependsOn 'dialog'
-	    resource url: [plugin: 'jquery-dialog', dir:'bootstrap/css', file:'bootstrap.css']
-	    resource url: [plugin: 'jquery-dialog', dir:'bootstrap/js', file:'bootstrap.js']
+	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/css', file:'bootstrap.css']
+	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/js', file:'bootstrap.js']
 	}
 	
 	'dialog-fontawesome' {
 		dependsOn 'dialog'
-	    resource url: [plugin: 'jquery-dialog', dir: 'font-awesome/css', file: 'font-awesome.css']
+	    resource url: [plugin: 'jquery-dialog', dir: 'ext/font-awesome/css', file: 'font-awesome.css']
 	}
 
 	'dialog-last' {
@@ -138,8 +138,8 @@ modules = {
 	}
 
 	'dialog-angularjs' {
-		resource url: [plugin: 'jquery-dialog', dir:'/angularjs', file:'anguar.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/angularjs', file:'module.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/angularjs', file:'angular.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/angularjs', file:'module.js']
 	}
 
 }
