@@ -213,7 +213,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
        		// get z-index of dialog so we can put cluetips above it
        		var parentZIndex=parseInt($(this.parentNode).css('z-index'));
 
-       		$(this).find(".help").tooltip({container:'body',placement:'right'});
+       		$(this).find('[data-toggle="tooltip"]').tooltip();
 
        		$(this).find("input[type!='hidden'],select,textarea").filter(":first").focus();
 

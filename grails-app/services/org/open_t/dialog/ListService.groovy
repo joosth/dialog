@@ -185,7 +185,12 @@ class ListService {
 					actionsString=listConfig.renderActions(itemId:doc.id,propName:propName)
     			}
         		if(!actions && !listConfig) {
-        			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
+        			actions= { dok, env ->
+                        """<div class="btn-group">""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)" title="edit"><i class="fa fa-pencil"></a>""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)" title="delete"><i class="fa fa-trash"></a>""" +
+                        """</div>"""
+                    }
 					actionsString=actions(doc,['detailTableId':detailTableId])
         		}
         		inLine+=["${i}":actionsString]
@@ -294,7 +299,12 @@ class ListService {
 
         		def baseUrl=request.contextPath
         		if(!actions) {
-        			actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small  xlist-action-button xui-state-default" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
+        			actions = { dok, env ->
+        			    """<div class="btn-group">""" +
+        			        """<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)" title="edit"><i class="fa fa-pencil"></i></a>""" +
+        			        """<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)" title="delete"><i class="fa fa-trash"></i></a>""" +
+                        """</div>"""
+                    }
         		}
         		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				data+=inLine
@@ -358,7 +368,12 @@ class ListService {
 				}
 				def baseUrl=request.contextPath
 				if(!actions) {
-					actions= { dok, env -> """<div class="btn-group"><span class="btn btn-small" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)">edit</span><span class="btn btn-small" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)">&times;</span></div>""" }
+					actions = { dok, env ->
+                        """<div class="btn-group">""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)" title="edit"><i class="fa fa-pencil"></a>""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)" title="delete"><i class="fa fa-trash"></a>""" +
+                        """</div>"""
+                    }
 				}
 				inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				data+=inLine

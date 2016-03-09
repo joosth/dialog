@@ -21,6 +21,7 @@ package org.open_t.dialog
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.springframework.web.servlet.support.RequestContextUtils as RCU
 
 /**
  * Tag library for Dialog plugin
@@ -186,7 +187,7 @@ class DialogTagLib {
 				<td>&nbsp;
 				</td>
 				<td>
-					<p align=right><span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></p>
+					<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}"></i>
 				</td>
 			</tr>
 			<tr class="prop object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${attrs.class}">
@@ -214,7 +215,7 @@ class DialogTagLib {
 			out << """</td>"""
 			if (attrs.noHelp!="true"){
 				if (g.message(code:"${domainPropertyName}.${propertyName}.help",default:'')) {
-					out << """<td class="help-icon-column">&nbsp;<span class="help-icon help action" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}" href="#">&nbsp;</span></td>"""
+					out << """<td class="help-icon-column"><i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="${g.message(code:"${domainPropertyName}.${propertyName}.help",default:'Help!')}"></i></td>"""
 				} else {
                 out << """<td>&nbsp;</td>"""
                 }
@@ -256,7 +257,7 @@ class DialogTagLib {
 				<td>&nbsp;
 				</td>
 				<td>
-					<p align=right><span class="help-icon help action" title="${g.message(code:"${attrs.name}.help",default:'Help!')}" href="#">&nbsp;</span></p>
+					<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="${g.message(code:"${attrs.name}.help",default:'Help!')}"></i>
 				</td>
 			</tr>
 			<tr class="prop ${attrs.class}">
@@ -276,7 +277,7 @@ class DialogTagLib {
 			def helptext="&nbsp;"
 			def helpTitle=attrs.help?:g.message(code:"${attrs.name}.help")
 			if (attrs.help || g.message(code:"${attrs.name}.help",default:'UNKNOWN')!='UNKNOWN') {
-				helptext="""<span class="help-icon help action" title="${helpTitle}" href="#">&nbsp;</span>"""
+				helptext="""<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="${helpTitle}"></i>"""
 			}
 			out << """</td><td>${helptext}</td><td>${error}</td></tr>"""
 		}
@@ -329,7 +330,7 @@ class DialogTagLib {
 					def inputType="text"
 					if (attrs.type) inputType=attrs.type
 
-					"""<input type="${inputType}" name="${name}" value="${value}" id="${name}" ${copiedAttrs}  />"""
+					"""<input type="${inputType}" name="${name}" value="${value}" id="${name}" class="form-control" ${copiedAttrs}  />"""
 
 					break
 			}
@@ -362,7 +363,7 @@ class DialogTagLib {
                     def dateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
                     def inputValue = value ? value.format("yyyy-MM-dd") : ""
 
-                    out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation input input-small" value="${inputValue}" />"""
+                    out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation form-control" value="${inputValue}" />"""
                     out << """<input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />"""
                     break
 			}
@@ -396,14 +397,14 @@ class DialogTagLib {
                     def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
                     def inputValue = value ? value.format("yyyy-MM-dd") : ""
 
-                    out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation input input-small" value="${inputValue}" />"""
+                    out << """<input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation form-control" value="${inputValue}" />"""
                     out << """<input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />"""
 
 
 					out << "&nbsp;"
 
                     def timeFormat="HH:mm"
-					def timeAttrs=[id:"time-${attrs.propertyName}",name:"time-${attrs.propertyName}",type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time input input-mini timepicker dialog-open-events']
+					def timeAttrs=[id:"time-${attrs.propertyName}",name:"time-${attrs.propertyName}",type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:'time timepicker dialog-open-events form-control']
 					out << g.field(timeAttrs)
 
 					break
@@ -431,9 +432,9 @@ class DialogTagLib {
 		def skipAttrs=['object','propertyName','mode','type','value']
 		def newAttrs=attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey)}
         if (newAttrs['class']) {
-            newAttrs['class']+=' dialog-open-events'
+            newAttrs['class']+=' form-control dialog-open-events'
         } else {
-            newAttrs['class']='dialog-open-events'
+            newAttrs['class']=' form-control dialog-open-events'
         }
 
         def rows=attrs.rows?:5
@@ -552,9 +553,9 @@ class DialogTagLib {
 					def valueId=value ? value.id : null
 
 					if (property.isOptional())
-						"""${g.select(name:attrs.propertyName+'.id',value:valueId,from:optionValues,optionKey:'id',noSelection:['null': '-'] )}"""
+						"""${g.select(name:attrs.propertyName+'.id',value:valueId,from:optionValues,optionKey:'id',noSelection:['null': '-'], class: 'form-control')}"""
 					else
-						"""${g.select(name:attrs.propertyName+'.id',value:valueId,from:optionValues,optionKey:'id')}"""
+						"""${g.select(name:attrs.propertyName+'.id',value:valueId,from:optionValues,optionKey:'id', class: 'form-control')}"""
 					break
 				case "autocomplete":
 					def optionValues=[]
@@ -581,7 +582,7 @@ class DialogTagLib {
 					}
 					def containerClass = value ? "ac-selected" : "ac-idle"
 					// input+hidden field
-					"""<input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete dialog-open-events" jsonUrl="${jsonUrl}" />
+					"""<input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete dialog-open-events" jsonUrl="${jsonUrl}" class="form-control" />
 						${descriptionText}
 						<input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}"/>"""
 					break
@@ -631,8 +632,8 @@ class DialogTagLib {
 						optionValues=attrs.object.constraints."${attrs.propertyName}".inList
 					}
 
-					def opts=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",from:optionValues]
-					if (attrs["class"]) opts.put("class",attrs["class"])
+					def opts=[name:attrs.propertyName,value:attrs.object."${attrs.propertyName}",from:optionValues, class: "form-control"]
+					if (attrs["class"]) opts.class += " " + attrs["class"]
 					if (attrs["optionKey"]) opts.put("optionKey",attrs["optionKey"])
 					if (attrs["optionValue"]) opts.put("optionValue",attrs["optionValue"])
 					if (attrs["multiple"]) opts.put("multiple",attrs["multiple"])
@@ -799,22 +800,22 @@ class DialogTagLib {
 	def navigation = {attrs,body ->
 		if (grailsApplication.config.dialog?.bootstrap) {
 			out << """<div class="navigation navigation-form-actions">"""
-			def buttons=attrs.buttons.split(",")
+			def buttons = attrs.buttons.split(",")
             // By default, the last button is the default.
-            def defaultButton=attrs.default?:buttons[buttons.size()-1]
-            out <<"""<button style="overflow: visible !important; height: 0 !important; width: 0 !important; margin: 0 !important; border: 0 !important; padding: 0 !important; display: block !important;" type="submit" value="${defaultButton}"/>"""
+            def defaultButton = attrs.default ?: buttons[buttons.size() - 1]
+            out << """<button style="overflow: visible !important; height: 0 !important; width: 0 !important; margin: 0 !important; border: 0 !important; padding: 0 !important; display: block !important;" type="submit" value="${defaultButton}" />"""
 
 			buttons.each { name ->
-					out << """<button type="submit" name="${name}" class="${name} btn" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button>"""
+					out << """<button type="submit" name="${name}" class="${name} btn btn-default" value="${g.message(code: 'navigation.' + name, default: name)}">${g.message(code: 'navigation.' + name, default: name)}</button>"""
 			}
 			out << """</div>"""
 		} else {
 			out << """<div class="navigation">
 				<ul class="clearfix">"""
 
-			def buttons=attrs.buttons.split(",")
+			def buttons = attrs.buttons.split(",")
 			buttons.each { name ->
-				out << """<li><button type="submit" name="${name}" class="${name}" value="${g.message(code:'navigation.'+name,default:name)}">${g.message(code:'navigation.'+name,default:name)}</button></li>"""
+				out << """<li><button type="submit" name="${name}" class="${name}" value="${g.message(code: 'navigation.' + name, default: name)}">${g.message(code: 'navigation.' + name, default: name)}</button></li>"""
 			}
 
 			out << """	</ul>
@@ -1131,9 +1132,173 @@ class DialogTagLib {
 
 			"""<span id="treeselect-${attrs.propertyName}-span" treeUrl="${url}" ${attributes} >
 				<span>${value?:''}</span>
-					<a href="#" onclick="dialog.tree.treeSelect('treeselect-${attrs.propertyName}');" class="btn btn-small">...</a>
+					<a href="#" onclick="dialog.tree.treeSelect('treeselect-${attrs.propertyName}');" class="btn btn-default btn-sm">...</a>
 				<input id="treeselect-field-input" type="hidden" name="${attrs.propertyName}.id" value="${value?.id}" />
 			</span>"""
 		}
 	}
+	
+    /**
+     * Creates next/previous links to support pagination for the current controller.<br/>
+     *
+     * @attr total REQUIRED The total number of results to paginate
+     * @attr action the name of the action to use in the link, if not specified the default action will be linked
+     * @attr controller the name of the controller to use in the link, if not specified the current controller will be linked
+     * @attr id The id to use in the link
+     * @attr params A map containing request parameters
+     * @attr prev The text to display for the previous link (defaults to "Previous" as defined by default.paginate.prev property in I18n messages.properties)
+     * @attr next The text to display for the next link (defaults to "Next" as defined by default.paginate.next property in I18n messages.properties)
+     * @attr max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
+     * @attr maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
+     * @attr offset Used only if params.offset is empty
+     * @attr fragment The link fragment (often called anchor tag) to use
+     */
+    def paginate = { attrs ->
+        
+        def writer = out
+        if (attrs.total == null) {
+            throwTagError("Tag [paginate] is missing required attribute [total]")
+        }
+        def messageSource = grailsAttributes.messageSource
+        def locale = RCU.getLocale(request)
+
+        def total = attrs.int('total') ?: 0
+        def action = (attrs.action ? attrs.action : (params.action ? params.action : "index"))
+        def offset = params.int('offset') ?: 0
+        def max = params.int('max')
+        def maxsteps = (attrs.int('maxsteps') ?: 10)
+
+        if (!offset) offset = (attrs.int('offset') ?: 0)
+        if (!max) max = (attrs.int('max') ?: 10)
+
+        def linkParams = [:]
+        if (attrs.params) linkParams.putAll(attrs.params)
+        linkParams.offset = offset - max
+        linkParams.max = max
+        if (params.sort) linkParams.sort = params.sort
+        if (params.order) linkParams.order = params.order
+
+        def linkTagAttrs = [action:action]
+        if (attrs.namespace) {
+            linkTagAttrs.namespace = attrs.namespace
+        }
+        if (attrs.controller) {
+            linkTagAttrs.controller = attrs.controller
+        }
+        if (attrs.id != null) {
+            linkTagAttrs.id = attrs.id
+        }
+        if (attrs.fragment != null) {
+            linkTagAttrs.fragment = attrs.fragment
+        }
+        //add the mapping attribute if present
+        if (attrs.mapping) {
+            linkTagAttrs.mapping = attrs.mapping
+        }
+
+        linkTagAttrs.params = linkParams
+
+        def cssClasses = "pagination"
+        if (attrs.class) {
+            cssClasses = "pagination " + attrs.class
+        }
+
+        // determine paging variables
+        def steps = maxsteps > 0
+        int currentstep = (offset / max) + 1
+        int firststep = 1
+        int laststep = Math.round(Math.ceil(total / max))
+
+        writer << "<ul class=\"${cssClasses}\">"
+        // display previous link when not on firststep
+        if (currentstep > firststep) {
+            linkParams.offset = offset - max
+            writer << '<li class="prev">'
+            writer << link(linkTagAttrs.clone()) {
+                (attrs.prev ?: messageSource.getMessage('paginate.prev', null, '&laquo;', locale))
+            }
+            writer << '</li>'
+        }
+        else {
+            writer << '<li class="prev disabled">'
+            writer << '<span>'
+            writer << (attrs.prev ?: messageSource.getMessage('paginate.prev', null, '&laquo;', locale))
+            writer << '</span>'
+            writer << '</li>'
+        }
+
+        // display steps when steps are enabled and laststep is not firststep
+        if (steps && laststep > firststep) {
+            linkTagAttrs.class = 'step'
+
+            // determine begin and endstep paging variables
+            int beginstep = currentstep - Math.round(maxsteps / 2) + (maxsteps % 2)
+            int endstep = currentstep + Math.round(maxsteps / 2) - 1
+
+            if (beginstep < firststep) {
+                beginstep = firststep
+                endstep = maxsteps
+            }
+            if (endstep > laststep) {
+                beginstep = laststep - maxsteps + 1
+                if (beginstep < firststep) {
+                    beginstep = firststep
+                }
+                endstep = laststep
+            }
+
+            // display firststep link when beginstep is not firststep
+            if (beginstep > firststep) {
+                linkParams.offset = 0
+                writer << '<li>'
+                writer << link(linkTagAttrs.clone()) {firststep.toString()}
+                writer << '</li>'
+                writer << '<li class="disabled"><span>...</span></li>'
+            }
+
+            // display paginate steps
+            (beginstep..endstep).each { i ->
+                if (currentstep == i) {
+                    writer << "<li class=\"active\">"
+                    writer << "<span>${i}</span>"
+                    writer << "</li>";
+                }
+                else {
+                    linkParams.offset = (i - 1) * max
+                    writer << "<li>";
+                    writer << link(linkTagAttrs.clone()) {i.toString()}
+                    writer << "</li>";
+                }
+            }
+
+            // display laststep link when endstep is not laststep
+            if (endstep < laststep) {
+                writer << '<li class="disabled"><span>...</span></li>'
+                linkParams.offset = (laststep -1) * max
+                writer << '<li>'
+                writer << link(linkTagAttrs.clone()) { laststep.toString() }
+                writer << '</li>'
+            }
+        }
+
+        // display next link when not on laststep
+        if (currentstep < laststep) {
+            linkParams.offset = offset + max
+            writer << '<li class="next">'
+            writer << link(linkTagAttrs.clone()) {
+                (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, '&raquo;', locale))
+            }
+            writer << '</li>'
+        }
+        else {
+            linkParams.offset = offset + max
+            writer << '<li class="disabled">'
+            writer << '<span>'
+            writer << (attrs.next ? attrs.next : messageSource.getMessage('paginate.next', null, '&raquo;', locale))
+            writer << '</span>'
+            writer << '</li>'
+        }
+
+        writer << '</ul>'
+    }
 }

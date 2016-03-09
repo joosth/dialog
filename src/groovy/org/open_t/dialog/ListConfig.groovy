@@ -80,13 +80,13 @@ class ListConfig {
 			String label = messageSource.getMessage("list.${name}.action.${action}.label".toString(),null, defaultLabel,locale)
 			switch(action) {
 				case "delete":
-					s+="""<span class="btn btn-small" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)">${label}</span>"""
+					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-trash"></a>"""
 				break
                 case "show":
-                    s+="""<span class="btn btn-small" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',nosubmit:true,refresh : '${props.detailTableId}'}, null)">${label}</span>"""
+                    s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',nosubmit:true,refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-search"></i></a>"""
                 break
 				default:
-					s+="""<span class="btn btn-small" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)">${label}</span>"""
+					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-pencil"></i></a>"""
 			}
 		}
 		s+="""</div>"""

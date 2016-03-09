@@ -204,7 +204,7 @@ class FileService {
                         def actionsList=actionsParameter.split(',')
                         // TODO add other actions ('show','edit')
                         if (actionsList.contains("delete")) {
-                            actionsString +="""<span class="btn btn-small" onclick="dialog.deleteFile(${aParams.id},'${aParams.controller}','${aFile.name}',null)">&times;</span>"""
+                            actionsString +="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteFile(${aParams.id},'${aParams.controller}','${aFile.name}',null)" title="delete"><i class="fa fa-trash"></a>"""
                         }
                         actionsString+="</div>"
                         return actionsString
