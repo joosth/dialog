@@ -53,7 +53,8 @@ td.tinymce textarea {width:100%;}
 
 table.rowreordering tr { cursor:pointer;}
 div.errors {color:red;}
-.help-icon,.help { background-image: url(../images/help-16x16.png);
+.help-icon,.help {
+    /*background-image: url(../images/help-16x16.png);*/
                    width:16px;
                    height:16px;
                    cursor:pointer;background-position:5px 5px;
