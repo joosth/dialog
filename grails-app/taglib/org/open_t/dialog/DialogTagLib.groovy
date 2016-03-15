@@ -196,7 +196,7 @@ class DialogTagLib {
         out << body()
         if (attrs.noHelp != "true") {
             if (g.message(code: "${domainPropertyName}.${propertyName}.help", default: "")) {
-                out << """<span id="help-${attrs.propertyName}" class="help-block">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
+                out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
             }
         }
         if (attrs.vertical != "true") {
@@ -240,7 +240,7 @@ class DialogTagLib {
         out << body()
         if (attrs.noHelp != "true") {
             if (g.message(code: "${attrs.name}.help", default: "")) {
-                out << """<span id="help-${attrs.name}" class="help-block">${g.message(code: "${attrs.name}.help", default: "Help!")}</span>"""
+                out << """<span id="help-${attrs.name}" class="help-block small">${g.message(code: "${attrs.name}.help", default: "Help!")}</span>"""
             }
         }
         if (attrs.vertical != "true") {
