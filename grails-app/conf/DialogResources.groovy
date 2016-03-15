@@ -1,7 +1,7 @@
 modules = {
 
     dialog {
-        dependsOn 'dialog-jquery,dialog-jqueryui'
+        dependsOn 'dialog-jquery'
 
         resource url: [plugin: 'jquery-dialog', dir:'js', file:'dialog.js']
         resource url: [plugin: 'jquery-dialog', dir:'css', file:'dialog.css']
@@ -11,15 +11,10 @@ modules = {
         resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.1.js']
     }
 
-    'dialog-jqueryui' {
-        resource url: [plugin: 'jquery-dialog', dir:'js/jquery', file: 'jquery-ui-1.9.2.custom.min.js']
-        resource url: [plugin: 'jquery-dialog', dir:'css/bootstrap-theme', file:'jquery-ui-1.9.2.custom.css']
-    }
-
 	'dialog-altselect' {
 		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'js/jquery', file:'jquery.ui.altselect.js']
-		resource url: [plugin: 'jquery-dialog', dir:'css', file:'ui.altselect.css']
+		//resource url: [plugin: 'jquery-dialog', dir:'js/jquery', file:'jquery.ui.altselect.js']
+		//resource url: [plugin: 'jquery-dialog', dir:'css', file:'ui.altselect.css']
 	}
 
 	'dialog-tinymce' {

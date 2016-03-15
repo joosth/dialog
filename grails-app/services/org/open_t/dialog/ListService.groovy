@@ -69,7 +69,7 @@ class ListService {
 				if (value.format ("HH:mm:ss")=="00:00:00") {
 					dateFormat= messageSource.getMessage("dialog.date.format".toString(),null, "yyyy-MM-dd",locale)
 				} else {
-					dateFormat= messageSource.getMessage("dialog.datetime.format".toString(),null, "yyyy-MM-dd hh:mm:ss",locale)
+					dateFormat= messageSource.getMessage("dialog.datetime.format".toString(),null, "yyyy-MM-dd HH:mm:ss",locale)
 				}
 				def format=new SimpleDateFormat(dateFormat,locale)
 				return format.format(value)
