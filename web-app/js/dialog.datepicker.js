@@ -113,8 +113,8 @@ dialog.datepicker.openTime = function open (e, params) {
     });
 };
 
-$(function() {
+/*$(function() {
     $.datepicker.setDefaults( window.dialog.messages.datepicker.regional );
     $(document).on("dialog-open",".datepicker", window.dialog.datepicker.open);
     $(document).on("dialog-open",'.timepicker', window.dialog.datepicker.openTime);
-});
+});*/
