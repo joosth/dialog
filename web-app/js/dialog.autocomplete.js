@@ -87,5 +87,5 @@ dialog.autocomplete.open =function(e,params) {
 
 
 $(function() {
-	$(document).on("dialog-open","input.autocomplete",dialog.autocomplete.open);
+	//$(document).on("dialog-open","input.autocomplete",dialog.autocomplete.open);
 });
