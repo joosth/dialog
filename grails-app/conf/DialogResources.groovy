@@ -33,22 +33,21 @@ modules = {
 	'dialog-codemirror' {
 		dependsOn 'dialog'
 		resource url: [plugin: 'jquery-dialog', dir:'css',file:'dialog.codemirror.css']
-		resource url: [plugin: 'jquery-dialog', dir:'js/codemirror/lib/',file:'codemirror.css']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/lib/',file:'codemirror.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/lib/',file:'codemirror.css']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/lib/',file:'codemirror.js']
 
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/addon/runmode/',file:'runmode.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/addon/runmode/',file:'colorize.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/xml/',file:'xml.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/javascript/',file:'javascript.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/css/',file:'css.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/htmlmixed/',file:'htmlmixed.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/runmode/',file:'runmode.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/runmode/',file:'colorize.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/xml/',file:'xml.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/javascript/',file:'javascript.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/css/',file:'css.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/htmlmixed/',file:'htmlmixed.js']
 
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/groovy/',file:'groovy.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/less/',file:'less.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/shell/',file:'shell.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/clike/',file:'clike.js']
-        resource url: [plugin: 'jquery-dialog', dir:'/js/codemirror/mode/sql/',file:'sql.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.codemirror.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/groovy/',file:'groovy.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/shell/',file:'shell.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/clike/',file:'clike.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/sql/',file:'sql.js']
+		resource url: [plugin: 'jquery-dialog', dir:'js',file:'dialog.codemirror.js']
 
 	}
 
@@ -83,7 +82,7 @@ modules = {
 	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/css', file:'bootstrap.css']
 	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/js', file:'bootstrap.js']
 	}
-	
+
 	'dialog-fontawesome' {
 		dependsOn 'dialog'
 	    resource url: [plugin: 'jquery-dialog', dir: 'ext/font-awesome/css', file: 'font-awesome.css']
