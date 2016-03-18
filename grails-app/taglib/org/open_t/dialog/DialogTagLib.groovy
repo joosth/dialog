@@ -183,7 +183,7 @@ class DialogTagLib {
 
         //begin row
         out << """<div class="form-group object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
-        
+
         //label
         if (attrs.noLabel != "true") {
             out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
@@ -199,6 +199,11 @@ class DialogTagLib {
                 out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
             }
         }
+        if (attrs.noErrors!="true"){
+			out <<"""<span class="small error-message">${errors}</span>"""
+		}
+
+
         if (attrs.vertical != "true") {
             out << "</div>"
         }
@@ -227,7 +232,7 @@ class DialogTagLib {
 
         //begin row
         out << """<div class="form-group ${cssClass}">"""
-        
+
         //label
         if (attrs.noLabel != "true") {
             out << """<label for="${attrs.name}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${label}</label>"""
@@ -687,11 +692,12 @@ class DialogTagLib {
 
         out <<
             """
-            <div class="modal fade" id="${name}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal" id="${name}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="close help-action" style="margin-right:10px;" aria-label="Help"><span aria-hidden="true">?</span></button>
                             <h4 class="modal-title" id="myModalLabel">${title}</h4>
                         </div>
                         <div class="modal-body">
@@ -699,9 +705,9 @@ class DialogTagLib {
             """
 
         if (attrs.error) {
-            out << """<div class="errors text-error">${attrs.error ? attrs.error : ""}</div>"""
+            out << """<div class="errors text-error alert alert-danger">${attrs.error ? attrs.error : ""}</div>"""
         } else {
-            out << """<div class="errors" style="display: none;"></div>"""
+            out << """<div class="errors errors alert alert-danger" style="display: none;"></div>"""
         }
 
         def message = g.message(code: "form.${name}.message", default: "")
@@ -722,7 +728,7 @@ class DialogTagLib {
                 }
             }
         }
-        
+
         out << body()
         out <<
             """
@@ -1161,7 +1167,7 @@ class DialogTagLib {
      * @attr fragment The link fragment (often called anchor tag) to use
      */
     def paginate = { attrs ->
-        
+
         def writer = out
         if (attrs.total == null) {
             throwTagError("Tag [paginate] is missing required attribute [total]")

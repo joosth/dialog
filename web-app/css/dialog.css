@@ -52,7 +52,6 @@ td.tinymce textarea {width:100%;}
 
 
 table.rowreordering tr { cursor:pointer;}
-div.errors {color:red;}
 .help-icon,.help {
     /*background-image: url(../images/help-16x16.png);*/
                    width:16px;
@@ -83,7 +82,6 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
     text-align: left;
 }
 
-.error {color: red;}
 .action {min-height:16px; padding:2px 0 2px 13px;background-repeat:no-repeat;display:inline-block;}
 
 .btn:focus {outline:none;}
@@ -108,3 +106,5 @@ div.ui-dialog div.ui-dialog-titlebar span.ui-dialog-title { padding: 0px !import
 div.ui-dialog div.ui-dialog-content { padding: 5px 15px; }
 div.ui-dialog { padding: 0px; box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3); }
 
+span.help-block { display: none;}
+span.error-message { color:#a94442;}

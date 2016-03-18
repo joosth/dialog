@@ -182,8 +182,10 @@ class DialogService {
 					}
 				}
 
-                if(domainClassInstance.errors.globalErrorCount>0) {
+                if (domainClassInstance.errors.globalErrorCount>0) {
                     resultMessage=g.renderErrors(bean:domainClassInstance)
+                } else {
+                    resultMessage=getMessage("dialog.submit.invalidfields")
                 }
             }
 

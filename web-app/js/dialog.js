@@ -182,8 +182,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
                         } else {
                             for (fieldName in jsonResponse.errorFields) {
                                 var errorMessage=jsonResponse.errorFields[fieldName];
-                                $(".property-"+fieldName).addClass("error");
-                                $(".property-"+fieldName).find("p.error-message").html(errorMessage);
+                                $(".property-"+fieldName).addClass("has-error");
+                                $(".property-"+fieldName).find("span.error-message").html(errorMessage);
                             }
                             theDialog.find("div.errors").html(jsonResponse.message);
                             theDialog.find("div.errors").show();
@@ -193,15 +193,23 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
                     theDialog.modal("hide");
                 }
             });
-        }).on("shown.bs.modal", function (event) {
-            $(this).find(".dialog-open-events").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName } );
-            $(this).find("input[type!='hidden'], select, textarea").filter(":first").focus();
+        }).on("shown.bs.modal", function(event) {
+            if ($(this).find(".tab-pane").length>0) {
+                $(this).find(".tab-pane").filter(".active").find(".dialog-open-events").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName } ).addClass("dialog-opened");
+            } else {
+                $(this).find(".dialog-open-events").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName } ).addClass("dialog-opened");
+            }
+        }).on("shown.bs.tab", function (event) {
+            var targetRef=$(event.target).attr("href");
+            var target=$(targetRef);
+            $(target).find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName } ).addClass("dialog-opened");
+            $(target).find("input[type!='hidden'], select, textarea").filter(":first").focus();
         }).on("hidden.bs.modal", function (event) {
             $(this).trigger("dialog-close", { event: event, "this": this } );
             $(this).find(".dialog-close-events").trigger("dialog-close", { event: event, "this": this } );
             theDialog.data("bs.modal", null);
             theDialog.remove();
-        }).modal();
+        }).modal({animation:false});
 
     }
     return false;
@@ -322,7 +330,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 
         var deleteButton = $(this).find(".modal-footer button#delete");
 
-        deleteButton.click( function () {            
+        deleteButton.click( function () {
             var formData = theDialog.find("form").serialize();
             $.post(dialog.baseUrl + "/" + controllerName + "/deletefile/" + id + "?filename=" + filename, formData, function(data) {
                 var result = data.result;
@@ -370,6 +378,10 @@ $(function() {
     // Deconflict button() function of twitter bootstrap, see http://stackoverflow.com/questions/13809847/button-classes-not-added-in-jquery-ui-bootstrap-dialog
     var btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
     $.fn.btn = btn;
+
+
+    // Show help text when ? is clicked
+    $(document).on("click", ".help-action",function(e) {
+        $(this).closest(".modal").find(".help-block").toggle();
+    });
 });
-
-
