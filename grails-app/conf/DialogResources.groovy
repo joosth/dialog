@@ -128,7 +128,7 @@ modules = {
 
 	'dialog-modernizr' {
 		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'modernizr.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/modernizr',file:'modernizr.js']
 	}
 
 	'dialog-angularjs' {
