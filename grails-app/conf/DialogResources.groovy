@@ -100,7 +100,7 @@ modules = {
 
 	'dialog-flot' {
 		dependsOn 'dialog-jquery'
-		resource url: [plugin: 'jquery-dialog', dir:'/js/flot/',file:'jquery.flot.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/flot', file:'jquery.flot.js']
 	}
 
 	'dialog-autocomplete' {

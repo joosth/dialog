@@ -1,62 +1,64 @@
-/*
-Flot plugin for computing bottoms for filled line and bar charts.
+/* Flot plugin for stacking data sets rather than overlyaing them.
 
-The case: you've got two series that you want to fill the area
-between. In Flot terms, you need to use one as the fill bottom of the
-other. You can specify the bottom of each data point as the third
-coordinate manually, or you can use this plugin to compute it for you.
+Copyright (c) 2007-2014 IOLA and Ole Laursen.
+Licensed under the MIT license.
 
-In order to name the other series, you need to give it an id, like this
+The plugin assumes the data is sorted on x (or y if stacking horizontally).
+For line charts, it is assumed that if a line has an undefined gap (from a
+null point), then the line above it should have the same gap - insert zeros
+instead of "null" if you want another behaviour. This also holds for the start
+and end of the chart. Note that stacking a mix of positive and negative values
+in most instances doesn't make sense (so it looks weird).
 
-  var dataset = [
-       { data: [ ... ], id: "foo" } ,         // use default bottom
-       { data: [ ... ], fillBetween: "foo" }, // use first dataset as bottom
-       ];
+Two or more series are stacked when their "stack" attribute is set to the same
+key (which can be any number or string or just "true"). To specify the default
+stack, you can set the stack option like this:
 
-  $.plot($("#placeholder"), dataset, { line: { show: true, fill: true }});
+	series: {
+		stack: null/false, true, or a key (number/string)
+	}
 
-As a convenience, if the id given is a number that doesn't appear as
-an id in the series, it is interpreted as the index in the array
-instead (so fillBetween: 0 can also mean the first series).
-  
-Internally, the plugin modifies the datapoints in each series. For
-line series, extra data points might be inserted through
-interpolation. Note that at points where the bottom line is not
-defined (due to a null point or start/end of line), the current line
-will show a gap too. The algorithm comes from the jquery.flot.stack.js
-plugin, possibly some code could be shared.
+You can also specify it for a single series, like this:
+
+	$.plot( $("#placeholder"), [{
+		data: [ ... ],
+		stack: true
+	}])
+
+The stacking order is determined by the order of the data series in the array
+(later series end up on top of the previous).
+
+Internally, the plugin modifies the datapoints in each series, adding an
+offset to the y value. For line series, extra data points are inserted through
+interpolation. If there's a second y value, it's also adjusted (e.g for bar
+charts or filled areas).
+
 */
 
 (function ($) {
     var options = {
-        series: { fillBetween: null } // or number
+        series: { stack: null } // or number/string
     };
     
     function init(plot) {
-        function findBottomSeries(s, allseries) {
-            var i;
-            for (i = 0; i < allseries.length; ++i) {
-                if (allseries[i].id == s.fillBetween)
-                    return allseries[i];
-            }
-
-            if (typeof s.fillBetween == "number") {
-                i = s.fillBetween;
-            
-                if (i < 0 || i >= allseries.length)
-                    return null;
-
-                return allseries[i];
+        function findMatchingSeries(s, allseries) {
+            var res = null;
+            for (var i = 0; i < allseries.length; ++i) {
+                if (s == allseries[i])
+                    break;
+                
+                if (allseries[i].stack == s.stack)
+                    res = allseries[i];
             }
             
-            return null;
+            return res;
         }
         
-        function computeFillBottoms(plot, s, datapoints) {
-            if (s.fillBetween == null)
+        function stackData(plot, s, datapoints) {
+            if (s.stack == null || s.stack === false)
                 return;
 
-            var other = findBottomSeries(s, plot.getData());
+            var other = findMatchingSeries(s, plot.getData());
             if (!other)
                 return;
 
@@ -67,10 +69,13 @@ plugin, possibly some code could be shared.
                 newpoints = [],
                 px, py, intery, qx, qy, bottom,
                 withlines = s.lines.show,
-                withbottom = ps > 2 && datapoints.format[2].y,
+                horizontal = s.bars.horizontal,
+                withbottom = ps > 2 && (horizontal ? datapoints.format[2].x : datapoints.format[2].y),
                 withsteps = withlines && s.lines.steps,
                 fromgap = true,
-                i = 0, j = 0, l;
+                keyOffset = horizontal ? 1 : 0,
+                accumulateOffset = horizontal ? 0 : 1,
+                i = 0, j = 0, l, m;
 
             while (true) {
                 if (i >= points.length)
@@ -101,17 +106,17 @@ plugin, possibly some code could be shared.
                 }
                 else {
                     // cases where we actually got two points
-                    px = points[i];
-                    py = points[i + 1];
-                    qx = otherpoints[j];
-                    qy = otherpoints[j + 1];
+                    px = points[i + keyOffset];
+                    py = points[i + accumulateOffset];
+                    qx = otherpoints[j + keyOffset];
+                    qy = otherpoints[j + accumulateOffset];
                     bottom = 0;
 
                     if (px == qx) {
                         for (m = 0; m < ps; ++m)
                             newpoints.push(points[i + m]);
 
-                        //newpoints[l + 1] += qy;
+                        newpoints[l + accumulateOffset] += qy;
                         bottom = qy;
                         
                         i += ps;
@@ -121,9 +126,9 @@ plugin, possibly some code could be shared.
                         // we got past point below, might need to
                         // insert interpolated extra point
                         if (withlines && i > 0 && points[i - ps] != null) {
-                            intery = py + (points[i - ps + 1] - py) * (qx - px) / (points[i - ps] - px);
+                            intery = py + (points[i - ps + accumulateOffset] - py) * (qx - px) / (points[i - ps + keyOffset] - px);
                             newpoints.push(qx);
-                            newpoints.push(intery)
+                            newpoints.push(intery + qy);
                             for (m = 2; m < ps; ++m)
                                 newpoints.push(points[i + m]);
                             bottom = qy; 
@@ -144,9 +149,9 @@ plugin, possibly some code could be shared.
                         // we might be able to interpolate a point below,
                         // this can give us a better y
                         if (withlines && j > 0 && otherpoints[j - otherps] != null)
-                            bottom = qy + (otherpoints[j - otherps + 1] - qy) * (px - qx) / (otherpoints[j - otherps] - qx);
+                            bottom = qy + (otherpoints[j - otherps + accumulateOffset] - qy) * (px - qx) / (otherpoints[j - otherps + keyOffset] - qx);
 
-                        //newpoints[l + 1] += bottom;
+                        newpoints[l + accumulateOffset] += bottom;
                         
                         i += ps;
                     }
@@ -154,7 +159,7 @@ plugin, possibly some code could be shared.
                     fromgap = false;
                     
                     if (l != newpoints.length && withbottom)
-                        newpoints[l + 2] = bottom;
+                        newpoints[l + 2] += bottom;
                 }
 
                 // maintain the line steps invariant
@@ -171,13 +176,13 @@ plugin, possibly some code could be shared.
             datapoints.points = newpoints;
         }
         
-        plot.hooks.processDatapoints.push(computeFillBottoms);
+        plot.hooks.processDatapoints.push(stackData);
     }
     
     $.plot.plugins.push({
         init: init,
         options: options,
-        name: 'fillbetween',
-        version: '1.0'
+        name: 'stack',
+        version: '1.2'
     });
 })(jQuery);
