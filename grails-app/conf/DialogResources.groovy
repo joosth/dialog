@@ -53,10 +53,7 @@ modules = {
 
 	'dialog-fileuploader' {
 		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'/css/',file:'fileuploader.css']
-	    resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'fileuploader.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.fileuploader.js']
-
+		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.uploader.js']
 	}
 
 	'dialog-dataTables' {

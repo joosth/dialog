@@ -60,8 +60,10 @@ class DialogTagLib {
                 dialog.messages.ok = "${message(code: "dialog.messages.ok")}";
                 dialog.messages.delete = "${message(code: "dialog.messages.delete")}";
                 dialog.messages.cancel = "${message(code: "dialog.messages.cancel")}";
-                dialog.messages.upload = "${message(code: "dialog.messages.upload")}";
-                dialog.messages.dropfileshere = "${message(code: "dialog.messages.dropfileshere")}";
+
+                dialog.messages.uploading = "${message(code: "dialog.messages.uploading")}";
+                dialog.messages.uploadcompleted = "${message(code: "dialog.messages.uploadcompleted")}";
+
                 dialog.messages.new = "${message(code: "dialog.messages.new")}";
                 dialog.messages.confirmdelete = "${message(code: "dialog.messages.confirmdelete")}";
                 dialog.messages.confirmdeleteTitle = "${message(code: "dialog.messages.confirmdeleteTitle")}";
@@ -164,7 +166,6 @@ class DialogTagLib {
      *
      */
     def row = { attrs, body ->
-
         def object = attrs.object
         def domainPropertyName = object.getClass().getName()
         def domainClass = new DefaultGrailsDomainClass(object.class)
@@ -203,7 +204,6 @@ class DialogTagLib {
 			out <<"""<span class="small error-message">${errors}</span>"""
 		}
 
-
         if (attrs.vertical != "true") {
             out << "</div>"
         }
@@ -221,7 +221,6 @@ class DialogTagLib {
      * @param class CSS class to apply to the <tr> element
      */
     def simplerow = { attrs, body ->
-
         def cssClass = attrs.class ? attrs.class : ""
         def error = attrs.error ? attrs.error : ""
         def errors = ""
@@ -269,9 +268,7 @@ class DialogTagLib {
      * @param class The CSS class to be supplied to the enclosing row
      */
     def textField = { attrs ->
-
         out << row (attrs) {
-
             switch (attrs.mode) {
                 case "show":
                     return """<p class="form-control-static">${fieldValue(bean: attrs.object, field: attrs.propertyName)}</p>"""
@@ -314,9 +311,7 @@ class DialogTagLib {
      * @param class The CSS class to be supplied to the enclosing row
      */
     def date = { attrs ->
-
         def value = attrs.object."${attrs.propertyName}"
-
         out << row (attrs) {
 
             switch (attrs.mode) {
@@ -352,11 +347,8 @@ class DialogTagLib {
      */
 
     def dateTime = { attrs ->
-
         def value = attrs.object."${attrs.propertyName}"
-
         out << row (attrs) {
-
             switch (attrs.mode) {
                 case "show":
                     return """<p class="form-control-static">${listService.getDisplayString(value)}</p>"""
@@ -388,7 +380,6 @@ class DialogTagLib {
      * @param class The CSS class to be supplied to the enclosing row
      */
     def textArea = { attrs ->
-
         def copiedAttrs = ""
         def skipAttrs = ["object", "propertyName", "mode", "type", "value"]
         def newAttrs = attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey) }
@@ -427,7 +418,6 @@ class DialogTagLib {
      * @param class The CSS class to be supplied to the enclosing row
      */
     def xml = { attrs ->
-
         def skipAttrs = ["object", "propertyName", "mode", "type", "value"]
         def newAttrs = attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey) }
         newAttrs.cols = attrs.cols ?: 80
@@ -466,9 +456,7 @@ class DialogTagLib {
      */
 
     def checkBox = { attrs ->
-
         out << row (attrs) {
-
             switch (attrs.mode) {
                 case "show":
                     def value = fieldValue(bean: attrs.object, field: attrs.propertyName)
@@ -503,7 +491,6 @@ class DialogTagLib {
      * @param sort The property to sort the domain class items in the list by (default: name)
      */
     def domainObject = { attrs ->
-
         def optionValues = []
         def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
         def property = domainClass.getPropertyByName(attrs.propertyName)
@@ -584,7 +571,6 @@ class DialogTagLib {
      * @param style attribute to be supplied to the &lt;select&gt; element
      */
     def select = { attrs ->
-
         def multiple = attrs.multiple ? attrs.multiple : "no"
         def cssClass = attrs.class ? attrs.class : ""
         def optionKey = attrs.optionKey ? attrs.optionKey : null
@@ -633,7 +619,6 @@ class DialogTagLib {
      * @param object The domain object
      */
     def tabs = { attrs, body ->
-
         this.pageScope.dialogTabNames = []
         def bodyText = body()
 
@@ -663,11 +648,8 @@ class DialogTagLib {
      * @param object The domain object
      */
     def tab = { attrs, body ->
-
         this.pageScope.dialogTabNames += attrs.name
-
         def prefix = "dialog_" + attrs.object.getClass().getName() + "_" + attrs.object.id + "_"
-
         out << """<div role="tabpanel" class="tab-pane ${this.pageScope.dialogTabNames.size() == 1 ? "active" : "" }" id="${prefix}${attrs.name}">"""
         out << body()
         out << "</div>"
@@ -681,7 +663,6 @@ class DialogTagLib {
      * @param title The title of this dialog
      */
     def form = { attrs, body ->
-
         def defaultName = "form"
         if (attrs.object) {
             defaultName = new DefaultGrailsDomainClass(attrs.object.class).getPropertyName()
@@ -754,7 +735,6 @@ class DialogTagLib {
     * @param title The title of this dialog
     */
     def pageform = { attrs,body ->
-
         def name = attrs.name ? attrs.name : "form"
         def action = attrs.action ? attrs.action : "submit${name}"
         def cssClass = attrs.class ? "pageform ${attrs.class}" : "pageform"
@@ -813,7 +793,6 @@ class DialogTagLib {
      * table tag - create a &lt;table&gt;
      */
     def table = { attrs, body ->
-
         out <<
             """
             <table class="table table-striped table-bordered">
@@ -833,7 +812,6 @@ class DialogTagLib {
      * @param property property that links detail with the master
      */
     def detailTable = { attrs ->
-
         def copiedAttrs = ""
         def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
         attrs.each { attrKey, attrValue ->
@@ -903,7 +881,6 @@ class DialogTagLib {
      * @param object domain class instance
      */
     def filesTable = { attrs ->
-
         def controller
         def prefix
         if (attrs.controller) {
@@ -940,69 +917,70 @@ class DialogTagLib {
     /**
      * Displays an upload control in the dialog
      */
-    def upload = { attrs, body ->
 
+
+    // Upload area wrapper. Takes controller and action attributes
+    def upload = { attrs, body ->
         def copiedAttrs = ""
         def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
         attrs.each { attrKey, attrValue ->
             if (!skipAttrs.contains(attrKey)) {
-                copiedAttrs+=""" ${attrKey}="${attrValue}" """
+                copiedAttrs += """ ${attrKey}="${attrValue}" """
             }
         }
-
-        out << """<div class="upload dialog-open-events" ${copiedAttrs}>"""
+        out << """<div ${copiedAttrs} class="upload-button-wrapper dialog-open-events" controller="${attrs.controller}" action="${attrs.action?:'upload'}">"""
         out << body()
         out << """</div>"""
     }
 
-    /**
-     * Header element for upload
-     * Only needed for full-page dialogs containing an upload.
-     *
-     * @param action The action to use for the JSON data source (default: fileupload)
-     * @param object The domain object
-     * @param propertyName The property of the domain object
-     * @param url The URL of the JSON data source (object and action are ignored)
-     */
-    def uploadHead = { attrs ->
+    // Upload progress bar
+    def uploadProgressBar = { attrs, body ->
+        attrs.name=attrs.name?:"uploadProgressBar"
+        attrs.noLabel="true"
 
-        def action = attrs.action ?: "fileupload"
-        def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
-        def property = domainClass.getPropertyByName(attrs.propertyName)
-        def dc = new DefaultGrailsDomainClass(property.getType())
-        def domainPropertyName = dc.getPropertyName()
-        def url = attrs.url ?: "${request.contextPath}/${domainPropertyName}/${action}"
+        out << """<div class="row upload-progress-row" style="display:none;">
+                    <div class="col-md-12">
+                        <div id="progress" class="progress" style="width:100%;display:none;margin-bottom:10px;">
+                            <div id="list-upload-progress" class="progress-bar upload-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                <span id="list-upload-progress-percentage" class="upload-progress-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>"""
+    }
 
-        out <<
-            """
-            <script  type="text/javascript">
-                \$(function() {
-                    var uploader = new qq.FileUploader({
-                    element: document.getElementById("file-uploader"),
-                    // path to server-side upload script
-                    action: '${url}',
-                    params: {
-                    },
-                    onComplete: function(id, fileName, responseJSON) {
-                        \$("#form").append('<input type=\"hidden\" name=\"filename\" value=\"' + fileName + '\" />');
-                    },
-                    template:
-                        '<div class="qq-uploader">' +
-                            '<div class="qq-upload-drop-area"><span>${message(code:'cmis.uploader.dropfileshere')}</span></div>' +
-                            '<div class="qq-upload-button">${message(code:'cmis.uploader.uploadafile')}</div>' +
-                            '<ul class="qq-upload-list"></ul>' +
-                        '</div>'
-                    });
-                });
-            </script>
-            """
+    // Upload progress text
+    def uploadProgressText = { attrs, body ->
+        out << """<div class="row upload-progress-row" style="display:none;">
+                    <div class="col-md-12">
+                        <span id="list-upload-progress-text" class="upload-progress-text" style="width:100%;display:none;margin-bottom:10px;">&nbsp;</span>
+                        </div>
+                    </div>"""
+    }
+    def listToolBar = { attrs, body ->
+        attrs.id=attrs.id?:"list-toolbar"
+        out << """
+        <div class="row" >
+            <div class="col-md-3">
+                <div id="${attrs.id}" class="btn-toolbar btn-toolbar-above-datatable" role="toolbar" >"""
+                    out << body()
+                  out << """
+                </div>
+            </div>
+        </div>"""
+    }
+
+    // Upload button
+    def uploadButton = { attrs, body ->
+            out << """<span href="#" class="btn btn-default btn-file upload-button">
+                <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
+            </span>"""
     }
 
     /**
      * Displays a dropdown menu in the menu bar. The key for the message is dropdown.code.label, with code replaced by the code attribute.
      */
     def dropdown = { attrs, body ->
-
         out <<
             """
             <li class="dropdown ${attrs.class ?: ""}">
@@ -1022,12 +1000,10 @@ class DialogTagLib {
      *  The key for the message is dropdown.code.label, with code replaced by the code attribute.
      */
     def dropdownHeader = { attrs, body ->
-
         def icon = ""
         if (attrs.icon) {
             icon = """<i class="${attrs.icon}"></i> """
         }
-
         out << """<li class="dropdown-header">${icon}${g.message(code: "dropdown." + attrs.code + ".label")}</li>"""
     }
 
@@ -1036,7 +1012,6 @@ class DialogTagLib {
      *  The key for the message is dropdown.code.label, with code replaced by the code attribute.
      */
     def dropdownDivider = { attrs, body ->
-
         out << """<li role="separator" class="divider"></li>"""
     }
 
@@ -1045,7 +1020,6 @@ class DialogTagLib {
      *  The key for the message is dropdown.code.label, with code replaced by the code attribute.
      */
     def submenu = { attrs, body ->
-
         def icon = ""
         if (attrs.icon) {
             icon = """<i class="${attrs.icon}"></i> """
@@ -1072,7 +1046,6 @@ class DialogTagLib {
      * @param code The code key for lookup of messages
      */
     def menuitem = { attrs, body ->
-
         def icon = ""
         if (attrs.icon) {
             icon = """<i class="${attrs.icon}"></i> """
@@ -1125,7 +1098,6 @@ class DialogTagLib {
      * @param url The URL of the JSON data source (object and action are ignored)
      */
     def treeselect = { attrs, body ->
-
         out << row ("class": attrs.class, object: attrs.object, propertyName: attrs.propertyName) {
             def action = attrs.action ?: "treeJSON"
             def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
@@ -1167,7 +1139,6 @@ class DialogTagLib {
      * @attr fragment The link fragment (often called anchor tag) to use
      */
     def paginate = { attrs ->
-
         def writer = out
         if (attrs.total == null) {
             throwTagError("Tag [paginate] is missing required attribute [total]")

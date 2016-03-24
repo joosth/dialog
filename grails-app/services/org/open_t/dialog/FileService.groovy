@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FileFileFilter
+import org.apache.commons.io.IOUtils
 
 class FileService {
 
@@ -39,49 +40,36 @@ class FileService {
      * @dc The domain class or String representing the domain class
      * @return Map to be rendered as JSON
      */
-	def uploadFile(request,params,fileCategory="images",dc=null) {
-		def filename
-		def is
-		def mimetype
-		if (params.qqfile.class.name=="org.springframework.web.multipart.commons.CommonsMultipartFile") {
-			filename=params.qqfile.getOriginalFilename()
-			is =params.qqfile.getInputStream()
-			mimetype=params.qqfile.getContentType()
-		} else {
-			filename=params.qqfile
-			is =request.getInputStream()
-			mimetype=request.getHeader("Content-Type")
-		}
+    def uploadFile(request,params,fileCategory="images",dc=null) {
+        def mimetype
+        def is
 
-		char[] cbuf=new char[100000]
-		byte[] bbuf=new byte[100000]
+        def filename=java.net.URLDecoder.decode(request.getHeader("X-File-Name")?:"unknown-file-name.bin", "UTF-8");
 
-		File tempFile=File.createTempFile("upload", "bin");
-		OutputStream os=new FileOutputStream(tempFile)
+        is =request.getInputStream()
+        mimetype=request.getHeader("Content-Type")
 
-		int nread =is.read(bbuf, 0, 100000)
-		int total=nread
-		while (nread>0) {
-			os.write(bbuf, 0, nread)
-			nread =is.read(bbuf, 0, 100000)
-			if (nread>0)
-				total+=nread
-		}
-		os.flush()
+        log.debug "MIMETYPE: ${mimetype}"
+
+        def tempFile=File.createTempFile("upload", "bin");
+        OutputStream os=new FileOutputStream(tempFile)
+        IOUtils.copy(is,os)
+        os.flush()
 
 		is.close()
 		os.close()
-        def isDirect=(params.direct==true || params.direct=="true")
-		if (isDirect && dc!=null && (params.identifier!=null && params.identifier!="null" && params.identifier!="undefined")) {
-			def diPath=filePath(dc,params.identifier,fileCategory)
-			def destFile= new File("${diPath}/${filename}")
-			FileUtils.copyFile(tempFile,destFile)
-			tempFile.delete()
-		}
 
-		def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName]
-		return res
-	}
+        def isDirect=(params.direct==true || params.direct=="true")
+        if (isDirect && dc!=null && (params.identifier!=null && params.identifier!="null" && params.identifier!="undefined")) {
+            def diPath=filePath(dc,params.identifier,fileCategory)
+            def destFile= new File("${diPath}/${filename}")
+            FileUtils.copyFile(tempFile,destFile)
+            tempFile.delete()
+        }
+
+        def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName,message:"Upload completed"]
+        return res
+    }
 
     /*
      * Pack a value and convert it to a 8-byte 36-based formatted number
