@@ -17,13 +17,6 @@ modules = {
 		//resource url: [plugin: 'jquery-dialog', dir:'css', file:'ui.altselect.css']
 	}
 
-	'dialog-tinymce' {
-		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'js/tiny_mce', file:'tiny_mce.js']
-		resource url: [plugin: 'jquery-dialog', dir:'js/tiny_mce', file:'jquery.tinymce.js']
-		resource url: [plugin: 'jquery-dialog', dir:'js',file:'dialog.tinymce.js']
-	}
-
 	'dialog-ckeditor' {
 		dependsOn 'dialog'
 		resource url: [plugin: 'jquery-dialog', dir:'js/ckeditor', file:'ckeditor.js']
@@ -88,11 +81,6 @@ modules = {
 	'dialog-last' {
 		dependsOn 'dialog'
 		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.last.js']
-	}
-
-	'dialog-bootbox' {
-		dependsOn 'dialog-jquery'
-		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'bootbox.js']
 	}
 
 	'dialog-flot' {

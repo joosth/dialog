@@ -353,32 +353,12 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 };
 
 $(function() {
-
-	jQuery.fn.center = function () {
-	    this.css("position","absolute");
-	    this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
-	    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
-	    return this;
-	};
-
-	jQuery.fn.hcenter = function () {
-	    this.css("position","absolute");
-	    this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
-	    return this;
-	};
-
- 	$("body").on("click","a.confirm",function(){
- 	    return confirm('Are you sure?');
-  	});
-
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
 	$("#statusmessage").addClass("dialog-message-events");
-
 
     // Deconflict button() function of twitter bootstrap, see http://stackoverflow.com/questions/13809847/button-classes-not-added-in-jquery-ui-bootstrap-dialog
     var btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
     $.fn.btn = btn;
-
 
     // Show help text when ? is clicked
     $(document).on("click", ".help-action",function(e) {
