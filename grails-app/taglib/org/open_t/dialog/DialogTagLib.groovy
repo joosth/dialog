@@ -678,8 +678,8 @@ class DialogTagLib {
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <button type="button" class="close help-action" style="margin-right:10px;" aria-label="Help"><span aria-hidden="true">?</span></button>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                            <button type="button" class="close help-action" style="margin-right:10px;" aria-label="Help"><i class="fa fa-question"></i></button>
                             <h4 class="modal-title" id="myModalLabel">${title}</h4>
                         </div>
                         <div class="modal-body">
