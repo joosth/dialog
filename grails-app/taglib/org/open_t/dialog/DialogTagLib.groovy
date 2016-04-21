@@ -167,50 +167,54 @@ class DialogTagLib {
      *
      */
     def row = { attrs, body ->
-        def object = attrs.object
-        def domainPropertyName = object.getClass().getName()
-        def domainClass = new DefaultGrailsDomainClass(object.class)
-        domainPropertyName = domainClass.propertyName
-        def propertyName = attrs.propertyName
-        def property = domainClass.getPropertyByName(propertyName)
-        def naturalName = property.naturalName
-        def cssClass = attrs.class ? attrs.class : ""
-        def errors = ""
-        if (attrs.object.hasErrors()) {
-            if(attrs.object.errors.getFieldError(propertyName)) {
-                errors = g.message(code: "${domainPropertyName}.${propertyName}.error", default: attrs.object.errors.getFieldError(propertyName).defaultMessage)
-                cssClass += " error"
+        if (attrs.norow) {
+            out << body()
+        } else {
+            def object = attrs.object
+            def domainPropertyName = object.getClass().getName()
+            def domainClass = new DefaultGrailsDomainClass(object.class)
+            domainPropertyName = domainClass.propertyName
+            def propertyName = attrs.propertyName
+            def property = domainClass.getPropertyByName(propertyName)
+            def naturalName = property.naturalName
+            def cssClass = attrs.class ? attrs.class : ""
+            def errors = ""
+            if (attrs.object.hasErrors()) {
+                if(attrs.object.errors.getFieldError(propertyName)) {
+                    errors = g.message(code: "${domainPropertyName}.${propertyName}.error", default: attrs.object.errors.getFieldError(propertyName).defaultMessage)
+                    cssClass += " error"
+                }
             }
-        }
 
-        //begin row
-        out << """<div class="form-group object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
+            //begin row
+            out << """<div class="form-group object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
 
-        //label
-        if (attrs.noLabel != "true") {
-            out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
-        }
-
-        //control en help
-        if (attrs.vertical != "true") {
-            out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
-        }
-        out << body()
-        if (attrs.noHelp != "true") {
-            if (g.message(code: "${domainPropertyName}.${propertyName}.help", default: "")) {
-                out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
+            //label
+            if (attrs.noLabel != "true") {
+                out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
             }
-        }
-        if (attrs.noErrors!="true"){
-			out <<"""<span class="small error-message">${errors}</span>"""
-		}
 
-        if (attrs.vertical != "true") {
+            //control en help
+            if (attrs.vertical != "true") {
+                out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
+            }
+            out << body()
+            if (attrs.noHelp != "true") {
+                if (g.message(code: "${domainPropertyName}.${propertyName}.help", default: "")) {
+                    out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
+                }
+            }
+            if (attrs.noErrors!="true"){
+    			out <<"""<span class="small error-message">${errors}</span>"""
+    		}
+
+            if (attrs.vertical != "true") {
+                out << "</div>"
+            }
+
+            //end row
             out << "</div>"
         }
-
-        //end row
-        out << "</div>"
     }
 
     /**
@@ -531,6 +535,7 @@ class DialogTagLib {
                     def jsonUrl = "${request.contextPath}/${domainPropertyName}/${acAction}"
                     attrs.jsonUrl=jsonUrl
                     attrs.mode="edit" // select edit mode of edit control
+                    attrs.norow="true"
 
                     return select(attrs)
                     break
@@ -602,7 +607,6 @@ class DialogTagLib {
                             opts.put(attrKey,attrValue)
                         }
                     }
-
                     return g.select(opts)
                     break
             }
