@@ -130,3 +130,6 @@ span.error-message { color:#a94442;}
     cursor: inherit;
     display: block;
 }
+
+.select2-label { display:block;}
+.select2-description { display:block;font-size:75%;}

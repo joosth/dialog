@@ -524,33 +524,14 @@ class DialogTagLib {
                     break
 
                 case "autocomplete":
-                    if (attrs.from) {
-                        optionValues = attrs.from
-                    }
-
-                    def value = attrs.object."${attrs.propertyName}"
-                    def valueLabel = value ? value.acLabel : ""
-                    def valueDescription = value ? value.acDescription : ""
-                    def valueId = value ? value.id : null
-
                     def dc = new DefaultGrailsDomainClass(property.getType())
                     def domainPropertyName = dc.getPropertyName()
                     def acAction = attrs.acAction ? attrs.acAction : "autocomplete"
                     def jsonUrl = "${request.contextPath}/${domainPropertyName}/${acAction}"
+                    attrs.jsonUrl=jsonUrl
+                    attrs.mode="edit" // select edit mode of edit control
 
-                    def descriptionText = ""
-                    if (attrs.subtitle == "true") {
-                        descriptionText = """<p id="${attrs.propertyName}-description" class="autocomplete-description">${valueDescription}</p>"""
-                    }
-                    def containerClass = value ? "ac-selected" : "ac-idle"
-
-                    //input + hidden field
-                    return
-                        """
-                        <input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete dialog-open-events" jsonUrl="${jsonUrl}" class="form-control" />
-                        ${descriptionText}
-                        <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}" />
-                        """
+                    return select(attrs)
                     break
 
             }
@@ -577,7 +558,6 @@ class DialogTagLib {
         optionKey = ""
 
         out << row (attrs) {
-
             switch (attrs.mode) {
                 case "show":
                     return """<p class="form-control-static">${fieldValue(bean: attrs.object, field: attrs.propertyName)}</p>"""
@@ -589,24 +569,39 @@ class DialogTagLib {
                     def cp = domainClass.constrainedProperties[attrs.propertyName]
 
                     def optionValues = []
+
                     if (attrs.from) {
                         optionValues = attrs.from
                     } else {
-                        optionValues = attrs.object.constraints."${attrs.propertyName}".inList
+                        if (attrs.jsonUrl) {
+                                def currentValue=attrs.object."${attrs.propertyName}"
+                                if (currentValue) {
+                                    optionValues=[currentValue]
+                                }
+                        } else {
+                            if (attrs.object.constraints."${attrs.propertyName}".inList) {
+                                optionValues = attrs.object.constraints."${attrs.propertyName}".inList
+                            }
+                        }
                     }
 
-                    def opts = [name: attrs.propertyName, value: attrs.object."${attrs.propertyName}", from: optionValues, class: "form-control"]
+                    def value=attrs.object."${attrs.propertyName}"?:""
+
+                    def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
-                    if (attrs["optionKey"]) opts.put("optionKey", attrs["optionKey"])
-                    if (attrs["optionValue"]) opts.put("optionValue", attrs["optionValue"])
-                    if (attrs["multiple"]) opts.put("multiple", attrs["multiple"])
-                    if (attrs["style"]) opts.put("style", attrs["style"])
 
                     if (property.isOptional()) {
-                        // TODO: yes. ""  for strings, null for int's
                         opts.put("noSelection", ["": "-"])
-                        //opts.put("noSelection", ["null": "-"])
                     }
+
+                    def copiedAttrs = ""
+                    def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
+                    attrs.each { attrKey, attrValue ->
+                        if (!skipAttrs.contains(attrKey)) {
+                            opts.put(attrKey,attrValue)
+                        }
+                    }
+
                     return g.select(opts)
                     break
             }
