@@ -150,8 +150,9 @@ class DialogTagLib {
             """
             <script type="text/javascript">
                 \$(function() {
-                    \$(document).trigger("dialog-init", {});\n\
-                    \$(".dialog-open-events").trigger("dialog-open", {"page":true});
+                    \$(document).trigger("dialog-init", {});
+                    \$(".dialog-open-events").filter(".dialog-open-first").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true});
+                    \$(".dialog-open-events").filter(":not(.dialog-open-first)").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true});
                 });
             </script>
             """

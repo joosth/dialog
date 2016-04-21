@@ -17,9 +17,7 @@
                   <div title="${result.title}" id="exceptionDialog" class="modal xfade hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<div id="myModalLabel">
-                            <span class="modal-header">${result.title}</span>
-                        </div>
+                        <h3>${result.title}</h3>
                     </div>
                     <div class="modal-body">
                         <form>
@@ -35,4 +33,3 @@
         </div>
 	</body>
 </html>
-
