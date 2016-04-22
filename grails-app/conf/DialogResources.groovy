@@ -11,12 +11,6 @@ modules = {
         resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.1.js']
     }
 
-	'dialog-altselect' {
-		dependsOn 'dialog'
-		//resource url: [plugin: 'jquery-dialog', dir:'js/jquery', file:'jquery.ui.altselect.js']
-		//resource url: [plugin: 'jquery-dialog', dir:'css', file:'ui.altselect.css']
-	}
-
 	'dialog-ckeditor' {
 		dependsOn 'dialog'
 		resource url: [plugin: 'jquery-dialog', dir:'js/ckeditor', file:'ckeditor.js']
@@ -88,9 +82,19 @@ modules = {
 		resource url: [plugin: 'jquery-dialog', dir:'ext/flot', file:'jquery.flot.js']
 	}
 
-	'dialog-autocomplete' {
-		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.autocomplete.js']
+    'dialog-select2' {
+        dependsOn 'dialog'
+        resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/js/',file:'select2.full.min.js']
+        resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/css',file:'select2.min.css']
+        resource url: [plugin: 'jquery-dialog', dir:'/js',file:'dialog.select2.js']
+    }
+
+    'dialog-autocomplete' {
+        dependsOn 'dialog-select2'        
+    }
+
+    'dialog-altselect' {
+		dependsOn 'dialog-select2'
 	}
 
     'dialog-maskedinput' {

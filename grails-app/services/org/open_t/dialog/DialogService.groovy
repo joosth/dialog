@@ -395,14 +395,14 @@ class DialogService {
 
 			def json=[]
 			documentList.each { doc ->
-				if (labelColumnName) {
-					if (descriptionColumnName) {
-						json+=[value:doc.id,label:doc."${labelColumnName}", description:doc."${descriptionColumnName}"]
-					} else {
-						json+=[value:doc.id,label:doc."${labelColumnName}"]
-					}
+				if (labelColumnName!=null && doc.hasProperty(labelColumnName)) {
+					if (descriptionColumnName!=null && doc.hasProperty(descriptionColumnName)) {
+	                      json+=[value:doc.id,label:doc."${labelColumnName}", description:doc."${descriptionColumnName}"]
+                    } else {
+                        json+=[value:doc.id,label:doc."${labelColumnName}"]
+                    }
 				} else {
-					json+=[value:doc.id,label:doc.toString()]
+                    json+=[value:doc.id,label:doc.toString()]
 				}
 			}
 			return json

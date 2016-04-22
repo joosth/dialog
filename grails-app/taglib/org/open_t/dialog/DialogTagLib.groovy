@@ -152,50 +152,54 @@ class DialogTagLib {
      *
      */
     def row = { attrs, body ->
-        def object = attrs.object
-        def domainPropertyName = object.getClass().getName()
-        def domainClass = new DefaultGrailsDomainClass(object.class)
-        domainPropertyName = domainClass.propertyName
-        def propertyName = attrs.propertyName
-        def property = domainClass.getPropertyByName(propertyName)
-        def naturalName = property.naturalName
-        def cssClass = attrs.class ? attrs.class : ""
-        def errors = ""
-        if (attrs.object.hasErrors()) {
-            if(attrs.object.errors.getFieldError(propertyName)) {
-                errors = g.message(code: "${domainPropertyName}.${propertyName}.error", default: attrs.object.errors.getFieldError(propertyName).defaultMessage)
-                cssClass += " error"
+        if (attrs.norow) {
+            out << body()
+        } else {
+            def object = attrs.object
+            def domainPropertyName = object.getClass().getName()
+            def domainClass = new DefaultGrailsDomainClass(object.class)
+            domainPropertyName = domainClass.propertyName
+            def propertyName = attrs.propertyName
+            def property = domainClass.getPropertyByName(propertyName)
+            def naturalName = property.naturalName
+            def cssClass = attrs.class ? attrs.class : ""
+            def errors = ""
+            if (attrs.object.hasErrors()) {
+                if(attrs.object.errors.getFieldError(propertyName)) {
+                    errors = g.message(code: "${domainPropertyName}.${propertyName}.error", default: attrs.object.errors.getFieldError(propertyName).defaultMessage)
+                    cssClass += " error"
+                }
             }
-        }
 
-        //begin row
-        out << """<div class="form-group object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
+            //begin row
+            out << """<div class="form-group object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
 
-        //label
-        if (attrs.noLabel != "true") {
-            out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
-        }
-
-        //control en help
-        if (attrs.vertical != "true") {
-            out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
-        }
-        out << body()
-        if (attrs.noHelp != "true") {
-            if (g.message(code: "${domainPropertyName}.${propertyName}.help", default: "")) {
-                out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
+            //label
+            if (attrs.noLabel != "true") {
+                out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
             }
-        }
-        if (attrs.noErrors!="true"){
-			out <<"""<span class="small error-message">${errors}</span>"""
-		}
 
-        if (attrs.vertical != "true") {
+            //control en help
+            if (attrs.vertical != "true") {
+                out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
+            }
+            out << body()
+            if (attrs.noHelp != "true") {
+                if (g.message(code: "${domainPropertyName}.${propertyName}.help", default: "")) {
+                    out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
+                }
+            }
+            if (attrs.noErrors!="true"){
+    			out <<"""<span class="small error-message">${errors}</span>"""
+    		}
+
+            if (attrs.vertical != "true") {
+                out << "</div>"
+            }
+
+            //end row
             out << "</div>"
         }
-
-        //end row
-        out << "</div>"
     }
 
     /**
@@ -552,33 +556,15 @@ class DialogTagLib {
                     break
 
                 case "autocomplete":
-                    if (attrs.from) {
-                        optionValues = attrs.from
-                    }
-
-                    def value = attrs.object."${attrs.propertyName}"
-                    def valueLabel = value ? value.acLabel : ""
-                    def valueDescription = value ? value.acDescription : ""
-                    def valueId = value ? value.id : null
-
                     def dc = new DefaultGrailsDomainClass(property.getType())
                     def domainPropertyName = dc.getPropertyName()
                     def acAction = attrs.acAction ? attrs.acAction : "autocomplete"
                     def jsonUrl = "${request.contextPath}/${domainPropertyName}/${acAction}"
+                    attrs.jsonUrl=jsonUrl
+                    attrs.mode="edit" // select edit mode of edit control
+                    attrs.norow="true"
 
-                    def descriptionText = ""
-                    if (attrs.subtitle == "true") {
-                        descriptionText = """<p id="${attrs.propertyName}-description" class="autocomplete-description">${valueDescription}</p>"""
-                    }
-                    def containerClass = value ? "ac-selected" : "ac-idle"
-
-                    //input + hidden field
-                    return
-                        """
-                        <input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete dialog-open-events" jsonUrl="${jsonUrl}" class="form-control" />
-                        ${descriptionText}
-                        <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}" />
-                        """
+                    return select(attrs)
                     break
 
             }
@@ -605,7 +591,6 @@ class DialogTagLib {
         optionKey = ""
 
         out << row (attrs) {
-
             switch (attrs.mode) {
                 case "show":
                     return """<p class="form-control-static">${fieldValue(bean: attrs.object, field: attrs.propertyName)}</p>"""
@@ -617,23 +602,37 @@ class DialogTagLib {
                     def cp = domainClass.constrainedProperties[attrs.propertyName]
 
                     def optionValues = []
+
                     if (attrs.from) {
                         optionValues = attrs.from
                     } else {
-                        optionValues = attrs.object.constraints."${attrs.propertyName}".inList
+                        if (attrs.jsonUrl) {
+                                def currentValue=attrs.object."${attrs.propertyName}"
+                                if (currentValue) {
+                                    optionValues=[currentValue]
+                                }
+                        } else {
+                            if (attrs.object.constraints."${attrs.propertyName}".inList) {
+                                optionValues = attrs.object.constraints."${attrs.propertyName}".inList
+                            }
+                        }
                     }
 
-                    def opts = [name: attrs.propertyName, value: attrs.object."${attrs.propertyName}", from: optionValues, class: "form-control"]
+                    def value=attrs.object."${attrs.propertyName}"?:""
+
+                    def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
-                    if (attrs["optionKey"]) opts.put("optionKey", attrs["optionKey"])
-                    if (attrs["optionValue"]) opts.put("optionValue", attrs["optionValue"])
-                    if (attrs["multiple"]) opts.put("multiple", attrs["multiple"])
-                    if (attrs["style"]) opts.put("style", attrs["style"])
 
                     if (property.isOptional()) {
-                        // TODO: yes. ""  for strings, null for int's
                         opts.put("noSelection", ["": "-"])
-                        //opts.put("noSelection", ["null": "-"])
+                    }
+
+                    def copiedAttrs = ""
+                    def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
+                    attrs.each { attrKey, attrValue ->
+                        if (!skipAttrs.contains(attrKey)) {
+                            opts.put(attrKey,attrValue)
+                        }
                     }
                     return g.select(opts)
                     break
