@@ -68,45 +68,30 @@ class DialogTagLib {
                 dialog.messages.confirmdelete = "${message(code: "dialog.messages.confirmdelete")}";
                 dialog.messages.confirmdeleteTitle = "${message(code: "dialog.messages.confirmdeleteTitle")}";
 
-                dialog.messages.datepicker = {};
-                dialog.messages.datepicker.regional = {
-                    closeText: "${message(code: "dialog.datepicker.closeText")}",
-                    prevText: "${message(code: "dialog.datepicker.prevText")}",
-                    nextText: "${message(code: "dialog.datepicker.nextText")}",
-                    currentText: "${message(code: "dialog.datepicker.currentText")}",
-                    monthNames: ${message(code: "dialog.datepicker.monthNames")},
+                dialog.messages.moment = {};
+                dialog.messages.moment.inputDateFormat = "${message(code: "dialog.moment.inputDateFormat")}";
+                dialog.messages.moment.inputTimeFormat = "${message(code: "dialog.moment.inputTimeFormat")}";
 
-                    monthNamesShort: ${message(code: "dialog.datepicker.monthNamesShort")},
-                    dayNames: ${message(code: "dialog.datepicker.dayNames")},
-                    dayNamesShort: ${message(code: "dialog.datepicker.dayNamesShort")},
-                    dayNamesMin: ${message(code: "dialog.datepicker.dayNamesMin")},
-                    weekHeader: "${message(code: "dialog.datepicker.weekHeader")}",
-                    dateFormat: "${message(code: "dialog.datepicker.dateFormat")}",
-                    firstDay: ${message(code: "dialog.datepicker.firstDay")},
-                    isRTL: ${message(code: "dialog.datepicker.isRTL")},
-                    showMonthAfterYear: ${message(code: "dialog.datepicker.showMonthAfterYear")},
-                    yearSuffix: "${message(code: "dialog.datepicker.yearSuffix")}"
-                };
-                dialog.messages.datepicker.mask="${message(code: "dialog.datepicker.mask")}";
-                dialog.messages.timepicker = {};
-                dialog.messages.timepicker.regional = {
-                    currentText: "${message(code: "dialog.timepicker.currentText")}",
-                    closeText: "${message(code: "dialog.timepicker.closeText")}",
-                    amNames: ${message(code: "dialog.timepicker.amNames")},
-                    pmNames: ${message(code: "dialog.timepicker.pmNames")},
-                    timeFormat: "${message(code: "dialog.timepicker.timeFormat")}",
-                    timeSuffix: "${message(code: "dialog.timepicker.timeSuffix")}",
-                    timeOnlyTitle: "${message(code: "dialog.timepicker.timeOnlyTitle")}",
-                    timeText: "${message(code: "dialog.timepicker.timeText")}",
-                    hourText: "${message(code: "dialog.timepicker.hourText")}",
-                    minuteText: "${message(code: "dialog.timepicker.minuteText")}",
-                    secondText: "${message(code: "dialog.timepicker.secondText")}",
-                    millisecText: "${message(code: "dialog.timepicker.millisecText")}",
-                    microsecText: "${message(code: "dialog.timepicker.microsecText")}",
-                    timezoneText: "${message(code: "dialog.timepicker.timezoneText")}",
-                    isRTL: ${message(code: "dialog.timepicker.isRTL")}
-                };
-                dialog.messages.timepicker.mask="${message(code: "dialog.timepicker.mask")}";
+                dialog.messages.datetimepicker = {};
+                dialog.messages.datetimepicker.tooltips = {
+                    today: "${message(code: "dialog.datetimepicker.today")}",
+                    clear: "${message(code: "dialog.datetimepicker.clear")}",
+                    close: "${message(code: "dialog.datetimepicker.close")}",
+                    selectMonth: "${message(code: "dialog.datetimepicker.selectMonth")}",
+                    prevMonth: "${message(code: "dialog.datetimepicker.prevMonth")}",
+                    nextMonth: "${message(code: "dialog.datetimepicker.nextMonth")}",
+                    selectYear: "${message(code: "dialog.datetimepicker.selectYear")}",
+                    prevYear: "${message(code: "dialog.datetimepicker.prevYear")}",
+                    nextYear: "${message(code: "dialog.datetimepicker.nextYear")}",
+                    selectDecade: "${message(code: "dialog.datetimepicker.selectDecade")}",
+                    prevDecade: "${message(code: "dialog.datetimepicker.prevDecade")}",
+                    nextDecade: "${message(code: "dialog.datetimepicker.nextDecade")}",
+                    prevCentury: "${message(code: "dialog.datetimepicker.prevCentury")}",
+                    nextCentury: "${message(code: "dialog.datetimepicker.nextCentury")}"
+                }
+                dialog.messages.maskedinput = {};
+                dialog.messages.maskedinput.date = "${message(code: "dialog.maskedinput.date")}";
+                dialog.messages.maskedinput.time = "${message(code: "dialog.maskedinput.time")}";
                 dialog.messages.datatables = {
                     "language": {
                         "decimal":        "${message(code: "dialog.datatables.decimal")}",
@@ -303,7 +288,7 @@ class DialogTagLib {
 
     /**
      * Date input field tag
-     * This generates an text input element that pops up a calendar
+     * This generates a date input element
      * The format to be used is fixed yyyy-MM-ddTHH:mm:ssZ in the update field
      *
      * @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
@@ -312,8 +297,9 @@ class DialogTagLib {
      * @param class The CSS class to be supplied to the enclosing row
      */
     def date = { attrs ->
-        def value = attrs.object."${attrs.propertyName}"
+
         out << row (attrs) {
+            def value = attrs.object."${attrs.propertyName}"
 
             switch (attrs.mode) {
                 case "show":
@@ -321,52 +307,93 @@ class DialogTagLib {
                     break
 
                 case "edit":
-                    def dateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
-                    def inputValue = value ? value.format("yyyy-MM-dd") : ""
+                    def entryValue = value ? value.format("yyyy-MM-dd") : ""
+                    def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
 
-                    return
+                    def html =
                         """
-                        <input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker form-control" value="${inputValue}" />
-                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />
+                        <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValue}" />
+                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
                         """
+                    return html
                     break
             }
         }
     }
 
     /**
-     * Date input field tag
-     * This generates an text input element that pops up a calendar plus a text input element for the time in hh:mm format
-     * Currently the format to be used for the date is fixed yyyy-MM-dd
-     * It uses the DateTimePropertyEditor to process the text
-     * Generates a hidden field which triggers the use of the structured property editor
+     * Time input field tag
+     * This generates a time input element
+     * The format to be used is fixed HH:mm:ss in the update field
      *
      * @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
      * @param propertyName The property of the domain object
      * @param object The domain object
      * @param class The CSS class to be supplied to the enclosing row
      */
+    def time = { attrs ->
 
-    def dateTime = { attrs ->
-        def value = attrs.object."${attrs.propertyName}"
         out << row (attrs) {
+            def value = attrs.object."${attrs.propertyName}"
+
             switch (attrs.mode) {
                 case "show":
                     return """<p class="form-control-static">${listService.getDisplayString(value)}</p>"""
                     break
 
                 case "edit":
-                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
-                    def inputValue = value ? value.format("yyyy-MM-dd") : ""
-                    def timeFormat = "HH:mm"
-                    def timeAttrs=[id:"time-${attrs.propertyName}",name:"time-${attrs.propertyName}",type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:"time timepicker dialog-open-events form-control"]
+                    def entryValue = value ? value.format("HH:mm:ss") : ""
+                    def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
 
-                    return
+                    def html =
                         """
-                        <input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation form-control" value="${inputValue}" />
-                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />
-                        """ +
-                        g.field(timeAttrs)
+                        <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValue}" />
+                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
+                        """
+                    return html
+                    break
+            }
+        }
+    }
+
+    /**
+     * DateTime input field tag
+     * This generates a date input element plus a time input element
+     * The format to be used is fixed yyyy-MM-ddTHH:mm:ssZ in the update field
+     *
+     * @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
+     * @param propertyName The property of the domain object
+     * @param object The domain object
+     * @param class The CSS class to be supplied to the enclosing row
+     */
+    def dateTime = { attrs ->
+
+        out << row (attrs) {
+            def value = attrs.object."${attrs.propertyName}"
+
+            switch (attrs.mode) {
+                case "show":
+                    return """<p class="form-control-static">${listService.getDisplayString(value)}</p>"""
+                    break
+
+                case "edit":
+                    def entryValueDate = value ? value.format("yyyy-MM-dd") : ""
+                    def entryValueTime = value ? value.format("HH:mm:ss") : ""
+                    def updateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
+
+                    def html =
+                        """
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValueDate}" />
+                            </div>
+                            <div class="col-xs-6">
+                                <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValueTime}" />
+                            </div>
+                        </div>
+                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
+                        """
+                    return html
                     break
             }
         }

@@ -94,26 +94,25 @@ modules = {
 	}
 
     'dialog-maskedinput' {
-		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'js/jquery/',file:'jquery.maskedinput.js']
+		dependsOn 'dialog-jquery'
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/maskedinput', file: 'jquery.maskedinput.js']
 	}
 
+    'dialog-momentjs' {
+        dependsOn 'dialog-jquery'
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/momentjs', file: 'moment-with-locales.js']
+    }
 
-    'dialog-datepicker' {
-		dependsOn 'dialog,dialog-maskedinput,dialog-modernizr'
-		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.datepicker.js']
-	}
-
-    'dialog-timepicker' {
-		dependsOn 'dialog'
-        resource url: [plugin: 'jquery-dialog', dir:'/js/jquery/',file:'jquery-ui-sliderAccess.js']
-        resource url: [plugin: 'jquery-dialog', dir:'/js/jquery/',file:'jquery-ui-timepicker-addon.js']
-        resource url: [plugin: 'jquery-dialog', dir:'/css/',file:'jquery-ui-timepicker-addon.css']
-	}
+    'dialog-datetimepicker' {
+        dependsOn 'dialog-jquery, dialog-momentjs, dialog-bootstrap, dialog-modernizr, dialog-fontawesome, dialog-maskedinput'
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/bootstrap-datetimepicker/css', file: 'bootstrap-datetimepicker.min.css']
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/bootstrap-datetimepicker/js', file: 'bootstrap-datetimepicker.min.js']
+        resource url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog-datetimepicker.js']
+    }
 
 	'dialog-modernizr' {
 		dependsOn 'dialog'
-		resource url: [plugin: 'jquery-dialog', dir:'ext/modernizr',file:'modernizr.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/modernizr', file:'modernizr.js']
 	}
 
 	'dialog-angularjs' {
