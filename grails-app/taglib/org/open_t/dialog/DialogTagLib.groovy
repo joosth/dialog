@@ -1000,7 +1000,7 @@ class DialogTagLib {
     // Upload button
     def uploadButton = { attrs, body ->
             out << """<span href="#" class="btn btn-default btn-file upload-button">
-                <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
+                <span class="fa fa-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
             </span>"""
     }
 
