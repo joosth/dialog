@@ -1,17 +1,8 @@
-.wide input { width:300px;}
-.extrawide input { width:600px;}
+.autocomplete-description { font-size: 10px; }
+.autocomplete-container { height: 18px; display: inline-block; }
 
-.input-mini input { width: 60px;}
-.input-small input { width: 90px;}
-.input-medium input { width: 150px;}
-.input-medium input { width: 150px;}
-.input-large input { width: 210px;}
-.input-xlarge input { width: 270px;}
-.input-xxlarge input { width: 530px;}
-
-.autocomplete-description {font-size:10px;}
 .ac-idle { border: 0px solid #ffffff;padding:0px;}
-.ac-selected { border: 1px solid #888;padding:3px; background: url("theme/images/ui-bg_highlight.png") repeat-x scroll 50% 50% #CCCCCC;
+.ac-selected { border: 1px solid #888;padding:3px; background: scroll 50% 50% #CCCCCC;
     border-radius: 3px;margin:1px;margin-top:4px;}
 .ac-selected input { border: 0px solid #ddd;padding:0px;background-color: transparent;}
 .ac-selecting { border: 0px solid #223311;padding:1px;}
@@ -46,20 +37,8 @@ tr.error td input:focus,tr.error td textarea:focus,tr.error td select:focus {
     outline: 0 none;
 }
 
-.autocomplete-container { height:18px;display: inline-block;}
-
-td.tinymce textarea {width:100%;}
-
 
 table.rowreordering tr { cursor:pointer;}
-.help-icon,.help {
-    /*background-image: url(../images/help-16x16.png);*/
-                   width:16px;
-                   height:16px;
-                   cursor:pointer;background-position:5px 5px;
-                   display:inline-block;
-                   padding-bottom:5px;
-}
 .dialog-horizontal-wrapper {display: inline-block; white-space: nowrap;}
 div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;width:100%;}
 
@@ -94,17 +73,9 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     margin-top:4px;
 }
-.dialog-form-table { width:100%;}
 #progressbar { width:800px;}
 input.cke_dialog_ui_input_text { height: 26px !important; }
 a.cke_dialog_ui_button { height: 18px !important; }
-
-.delete-dialog { height:200px;}
-
-/* A few corrections for the dialog box (fix padding) and add shadow */
-div.ui-dialog div.ui-dialog-titlebar span.ui-dialog-title { padding: 0px !important;}
-div.ui-dialog div.ui-dialog-content { padding: 5px 15px; }
-div.ui-dialog { padding: 0px; box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3); }
 
 span.help-block { display: none;}
 span.error-message { color:#a94442;}
@@ -130,3 +101,6 @@ span.error-message { color:#a94442;}
     cursor: inherit;
     display: block;
 }
+
+.select2-label { display:block;}
+.select2-description { display:block;font-size:75%;}

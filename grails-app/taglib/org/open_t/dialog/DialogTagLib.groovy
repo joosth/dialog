@@ -68,45 +68,30 @@ class DialogTagLib {
                 dialog.messages.confirmdelete = "${message(code: "dialog.messages.confirmdelete")}";
                 dialog.messages.confirmdeleteTitle = "${message(code: "dialog.messages.confirmdeleteTitle")}";
 
-                dialog.messages.datepicker = {};
-                dialog.messages.datepicker.regional = {
-                    closeText: "${message(code: "dialog.datepicker.closeText")}",
-                    prevText: "${message(code: "dialog.datepicker.prevText")}",
-                    nextText: "${message(code: "dialog.datepicker.nextText")}",
-                    currentText: "${message(code: "dialog.datepicker.currentText")}",
-                    monthNames: ${message(code: "dialog.datepicker.monthNames")},
+                dialog.messages.moment = {};
+                dialog.messages.moment.inputDateFormat = "${message(code: "dialog.moment.inputDateFormat")}";
+                dialog.messages.moment.inputTimeFormat = "${message(code: "dialog.moment.inputTimeFormat")}";
 
-                    monthNamesShort: ${message(code: "dialog.datepicker.monthNamesShort")},
-                    dayNames: ${message(code: "dialog.datepicker.dayNames")},
-                    dayNamesShort: ${message(code: "dialog.datepicker.dayNamesShort")},
-                    dayNamesMin: ${message(code: "dialog.datepicker.dayNamesMin")},
-                    weekHeader: "${message(code: "dialog.datepicker.weekHeader")}",
-                    dateFormat: "${message(code: "dialog.datepicker.dateFormat")}",
-                    firstDay: ${message(code: "dialog.datepicker.firstDay")},
-                    isRTL: ${message(code: "dialog.datepicker.isRTL")},
-                    showMonthAfterYear: ${message(code: "dialog.datepicker.showMonthAfterYear")},
-                    yearSuffix: "${message(code: "dialog.datepicker.yearSuffix")}"
-                };
-                dialog.messages.datepicker.mask="${message(code: "dialog.datepicker.mask")}";
-                dialog.messages.timepicker = {};
-                dialog.messages.timepicker.regional = {
-                    currentText: "${message(code: "dialog.timepicker.currentText")}",
-                    closeText: "${message(code: "dialog.timepicker.closeText")}",
-                    amNames: ${message(code: "dialog.timepicker.amNames")},
-                    pmNames: ${message(code: "dialog.timepicker.pmNames")},
-                    timeFormat: "${message(code: "dialog.timepicker.timeFormat")}",
-                    timeSuffix: "${message(code: "dialog.timepicker.timeSuffix")}",
-                    timeOnlyTitle: "${message(code: "dialog.timepicker.timeOnlyTitle")}",
-                    timeText: "${message(code: "dialog.timepicker.timeText")}",
-                    hourText: "${message(code: "dialog.timepicker.hourText")}",
-                    minuteText: "${message(code: "dialog.timepicker.minuteText")}",
-                    secondText: "${message(code: "dialog.timepicker.secondText")}",
-                    millisecText: "${message(code: "dialog.timepicker.millisecText")}",
-                    microsecText: "${message(code: "dialog.timepicker.microsecText")}",
-                    timezoneText: "${message(code: "dialog.timepicker.timezoneText")}",
-                    isRTL: ${message(code: "dialog.timepicker.isRTL")}
-                };
-                dialog.messages.timepicker.mask="${message(code: "dialog.timepicker.mask")}";
+                dialog.messages.datetimepicker = {};
+                dialog.messages.datetimepicker.tooltips = {
+                    today: "${message(code: "dialog.datetimepicker.today")}",
+                    clear: "${message(code: "dialog.datetimepicker.clear")}",
+                    close: "${message(code: "dialog.datetimepicker.close")}",
+                    selectMonth: "${message(code: "dialog.datetimepicker.selectMonth")}",
+                    prevMonth: "${message(code: "dialog.datetimepicker.prevMonth")}",
+                    nextMonth: "${message(code: "dialog.datetimepicker.nextMonth")}",
+                    selectYear: "${message(code: "dialog.datetimepicker.selectYear")}",
+                    prevYear: "${message(code: "dialog.datetimepicker.prevYear")}",
+                    nextYear: "${message(code: "dialog.datetimepicker.nextYear")}",
+                    selectDecade: "${message(code: "dialog.datetimepicker.selectDecade")}",
+                    prevDecade: "${message(code: "dialog.datetimepicker.prevDecade")}",
+                    nextDecade: "${message(code: "dialog.datetimepicker.nextDecade")}",
+                    prevCentury: "${message(code: "dialog.datetimepicker.prevCentury")}",
+                    nextCentury: "${message(code: "dialog.datetimepicker.nextCentury")}"
+                }
+                dialog.messages.maskedinput = {};
+                dialog.messages.maskedinput.date = "${message(code: "dialog.maskedinput.date")}";
+                dialog.messages.maskedinput.time = "${message(code: "dialog.maskedinput.time")}";
                 dialog.messages.datatables = {
                     "language": {
                         "decimal":        "${message(code: "dialog.datatables.decimal")}",
@@ -167,50 +152,54 @@ class DialogTagLib {
      *
      */
     def row = { attrs, body ->
-        def object = attrs.object
-        def domainPropertyName = object.getClass().getName()
-        def domainClass = new DefaultGrailsDomainClass(object.class)
-        domainPropertyName = domainClass.propertyName
-        def propertyName = attrs.propertyName
-        def property = domainClass.getPropertyByName(propertyName)
-        def naturalName = property.naturalName
-        def cssClass = attrs.class ? attrs.class : ""
-        def errors = ""
-        if (attrs.object.hasErrors()) {
-            if(attrs.object.errors.getFieldError(propertyName)) {
-                errors = g.message(code: "${domainPropertyName}.${propertyName}.error", default: attrs.object.errors.getFieldError(propertyName).defaultMessage)
-                cssClass += " error"
+        if (attrs.norow) {
+            out << body()
+        } else {
+            def object = attrs.object
+            def domainPropertyName = object.getClass().getName()
+            def domainClass = new DefaultGrailsDomainClass(object.class)
+            domainPropertyName = domainClass.propertyName
+            def propertyName = attrs.propertyName
+            def property = domainClass.getPropertyByName(propertyName)
+            def naturalName = property.naturalName
+            def cssClass = attrs.class ? attrs.class : ""
+            def errors = ""
+            if (attrs.object.hasErrors()) {
+                if(attrs.object.errors.getFieldError(propertyName)) {
+                    errors = g.message(code: "${domainPropertyName}.${propertyName}.error", default: attrs.object.errors.getFieldError(propertyName).defaultMessage)
+                    cssClass += " error"
+                }
             }
-        }
 
-        //begin row
-        out << """<div class="form-group object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
+            //begin row
+            out << """<div class="form-group object-${domainPropertyName} property-${domainPropertyName}-${propertyName} property-${propertyName} ${cssClass}">"""
 
-        //label
-        if (attrs.noLabel != "true") {
-            out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
-        }
-
-        //control en help
-        if (attrs.vertical != "true") {
-            out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
-        }
-        out << body()
-        if (attrs.noHelp != "true") {
-            if (g.message(code: "${domainPropertyName}.${propertyName}.help", default: "")) {
-                out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
+            //label
+            if (attrs.noLabel != "true") {
+                out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
             }
-        }
-        if (attrs.noErrors!="true"){
-			out <<"""<span class="small error-message">${errors}</span>"""
-		}
 
-        if (attrs.vertical != "true") {
+            //control en help
+            if (attrs.vertical != "true") {
+                out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
+            }
+            out << body()
+            if (attrs.noHelp != "true") {
+                if (g.message(code: "${domainPropertyName}.${propertyName}.help", default: "")) {
+                    out << """<span id="help-${attrs.propertyName}" class="help-block small">${g.message(code: "${domainPropertyName}.${propertyName}.help", default: "Help!")}</span>"""
+                }
+            }
+            if (attrs.noErrors!="true"){
+    			out <<"""<span class="small error-message">${errors}</span>"""
+    		}
+
+            if (attrs.vertical != "true") {
+                out << "</div>"
+            }
+
+            //end row
             out << "</div>"
         }
-
-        //end row
-        out << "</div>"
     }
 
     /**
@@ -309,7 +298,7 @@ class DialogTagLib {
 
     /**
      * Date input field tag
-     * This generates an text input element that pops up a calendar
+     * This generates a date input element
      * The format to be used is fixed yyyy-MM-ddTHH:mm:ssZ in the update field
      *
      * @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
@@ -318,8 +307,9 @@ class DialogTagLib {
      * @param class The CSS class to be supplied to the enclosing row
      */
     def date = { attrs ->
-        def value = attrs.object."${attrs.propertyName}"
+
         out << row (attrs) {
+            def value = attrs.object."${attrs.propertyName}"
 
             switch (attrs.mode) {
                 case "show":
@@ -327,52 +317,93 @@ class DialogTagLib {
                     break
 
                 case "edit":
-                    def dateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
-                    def inputValue = value ? value.format("yyyy-MM-dd") : ""
+                    def entryValue = value ? value.format("yyyy-MM-dd") : ""
+                    def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
 
-                    return
+                    def html =
                         """
-                        <input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker form-control" value="${inputValue}" />
-                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />
+                        <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValue}" />
+                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
                         """
+                    return html
                     break
             }
         }
     }
 
     /**
-     * Date input field tag
-     * This generates an text input element that pops up a calendar plus a text input element for the time in hh:mm format
-     * Currently the format to be used for the date is fixed yyyy-MM-dd
-     * It uses the DateTimePropertyEditor to process the text
-     * Generates a hidden field which triggers the use of the structured property editor
+     * Time input field tag
+     * This generates a time input element
+     * The format to be used is fixed HH:mm:ss in the update field
      *
      * @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
      * @param propertyName The property of the domain object
      * @param object The domain object
      * @param class The CSS class to be supplied to the enclosing row
      */
+    def time = { attrs ->
 
-    def dateTime = { attrs ->
-        def value = attrs.object."${attrs.propertyName}"
         out << row (attrs) {
+            def value = attrs.object."${attrs.propertyName}"
+
             switch (attrs.mode) {
                 case "show":
                     return """<p class="form-control-static">${listService.getDisplayString(value)}</p>"""
                     break
 
                 case "edit":
-                    def dateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
-                    def inputValue = value ? value.format("yyyy-MM-dd") : ""
-                    def timeFormat = "HH:mm"
-                    def timeAttrs=[id:"time-${attrs.propertyName}",name:"time-${attrs.propertyName}",type:"time",value:formatDate(date:attrs.object."${attrs.propertyName}",format:timeFormat),class:"time timepicker dialog-open-events form-control"]
+                    def entryValue = value ? value.format("HH:mm:ss") : ""
+                    def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
 
-                    return
+                    def html =
                         """
-                        <input id="entry-${attrs.propertyName}" name="entry-${attrs.propertyName}" type="date" class="dialog-open-events datepicker ignore-validation form-control" value="${inputValue}" />
-                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" class="datetimeISO" value="${dateValue}" />
-                        """ +
-                        g.field(timeAttrs)
+                        <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValue}" />
+                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
+                        """
+                    return html
+                    break
+            }
+        }
+    }
+
+    /**
+     * DateTime input field tag
+     * This generates a date input element plus a time input element
+     * The format to be used is fixed yyyy-MM-ddTHH:mm:ssZ in the update field
+     *
+     * @param mode Contains 'edit' (generate edit field) or 'show' (generate read-only output)
+     * @param propertyName The property of the domain object
+     * @param object The domain object
+     * @param class The CSS class to be supplied to the enclosing row
+     */
+    def dateTime = { attrs ->
+
+        out << row (attrs) {
+            def value = attrs.object."${attrs.propertyName}"
+
+            switch (attrs.mode) {
+                case "show":
+                    return """<p class="form-control-static">${listService.getDisplayString(value)}</p>"""
+                    break
+
+                case "edit":
+                    def entryValueDate = value ? value.format("yyyy-MM-dd") : ""
+                    def entryValueTime = value ? value.format("HH:mm:ss") : ""
+                    def updateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
+
+                    def html =
+                        """
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValueDate}" />
+                            </div>
+                            <div class="col-xs-6">
+                                <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValueTime}" />
+                            </div>
+                        </div>
+                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
+                        """
+                    return html
                     break
             }
         }
@@ -531,33 +562,15 @@ class DialogTagLib {
                     break
 
                 case "autocomplete":
-                    if (attrs.from) {
-                        optionValues = attrs.from
-                    }
-
-                    def value = attrs.object."${attrs.propertyName}"
-                    def valueLabel = value ? value.acLabel : ""
-                    def valueDescription = value ? value.acDescription : ""
-                    def valueId = value ? value.id : null
-
                     def dc = new DefaultGrailsDomainClass(property.getType())
                     def domainPropertyName = dc.getPropertyName()
                     def acAction = attrs.acAction ? attrs.acAction : "autocomplete"
                     def jsonUrl = "${request.contextPath}/${domainPropertyName}/${acAction}"
+                    attrs.jsonUrl=jsonUrl
+                    attrs.mode="edit" // select edit mode of edit control
+                    attrs.norow="true"
 
-                    def descriptionText = ""
-                    if (attrs.subtitle == "true") {
-                        descriptionText = """<p id="${attrs.propertyName}-description" class="autocomplete-description">${valueDescription}</p>"""
-                    }
-                    def containerClass = value ? "ac-selected" : "ac-idle"
-
-                    //input + hidden field
-                    return
-                        """
-                        <input name="${attrs.propertyName}-entry" value="${valueLabel}" type="text" class="autocomplete dialog-open-events" jsonUrl="${jsonUrl}" class="form-control" />
-                        ${descriptionText}
-                        <input name="${attrs.propertyName}.id" value="${valueId}" type="hidden" label="${valueLabel}" />
-                        """
+                    return select(attrs)
                     break
 
             }
@@ -584,7 +597,6 @@ class DialogTagLib {
         optionKey = ""
 
         out << row (attrs) {
-
             switch (attrs.mode) {
                 case "show":
                     return """<p class="form-control-static">${fieldValue(bean: attrs.object, field: attrs.propertyName)}</p>"""
@@ -596,23 +608,37 @@ class DialogTagLib {
                     def cp = domainClass.constrainedProperties[attrs.propertyName]
 
                     def optionValues = []
+
                     if (attrs.from) {
                         optionValues = attrs.from
                     } else {
-                        optionValues = attrs.object.constraints."${attrs.propertyName}".inList
+                        if (attrs.jsonUrl) {
+                                def currentValue=attrs.object."${attrs.propertyName}"
+                                if (currentValue) {
+                                    optionValues=[currentValue]
+                                }
+                        } else {
+                            if (attrs.object.constraints."${attrs.propertyName}".inList) {
+                                optionValues = attrs.object.constraints."${attrs.propertyName}".inList
+                            }
+                        }
                     }
 
-                    def opts = [name: attrs.propertyName, value: attrs.object."${attrs.propertyName}", from: optionValues, class: "form-control"]
+                    def value=attrs.object."${attrs.propertyName}"?:""
+
+                    def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
-                    if (attrs["optionKey"]) opts.put("optionKey", attrs["optionKey"])
-                    if (attrs["optionValue"]) opts.put("optionValue", attrs["optionValue"])
-                    if (attrs["multiple"]) opts.put("multiple", attrs["multiple"])
-                    if (attrs["style"]) opts.put("style", attrs["style"])
 
                     if (property.isOptional()) {
-                        // TODO: yes. ""  for strings, null for int's
                         opts.put("noSelection", ["": "-"])
-                        //opts.put("noSelection", ["null": "-"])
+                    }
+
+                    def copiedAttrs = ""
+                    def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
+                    attrs.each { attrKey, attrValue ->
+                        if (!skipAttrs.contains(attrKey)) {
+                            opts.put(attrKey,attrValue)
+                        }
                     }
                     return g.select(opts)
                     break
@@ -980,7 +1006,7 @@ class DialogTagLib {
     // Upload button
     def uploadButton = { attrs, body ->
             out << """<span href="#" class="btn btn-default btn-file upload-button">
-                <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
+                <span class="fa fa-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
             </span>"""
     }
 

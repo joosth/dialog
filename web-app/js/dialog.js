@@ -195,14 +195,14 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
             });
         }).on("shown.bs.modal", function(event) {
             if ($(this).find(".tab-pane").length>0) {
-                $(this).find(".tab-pane").filter(".active").find(".dialog-open-events").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName } ).addClass("dialog-opened");
+                $(this).find(".tab-pane").filter(".active").find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName }).addClass("dialog-opened");
             } else {
-                $(this).find(".dialog-open-events").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName } ).addClass("dialog-opened");
+                $(this).find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName }).addClass("dialog-opened");
             }
         }).on("shown.bs.tab", function (event) {
             var targetRef=$(event.target).attr("href");
             var target=$(targetRef);
-            $(target).find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName } ).addClass("dialog-opened");
+            $(target).find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName }).addClass("dialog-opened");
             $(target).find("input[type!='hidden'], select, textarea").filter(":first").focus();
         }).on("hidden.bs.modal", function (event) {
             $(this).trigger("dialog-close", { event: event, "this": this } );
@@ -353,6 +353,8 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 };
 
 $(function() {
+    moment.locale(window.dialog.language);
+
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
 	$("#statusmessage").addClass("dialog-message-events");
 
