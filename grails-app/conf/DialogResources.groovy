@@ -85,7 +85,9 @@ modules = {
     'dialog-select2' {
         dependsOn 'dialog'
         resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/js/',file:'select2.full.min.js']
-        resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/css',file:'select2.min.css']
+		resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/js/i18n',file:'nl.js']
+		resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/css',file:'select2.min.css']
+		resource url: [plugin: 'jquery-dialog', dir:'/ext/xml2json',file:'xml2json.min.js']
         resource url: [plugin: 'jquery-dialog', dir:'/js',file:'dialog.select2.js']
     }
 

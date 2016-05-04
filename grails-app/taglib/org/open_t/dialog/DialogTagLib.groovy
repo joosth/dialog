@@ -219,6 +219,10 @@ class DialogTagLib {
         }
         def label = attrs.label ?: g.message(code: "${attrs.name}.label", default: "${attrs.name}")
 
+		if (attrs.separator == "true"){
+			out <<"""<hr/>"""
+		}
+
         //begin row
         out << """<div class="form-group ${cssClass}">"""
 
@@ -232,9 +236,11 @@ class DialogTagLib {
             out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
         }
         out << body()
+
         if (attrs.noHelp != "true") {
-            if (g.message(code: "${attrs.name}.help", default: "")) {
-                out << """<span id="help-${attrs.name}" class="help-block small">${g.message(code: "${attrs.name}.help", default: "Help!")}</span>"""
+            def help = attrs.help ? attrs.help : g.message(code: "${attrs.name}.help", default: "");
+            if (help) {
+                out << """<span id="help-${attrs.name}" class="help-block small">${help}</span>"""
             }
         }
         if (attrs.vertical != "true") {
