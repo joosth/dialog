@@ -47,9 +47,12 @@ modules = {
 		dependsOn 'dialog'
 		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'dataTables.bootstrap.css']
 		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'rowReorder.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'responsive.bootstrap.css']
 		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'jquery.dataTables.js']
 		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.bootstrap.js']
 		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.rowReorder.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.responsive.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'responsive.bootstrap.js']
 		resource url: [plugin: 'jquery-dialog', dir: '/js/', file: 'dialog.datatables.js']
 	}
 
@@ -65,6 +68,8 @@ modules = {
 		dependsOn 'dialog'
 	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/css', file:'bootstrap.css']
 	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/js', file:'bootstrap.js']
+	    resource url: [plugin: 'jquery-dialog', dir:'ext/respondjs', file:'respondjs.min.js']
+	    resource url: [plugin: 'jquery-dialog', dir:'ext/browser-update', file:'update.js']
 	}
 
 	'dialog-fontawesome' {
