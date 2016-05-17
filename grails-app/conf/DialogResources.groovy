@@ -69,7 +69,6 @@ modules = {
 	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/css', file:'bootstrap.css']
 	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/js', file:'bootstrap.js']
 	    resource url: [plugin: 'jquery-dialog', dir:'ext/respondjs', file:'respondjs.min.js']
-	    resource url: [plugin: 'jquery-dialog', dir:'ext/browser-update', file:'update.js']
 	}
 
 	'dialog-fontawesome' {
