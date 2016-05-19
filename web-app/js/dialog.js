@@ -147,6 +147,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
     } else {
 
         var theDialog = $(dialogHTML).on("show.bs.modal", function (event) {
+            $(this).drags({handle:".modal-header"});
             // This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
             $(this).find('[data-toggle="tooltip"]').tooltip();
 
@@ -247,7 +248,7 @@ dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlPara
     var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
     var theDialog = $(dialogHTML).on("show.bs.modal", function (event) {
-
+        $(this).drags({handle:".modal-header"});
         var deleteButton = $(this).find(".modal-footer button#delete");
 
         deleteButton.click( function () {
@@ -327,7 +328,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
     var domainClass = (options != null && options["domainclass"] != null) ? options["domainclass"] : controllerName.capitalize();
 
     var theDialog = $(dialogHTML).on("show.bs.modal", function (event) {
-
+        $(this).drags({handle:".modal-header"});
         var deleteButton = $(this).find(".modal-footer button#delete");
 
         deleteButton.click( function () {
@@ -349,8 +350,53 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
     }).on("hidden.bs.modal", function (event) {
         theDialog.data("bs.modal", null);
         theDialog.remove();
-    }).modal();
+    }).modal()
 };
+
+// https://github.com/jschr/bootstrap-modal/issues/39
+// Draggable without JQuery UI
+(function($) {
+    $.fn.drags = function(opt) {
+
+        opt = $.extend({handle:"",cursor:"move"}, opt);
+
+        if(opt.handle === "") {
+            var $el = this;
+        } else {
+            var $el = this.find(opt.handle);
+        }
+
+        return $el.css('cursor', opt.cursor).on("mousedown", function(e) {
+            if(opt.handle === "") {
+                var $drag = $(this).addClass('draggable');
+            } else {
+                var $drag = $(this).addClass('active-handle').parent().addClass('draggable');
+            }
+            var z_idx = $drag.css('z-index'),
+                drg_h = $drag.outerHeight(),
+                drg_w = $drag.outerWidth(),
+                pos_y = $drag.offset().top + drg_h - e.pageY,
+                pos_x = $drag.offset().left + drg_w - e.pageX;
+
+            $drag.parents().on("mousemove", function(e) {
+                $('.draggable').offset({
+                    top:e.pageY + pos_y - drg_h,
+                    left:e.pageX + pos_x - drg_w
+                }).on("mouseup", function() {
+                    $(this).removeClass('draggable').css('z-index', z_idx);
+                });
+            });
+            e.preventDefault(); // disable selection
+        }).on("mouseup", function() {
+            if(opt.handle === "") {
+                $(this).removeClass('draggable');
+            } else {
+                $(this).removeClass('active-handle').parent().removeClass('draggable');
+            }
+        });
+
+    }
+})(jQuery);
 
 $(function() {
     moment.locale(window.dialog.language);
