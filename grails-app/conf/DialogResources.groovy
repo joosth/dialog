@@ -113,6 +113,12 @@ modules = {
         resource url: [plugin: 'jquery-dialog', dir: 'ext/momentjs', file: 'moment-with-locales.js']
     }
 
+
+    'dialog-datepicker' {
+        dependsOn 'dialog-datetimepicker'
+    }
+
+
     'dialog-datetimepicker' {
         dependsOn 'dialog-jquery, dialog-momentjs, dialog-bootstrap, dialog-modernizr, dialog-fontawesome, dialog-maskedinput'
         resource url: [plugin: 'jquery-dialog', dir: 'ext/bootstrap-datetimepicker/css', file: 'bootstrap-datetimepicker.min.css']
