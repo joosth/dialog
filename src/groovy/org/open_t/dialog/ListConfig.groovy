@@ -104,7 +104,18 @@ class ListConfig {
      */
 
 	def paginateList(datalist,params) {
-		def totalRecords=datalist.size()
+        if (filter) {
+            if (params["search[value]"]) {
+                String searchString=params["search[value]"].toLowerCase()
+                datalist=datalist.findAll { record ->
+                    getFilterColumns().find { filterColumn ->
+                        record[filterColumn].toString().toLowerCase().contains(searchString)
+                    }
+                }
+            }
+        }
+
+        def totalRecords=datalist.size()
 		if (totalRecords>0) {
 			if (params."order[0][column]" && params."order[0][column]".length()>0) {
 				def columnName=params."order[0][column]"
