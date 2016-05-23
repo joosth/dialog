@@ -148,8 +148,6 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
 
         var theDialog = $(dialogHTML).on("show.bs.modal", function (event) {
             $(this).drags({handle:".modal-header"});
-            // This will trigger all modules that want to receive open events; the second parameter is the params object that will be received by the event handler
-            $(this).find('[data-toggle="tooltip"]').tooltip();
 
             var cancelButton = $(this).find(".modal-footer button#cancel");
             var saveButton = $(this).find(".modal-footer button#save");
