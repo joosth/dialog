@@ -249,6 +249,7 @@ dialog.datetimepicker.updateValue = function updateValue (type, updateElementId,
     }
 
     $("#" + updateElementId).trigger("change");
+    $("#" + updateElementId).trigger("blur");
 }
 
 $(function() {
