@@ -133,7 +133,6 @@ modules = {
 
 	'dialog-angularjs' {
 		resource url: [plugin: 'jquery-dialog', dir:'ext/angularjs', file:'angular.js']
-		resource url: [plugin: 'jquery-dialog', dir:'ext/angularjs', file:'module.js']
 	}
 
 }
