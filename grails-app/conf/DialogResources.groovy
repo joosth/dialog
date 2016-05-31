@@ -8,7 +8,7 @@ modules = {
     }
 
     'dialog-jquery' {
-        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.1.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.4.js']
     }
 
 	'dialog-ckeditor' {
