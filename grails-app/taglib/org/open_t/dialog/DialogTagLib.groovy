@@ -43,7 +43,6 @@ class DialogTagLib {
      * @param request The HTTPServletRequest
      */
     def head = {
-        def ckeditorBasePath = g.resource(plugin: "jquery-dialog", dir: "/js/ckeditor/")
         out <<
             """
             <script type="text/javascript">
@@ -121,7 +120,7 @@ class DialogTagLib {
                 dialog.messages.validation = {};
                 dialog.messages.validation.invalidTime="${message(code: "dialog.validation.invalidTime")}";
                 dialog.messages.validation.invalidDateTime="${message(code: "dialog.validation.invalidDateTime")}";
-                var CKEDITOR_BASEPATH = "${ckeditorBasePath}";
+                var CKEDITOR_BASEPATH = "${g.resource(plugin: "jquery-dialog", dir: "ext/ckeditor/")}";
             </script>
             """
     }
