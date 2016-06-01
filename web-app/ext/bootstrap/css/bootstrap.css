@@ -4177,7 +4177,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   border: 1px solid transparent;
 }
 /*Changed 768 to 992 to fix iPad issue not correctly breaking navbar*/
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .navbar {
     border-radius: 4px;
   }

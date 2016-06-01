@@ -135,8 +135,8 @@ modules = {
 	}
 
 	'dialog-angularjs' {
+		dependsOn 'dialog-jquery'
 		resource url: [plugin: 'jquery-dialog', dir:'ext/angularjs', file:'angular.js']
-		resource url: [plugin: 'jquery-dialog', dir:'ext/angularjs', file:'module.js']
 	}
 
 }
