@@ -8,7 +8,7 @@ modules = {
     }
 
     'dialog-jquery' {
-        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.1.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.4.js']
     }
 
 	'dialog-ckeditor' {
@@ -86,12 +86,15 @@ modules = {
 		resource url: [plugin: 'jquery-dialog', dir:'ext/flot', file:'jquery.flot.js']
 	}
 
+    'dialog-x2js' {
+		resource url: [plugin: 'jquery-dialog', dir: '/ext/x2js', file: 'xml2json.min.js']
+    }
+
     'dialog-select2' {
-        dependsOn 'dialog'
+        dependsOn 'dialog,dialog-x2js'
         resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/js/',file:'select2.full.min.js']
 		resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/js/i18n',file:'nl.js']
 		resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/css',file:'select2.min.css']
-		resource url: [plugin: 'jquery-dialog', dir:'/ext/xml2json',file:'xml2json.min.js']
         resource url: [plugin: 'jquery-dialog', dir:'/js',file:'dialog.select2.js']
     }
 

@@ -180,7 +180,7 @@ dialog.datetimepicker.getTimeValue = function getTimeValue (entryElementId) {
 dialog.datetimepicker.getTimeFormat = function getTimeFormat (entryElementId) {
 
     if (Modernizr.inputtypes.time || $("#" + entryElementId).data("DateTimePicker") === undefined) {
-        return "HH:mm:ss";
+        return "HH:mm";
     }
     else {
         return $("#" + entryElementId).data("DateTimePicker").format();
@@ -249,6 +249,7 @@ dialog.datetimepicker.updateValue = function updateValue (type, updateElementId,
     }
 
     $("#" + updateElementId).trigger("change");
+    $("#" + updateElementId).trigger("blur");
 }
 
 $(function() {
