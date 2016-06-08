@@ -392,11 +392,11 @@ class DialogTagLib {
 
                     def html =
                         """
-                        <div class="row">
-                            <div class="col-xs-6">
+                        <div class="row row-no-margin-top">
+                            <div class="col-md-7">
                                 <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValueDate}" />
                             </div>
-                            <div class="col-xs-6">
+                            <div class="col-md-5">
                                 <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValueTime}" />
                             </div>
                         </div>

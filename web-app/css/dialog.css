@@ -91,5 +91,9 @@ span.error-message { color:#a94442;}
     display: block;
 }
 
+.row-no-top-margin {
+    margin-top: 0 !important;
+}
+
 .select2-label { display:block;}
 .select2-description { display:block;font-size:75%;}
