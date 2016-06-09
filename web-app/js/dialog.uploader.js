@@ -44,9 +44,9 @@ dialog.uploader.upload=function(file,options) {
             if (!response.success|| response.success=="false") {
                 $(".dialog-message-events").trigger("dialog-message",{message:response.message,alertType:"danger"});
             } else {
-                if (options.params.mode=="form") {
-                    var upload=file.name+"|"+response.tempFile+"|"+response.mimetype+"|"+file.size;
-					$(wrapper).append('<input type=\"hidden\" name=\"file_upload\" value=\"'+upload+'\" />');
+                if (options.params.direct === "false") {
+                    var upload= file.name + "|" + response.path + "|" + response.mimetype + "|" + file.size;
+                    $(wrapper).append('<input type=\"hidden\" name=\"fileupload\" value=\"' + upload + '\" />');
                 }
 
                 $(wrapper).find(".upload-progress-text").html(dialog.messages.uploadcompleted.replace("[0]",file.name));
@@ -58,7 +58,6 @@ dialog.uploader.upload=function(file,options) {
             $(wrapper).find(".progress").delay(2000).fadeOut("slow");
             $(wrapper).find(".upload-progress-text").delay(2000).fadeOut("slow");
             $(wrapper).find(".upload-progress-row").delay(2000).fadeOut("slow");
-
         }
     };
 
@@ -77,7 +76,7 @@ dialog.uploader.upload=function(file,options) {
     xhr.open("POST", url, true);
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhr.setRequestHeader("X-File-Name", encodeURIComponent(file.name));
-    xhr.setRequestHeader("Content-Length", file.size);
+    //xhr.setRequestHeader("Content-Length", file.size);
 
     var mimetype="application/octet-stream";
     if (file.type){
