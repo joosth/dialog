@@ -255,7 +255,7 @@ dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlPara
                 var result = data.result;
 
                 $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id, jsonResponse: result } );
-                $(".dialog-message-events").trigger("dialog-message", { message: result.message } );
+                $(".dialog-message-events").trigger("dialog-message", { message: result.message, alertType: (result.success ? "success" : "danger") } );
 
                 if (result.success) {
                     theDialog.modal("hide");
@@ -335,7 +335,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
                 var result = data.result;
 
                 $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id } );
-                $(".dialog-message-events").trigger("dialog-message", { message: result.message } );
+                $(".dialog-message-events").trigger("dialog-message", { message: result.message, alertType: (result.success ? "success" : "danger") } );
 
                 if (result.success) {
                     theDialog.modal("hide");
