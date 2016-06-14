@@ -1130,7 +1130,7 @@ class DialogTagLib {
      * @param url The URL of the JSON data source (object and action are ignored)
      */
     def treeselect = { attrs, body ->
-        out << row ("class": attrs.class, object: attrs.object, propertyName: attrs.propertyName) {
+        out << row (attrs) {
             def action = attrs.action ?: "treeJSON"
             def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
             def property = domainClass.getPropertyByName(attrs.propertyName)
@@ -1144,14 +1144,15 @@ class DialogTagLib {
 
             def value = attrs.object."${attrs.propertyName}"
 
-            return
+            def html =
                 """
                 <span id="treeselect-${attrs.propertyName}-span" treeUrl="${url}" ${attributes}>
                     <span>${value ?: ""}</span>
                     <a href="#" onclick="dialog.tree.treeSelect('treeselect-${attrs.propertyName}');" class="btn btn-default btn-sm">...</a>
-                    <input id="treeselect-field-input" type="hidden" name="${attrs.propertyName}.id" value="${value?.id}" />
+                    <input id="treeselect-${attrs.propertyName}-input" type="hidden" name="${attrs.propertyName}.id" value="${value?.id}" />
                 </span>
                 """
+            return html
         }
     }
 
