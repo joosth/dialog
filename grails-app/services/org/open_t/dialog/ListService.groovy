@@ -187,8 +187,8 @@ class ListService {
         		if(!actions && !listConfig) {
         			actions= { dok, env ->
                         """<div class="btn-group">""" +
-                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)" title="edit"><i class="fa fa-pencil"></a>""" +
-                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)" title="delete"><i class="fa fa-trash"></a>""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)" title="edit"><i class="fa fa-pencil"></i></a>""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)" title="delete"><i class="fa fa-trash"></i></a>""" +
                         """</div>"""
                     }
 					actionsString=actions(doc,['detailTableId':detailTableId])
@@ -370,8 +370,8 @@ class ListService {
 				if(!actions) {
 					actions = { dok, env ->
                         """<div class="btn-group">""" +
-                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)" title="edit"><i class="fa fa-pencil"></a>""" +
-                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)" title="delete"><i class="fa fa-trash"></a>""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog(${dok.id},'${propName}',{ refresh : '${detailTableId}'}, null)" title="edit"><i class="fa fa-pencil"></i></a>""" +
+                            """<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${dok.id}','${propName}',{ refresh : '${detailTableId}'}, null)" title="delete"><i class="fa fa-trash"></i></a>""" +
                         """</div>"""
                     }
 				}

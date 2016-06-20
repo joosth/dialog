@@ -80,7 +80,7 @@ class ListConfig {
 			String label = messageSource.getMessage("list.${name}.action.${action}.label".toString(),null, defaultLabel,locale)
 			switch(action) {
 				case "delete":
-					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-trash"></a>"""
+					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-trash"></i></a>"""
 				break
                 case "show":
                     s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',nosubmit:true,refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-search"></i></a>"""
