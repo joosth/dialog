@@ -304,6 +304,8 @@ class DialogTagLib {
      * @param propertyName The property of the domain object
      * @param object The domain object
      * @param class The CSS class to be supplied to the enclosing row
+     * @param minDate The minimum selectable date. When empty, there is no minimum.
+     * @param maxDate The maximum selectable date. When empty, there is no maximum.
      */
     def date = { attrs ->
 
@@ -319,9 +321,25 @@ class DialogTagLib {
                     def entryValue = value ? value.format("yyyy-MM-dd") : ""
                     def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
 
+                    // min & max
+                    def minDate = DateTimeUtil.determineDate(attrs.minDate)
+                    if (value && minDate && value.clearTime().before(minDate)) {
+                        log.info "Value '${value.clearTime()}' is before minimum date '${minDate}', value will be used as minimum date."
+                        minDate = value.clearTime()
+                    }
+                    def maxDate = DateTimeUtil.determineDate(attrs.maxDate)
+                    if (minDate && maxDate && minDate.after(maxDate)) {
+                        log.warn "Minimum date '${minDate}' is after maximum date '${maxDate}', maximum date will not be used! Is your snippet configuration correct?"
+                        maxDate = null
+                    }
+                    if (value && maxDate && value.clearTime().after(maxDate)) {
+                        log.info "Value '${value.clearTime()}' is after maximum date '${maxDate}', value will be used as maximum date."
+                        maxDate = value.clearTime()
+                    }
+
                     def html =
                         """
-                        <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValue}" />
+                        <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValue}" ${minDate ? """ min="${minDate.format("yyyy-MM-dd")}" """ : ""} ${maxDate ? """ max="${maxDate.format("yyyy-MM-dd")}" """ : ""} />
                         <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
                         """
                     return html
@@ -339,6 +357,8 @@ class DialogTagLib {
      * @param propertyName The property of the domain object
      * @param object The domain object
      * @param class The CSS class to be supplied to the enclosing row
+     * @param minTime The minimum selectable time. When empty, there is no minimum.
+     * @param maxTime The maximum selectable time. When empty, there is no maximum.
      */
     def time = { attrs ->
 
@@ -354,9 +374,25 @@ class DialogTagLib {
                     def entryValue = value ? value.format("HH:mm:ss") : ""
                     def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
 
+                    // min & max
+                    def minTime = DateTimeUtil.determineTime(attrs.minTime)
+                    if (value && minTime && value.before(minTime)) {
+                        log.info "Value '${value}' is before minimum time '${minTime}', value will be used as minimum time."
+                        minTime = value
+                    }
+                    def maxTime = DateTimeUtil.determineTime(attrs.maxTime)
+                    if (minTime && maxTime && minTime.after(maxTime)) {
+                        log.warn "Minimum time '${minTime}' is after maximum time '${maxTime}', maximum time will not be used! Is your snippet configuration correct?"
+                        maxTime = null
+                    }
+                    if (value && maxTime && value.after(maxTime)) {
+                        log.info "Value '${value}' is after maximum time '${maxTime}', value will be used as maximum time."
+                        maxTime = value
+                    }
+
                     def html =
                         """
-                        <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValue}" />
+                        <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValue}" ${minTime ? """ min="${minTime.format("HH:mm")}" """ : ""} ${maxTime ? """ max="${maxTime.format("HH:mm")}" """ : ""} />
                         <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
                         """
                     return html
@@ -374,6 +410,10 @@ class DialogTagLib {
      * @param propertyName The property of the domain object
      * @param object The domain object
      * @param class The CSS class to be supplied to the enclosing row
+     * @param minDate The minimum selectable date. When empty, there is no minimum.
+     * @param maxDate The maximum selectable date. When empty, there is no maximum.
+     * @param minTime The minimum selectable time. When empty, there is no minimum.
+     * @param maxTime The maximum selectable time. When empty, there is no maximum.
      */
     def dateTime = { attrs ->
 
@@ -386,18 +426,50 @@ class DialogTagLib {
                     break
 
                 case "edit":
+                    def timeValue = value ? Date.parse("HH:mm:ss", value.format("HH:mm:ss")) : null
                     def entryValueDate = value ? value.format("yyyy-MM-dd") : ""
                     def entryValueTime = value ? value.format("HH:mm:ss") : ""
                     def updateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
+
+                    // min & max date
+                    def minDate = DateTimeUtil.determineDate(attrs.minDate)
+                    if (value && minDate && value.clearTime().before(minDate)) {
+                        log.info "Value '${value.clearTime()}' is before minimum date '${minDate}', value will be used as minimum date."
+                        minDate = value.clearTime()
+                    }
+                    def maxDate = DateTimeUtil.determineDate(attrs.maxDate)
+                    if (minDate && maxDate && minDate.after(maxDate)) {
+                        log.warn "Minimum date '${minDate}' is after maximum date '${maxDate}', maximum date will not be used! Is your snippet configuration correct?"
+                        maxDate = null
+                    }
+                    if (value && maxDate && value.clearTime().after(maxDate)) {
+                        log.info "Value '${value.clearTime()}' is after maximum date '${maxDate}', value will be used as maximum date."
+                        maxDate = value.clearTime()
+                    }
+                    // min & max time
+                    def minTime = DateTimeUtil.determineTime(attrs.minTime)
+                    if (timeValue && minTime && timeValue.before(minTime)) {
+                        log.info "Value '${timeValue}' is before minimum time '${minTime}', value will be used as minimum time."
+                        minTime = timeValue
+                    }
+                    def maxTime = DateTimeUtil.determineTime(attrs.maxTime)
+                    if (minTime && maxTime && minTime.after(maxTime)) {
+                        log.warn "Minimum time '${minTime}' is after maximum time '${maxTime}', maximum time will not be used! Is your snippet configuration correct?"
+                        maxTime = null
+                    }
+                    if (timeValue && maxTime && timeValue.after(maxTime)) {
+                        log.info "Value '${timeValue}' is after maximum time '${maxTime}', value will be used as maximum time."
+                        maxTime = timeValue
+                    }
 
                     def html =
                         """
                         <div class="row row-no-margin-top">
                             <div class="col-md-7">
-                                <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValueDate}" />
+                                <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValueDate}" ${minDate ? """ min="${minDate.format("yyyy-MM-dd")}" """ : ""} ${maxDate ? """ max="${maxDate.format("yyyy-MM-dd")}" """ : ""} />
                             </div>
                             <div class="col-md-5">
-                                <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValueTime}" />
+                                <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValueTime}" ${minTime ? """ min="${minTime.format("HH:mm")}" """ : ""} ${maxTime ? """ max="${maxTime.format("HH:mm")}" """ : ""} />
                             </div>
                         </div>
                         <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />

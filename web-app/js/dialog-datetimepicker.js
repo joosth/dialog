@@ -61,6 +61,9 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
             $(this).val("");
         }
 
+        var minDate = $(this).attr("min") !== undefined ? moment($(this).attr("min"), "YYYY-MM-DD") : false;
+        var maxDate = $(this).attr("max") !== undefined ? moment($(this).attr("max"), "YYYY-MM-DD") : false;
+
         $(this).datetimepicker({
             format: window.dialog.messages.moment.inputDateFormat,
             icons: {
@@ -75,6 +78,8 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
                 close: "fa fa-times"
             },
             locale: moment.locale(),
+            minDate: minDate,
+            maxDate: maxDate,
             showTodayButton: true,
             showClear: true,
             tooltips: window.dialog.messages.datetimepicker.tooltips
@@ -121,6 +126,9 @@ dialog.datetimepicker.openTime = function openTime (e, params) {
             $(this).val("");
         }
 
+        var minTime = $(this).attr("min") !== undefined ? moment($(this).attr("min"), "HH:mm") : false;
+        var maxTime = $(this).attr("max") !== undefined ? moment($(this).attr("max"), "HH:mm") : false;
+
         $(this).datetimepicker({
             format: window.dialog.messages.moment.inputTimeFormat,
             icons: {
@@ -135,6 +143,8 @@ dialog.datetimepicker.openTime = function openTime (e, params) {
                 close: "fa fa-times"
             },
             locale: moment.locale(),
+            minDate: minTime,
+            maxDate: maxTime,
             showClear: true,
             toolbarPlacement: "bottom",
             tooltips: window.dialog.messages.datetimepicker.tooltips
