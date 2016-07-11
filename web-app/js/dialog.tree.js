@@ -49,36 +49,46 @@ dialog.tree.treeSelect = function treeSelect(id) {
     var currentValue = $('#' + id + '-input').val();
     var treeRoot = $('#' + id + '-span').attr("treeRoot");
     var treeUrl = $('#' + id + '-span').attr("treeUrl");
+    var treeTypes = JSON.parse($('#' + id + '-span').attr("treeTypes"));
 
     var theDialog = $(dialogHTML).on("show.bs.modal", function (event) {
         $(this).drags({ handle: ".modal-header" });
 
         var popupTree = $(this).find("#" + id + "-tree").jstree({
-            "plugins": ["json_data", "ui", "cookies", "dnd", "search", "types", "themes", "hotkeys"],
-            "json_data": {
-                "ajax": {
+            "core": {
+                "data": {
                     "url": treeUrl,
-                    cache: false,
-
-                    // This determines what is sent back to the server.
-                    "data": function (n) {
-                        // this determines the root of the tree.
-                        return { id: (n.attr ? n.attr("id") : treeRoot), currentValue: currentValue, treeRoot: treeRoot };
+                    "cache": false,
+                    "data": function (node) {
+                        return { id : node.id != "#" ? node.id : treeRoot, currentValue: currentValue, treeRoot: treeRoot } ;
                     }
+                },
+                "dblclick_toggle": false,
+                "multiple": false
+            },
+            "plugins": ["types"],
+            "types": {
+                "default": {
+                    "valid_children": [],
+                    "icon": "fa fa-fw fa-question-circle"
                 }
             }
         });
+        $.extend(popupTree.jstree(true).settings.types, treeTypes);
 
         var cancelButton = $(this).find(".modal-footer button#cancel");
         var confirmButton = $(this).find(".modal-footer button#confirm");
 
         confirmButton.click( function () {
-            var selectedElement = $('#' + id + '-tree').jstree('get_selected');
-            var title = selectedElement.attr("title");
-            var selectedId = selectedElement.attr('id');
-            // Set the hidden field
-            $('#' + id + '-input').val(selectedId);
-            $('#' + id + '-span span').html(title);
+            var selectedElements = popupTree.jstree(true).get_selected(true);
+            if (selectedElements.length > 0) {
+                var title = selectedElements[0].text;
+                var underscoreIndex = selectedElements[0].id.indexOf("_");
+                var selectedId = (underscoreIndex > -1) ? selectedElements[0].id.substring(underscoreIndex + 1) : selectedElements[0].id;
+                // Set the hidden field
+                $('#' + id + '-input').val(selectedId);
+                $('#' + id + '-span span').html(title);
+            }
             theDialog.modal("hide");
         });
     }).on("shown.bs.modal", function(event) {
