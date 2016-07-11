@@ -31,7 +31,7 @@ dialog.datatables.open =function open (e,params) {
     var controller = jsonUrl.split('/')[1]; //extract controller name from json url
     var searching=curMatch.attr("filter")=="true";
     var toolbar=curMatch.attr("toolbar") || "";
-    var pageLength=curMatch.attr("pageLength") || 5;
+    var pageLength=parseInt(curMatch.attr("pageLength")) || 5;
     var rowReorder = curMatch.hasClass("rowreordering");
 
     dialog.dataTableHashList[tableId] = curMatch.on('init.dt', function () {
