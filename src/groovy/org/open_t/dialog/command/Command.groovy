@@ -39,7 +39,9 @@ class Command  {
 		DefaultGrailsDomainClass defaultDomainClass = new DefaultGrailsDomainClass( this.class )
 		def props=defaultDomainClass.getProperties()
 		props.each { property ->
-			if ((property.name !="id") && (property.name !="version") && map.properties.containsKey(property.name)) {
+            // Allow both maps and groovy objects as source map
+            def keyPresent = (map instanceof Map) ? map.containsKey(property.name) : map.properties.containsKey(property.name)
+			if ((property.name !="id") && (property.name !="version") && keyPresent) {
 				this."${property.name}"=map."${property.name}"
 			}
 		}
