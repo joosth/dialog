@@ -48,6 +48,14 @@ class Command  {
 		return this
 	}
 
+
+    /**
+     * setProperties to allow properties to be set in the same fashion as domain objects  
+     */
+    def setProperties(map) {
+        getFrom(map)
+    }
+
     /**
      * Populate properties from given map
      * Silently skip values that are not in the domain class
