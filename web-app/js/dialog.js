@@ -396,6 +396,50 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
     }
 })(jQuery);
 
+/**
+ * Simple action: AJAJ call with response message
+ * HTML Element needs .simple-action class and attributes:
+ * - action-url (partial url of action within application)
+ * - param_* extra paramyers to be sent with POST
+ */
+
+dialog.simpleAction = function(e) {
+    var actionUrl=$(e.currentTarget).attr('action-url');
+    var params={};
+        for (var att, i = 0, atts = e.currentTarget.attributes, n = atts.length; i < n; i++){
+        att = atts[i];
+        if (att.nodeName.indexOf("param_")===0) {
+            params[att.nodeName.substr(6)]=att.nodeValue;
+        }
+    }
+
+    $.ajax({
+        url: dialog.baseUrl+"/"+actionUrl,
+        type: "POST",
+        data: params,
+        dataType: "json",
+
+        success:function(data) {
+            if (data.success) {
+
+                $(".dialog-message-events").trigger("dialog-message",{message:data.message});
+            } else {
+                $(".dialog-message-events").trigger("dialog-message",{alertType:'danger',message:data.message});
+            }
+            if (data.refresh) {
+                $(".dialog-events").trigger("dialog-refresh",{refresh:data.refresh});
+            }
+        },
+        error:function() {
+            $(".dialog-message-events").trigger("dialog-message",{alertType:'danger',message:"An error occurred."});
+            if (data.refresh) {
+                $(".dialog-events").trigger("dialog-refresh",{refresh:data.refresh});
+            }
+        }
+    });
+    return true;
+};
+
 $(function() {
     //moment.locale(window.dialog.language);
 

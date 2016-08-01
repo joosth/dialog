@@ -56,13 +56,12 @@ modules = {
 		resource url: [plugin: 'jquery-dialog', dir: '/js/', file: 'dialog.datatables.js']
 	}
 
-	'dialog-tree' {
-		dependsOn 'dialog-bootstrap'
-		resource url: [plugin: 'jquery-dialog', dir:'js/jquery/',file:'jquery.jstree.js']
-		resource url: [plugin: 'jquery-dialog', dir:'js/',file:'dialog.tree.js']
-		resource url: [plugin: 'jquery-dialog', dir:'/css/',file:'jquery.jstree.css']
-
-	}
+    'dialog-tree' {
+        dependsOn 'dialog-jquery'
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/jstree/themes/default', file: 'style.css']
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/jstree', file: 'jstree.js']
+        resource url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog.tree.js']
+    }
 
 	'dialog-bootstrap' {
 		dependsOn 'dialog'

@@ -1219,7 +1219,7 @@ class DialogTagLib {
 
             def html =
                 """
-                <span id="treeselect-${attrs.propertyName}-span" treeUrl="${url}" ${attributes}>
+                <span id="treeselect-${attrs.propertyName}-span" treeUrl="${url}" treeTypes='""" + attrs.types + """' ${attributes}>
                     <span>${value ?: ""}</span>
                     <a href="#" onclick="dialog.tree.treeSelect('treeselect-${attrs.propertyName}');" class="btn btn-default btn-sm">...</a>
                     <input id="treeselect-${attrs.propertyName}-input" type="hidden" name="${attrs.propertyName}.id" value="${value?.id}" />
