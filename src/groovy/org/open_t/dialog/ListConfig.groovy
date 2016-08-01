@@ -35,6 +35,7 @@ class ListConfig {
 	def newButton=true
 	def rowreordering=false
 	def idName="id"
+    def autoWidth=false
 	List<ListConfigColumn> columns = []
 
 	def configure (Closure closure) {

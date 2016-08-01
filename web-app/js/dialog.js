@@ -397,7 +397,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
 })(jQuery);
 
 $(function() {
-    moment.locale(window.dialog.language);
+    //moment.locale(window.dialog.language);
 
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
 	$("#statusmessage").addClass("dialog-message-events");

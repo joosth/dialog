@@ -695,8 +695,9 @@ class DialogTagLib {
                         }
                     }
 
-                    def value=attrs.object."${attrs.propertyName}"?:""
-
+                    //def value=attrs.object."${attrs.propertyName}"?:""
+                    def value=attrs.object."${attrs.propertyName}" ? attrs.object."${attrs.propertyName}" : "${attrs.value}"
+                    
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 

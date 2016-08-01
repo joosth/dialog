@@ -33,7 +33,8 @@ dialog.datatables.open =function open (e,params) {
     var toolbar=curMatch.attr("toolbar") || "";
     var pageLength=parseInt(curMatch.attr("pageLength")) || 5;
     var rowReorder = curMatch.hasClass("rowreordering");
-
+    var autoWidth = curMatch.attr("autoWidth")=="true";
+    
     dialog.dataTableHashList[tableId] = curMatch.on('init.dt', function () {
         if (rowReorder) {
             dialog.dataTableHashList[tableId].on('row-reorder', function (e, details, edit) {
@@ -68,7 +69,7 @@ dialog.datatables.open =function open (e,params) {
             }
         }
     }).DataTable({
-        "autoWidth": false,
+        "autoWidth": autoWidth,
         "processing": true,
         "serverSide": true,
         "ajax": dialog.baseUrl + jsonUrl,

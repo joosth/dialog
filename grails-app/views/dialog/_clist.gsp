@@ -15,6 +15,7 @@
                            rowreordering="${listConfig.rowreordering}"
                            toolbar="${listConfig.toolbar?:''}"
                            newButton="${listConfig.newButton}"
+                           autoWidth="${listConfig.autoWidth}"
                            >
         				<thead>
         					<tr>
