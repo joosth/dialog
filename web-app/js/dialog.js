@@ -441,7 +441,7 @@ dialog.simpleAction = function(e) {
 };
 
 $(function() {
-    //moment.locale(window.dialog.language);
+    moment.locale(window.dialog.language);
 
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
 	$("#statusmessage").addClass("dialog-message-events");
