@@ -640,7 +640,17 @@ class DialogTagLib {
                     attrs.jsonUrl=jsonUrl
                     attrs.mode="edit" // select edit mode of edit control
                     attrs.norow="true"
+                    def value = attrs.object."${attrs.propertyName}"
+                    
+                    if(value) {
+                        def valueId = value ? value.id : null
 
+                        attrs.from = [[key:valueId, value:value]]
+
+                        attrs.optionKey = "key"
+                        attrs.optionValue = "value"
+                    }
+                    
                     return select(attrs)
                     break
 
