@@ -456,6 +456,17 @@ $(function() {
 
     // Show help text when ? is clicked
     $(document).on("click", ".help-action",function(e) {
+        var container=$(this).closest(".modal");
+        if (container.length>0) {
+            container.find(".help-block").toggle();
+        } else {
+            $(".help-block").toggle();
+        }
+    });
+
+    $(document).on("click", ".help-action",function(e) {
         $(this).closest(".modal").find(".help-block").toggle();
     });
+
+
 });
