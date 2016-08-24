@@ -280,14 +280,18 @@ dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlPara
  * - success (default,green)
  * - error
  * - info (blue)
+ * - clear (no message)
  */
 dialog.statusMessage = function statusMessage(event,eventData) {
-	if (eventData.message) {
+	if (eventData.message || eventData.alertType) {
         var alertType="success";
         if (eventData.alertType!==undefined) {
             alertType=eventData.alertType;
         }
-		var msg='<div id="alertmessage" class="alert alert-'+alertType+' fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>';
+        var msg="";
+        if (alertType!="clear") {
+		    msg='<div id="alertmessage" class="alert alert-'+alertType+' fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>';
+        }
 		$("#statusmessage").html(msg);
 		$("#alertmessage").addClass("in");
 		// TODO This is more annoying than helpful. Maybe make this configurable.
@@ -441,7 +445,7 @@ dialog.simpleAction = function(e) {
 };
 
 $(function() {
-    //moment.locale(window.dialog.language);
+    moment.locale(window.dialog.language);
 
 	$("#statusmessage").bind("dialog-message",dialog.statusMessage);
 	$("#statusmessage").addClass("dialog-message-events");
