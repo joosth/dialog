@@ -462,11 +462,7 @@ $(function() {
         } else {
             $(".help-block").toggle();
         }
+        return false;
     });
-
-    $(document).on("click", ".help-action",function(e) {
-        $(this).closest(".modal").find(".help-block").toggle();
-    });
-
 
 });
