@@ -361,37 +361,46 @@ class FileService {
 		return [result:result]
 	}
 
-    /**
-	 * Stream file
+	/**
+	 * Stream any given file over an HTTP response as an octet-stream.
 	 *
-	 * @param dc The domain class
-     * @param params The parameters as provided to the controller
-     * @param fileCategory The file category
-     * @param name The name of the file
-     * @param response The response object as provided to the controller
+	 * @param file The file to stream.
+	 * @param response The HTTP response to write the file to.
+	 * @since 09/01/2016
 	 */
-	def streamFile(dc,id,fileCategory,name,response) {
-
-        def filePath=filePath(dc,id,fileCategory)+"/"+name
-        def file=new File(filePath)
-
-        response.setHeader("Content-disposition", "attachment; filename=\"" +file.name+"\"")
-        // TODO add Tika file type recognition
+	def stream(def file, def name, def response) {
+		response.setHeader("Content-disposition", "attachment; filename=\"${name}\"")
 		response.setHeader("Content-Type", "application/octet-stream")
 
-		def inputStream=new FileInputStream(file)
-		def bufsize=100000
-		byte[] bytes=new byte[(int)bufsize]
+		def inputStream = new FileInputStream(file)
+		def bufsize = 100000
+		byte[] bytes = new byte[(int) bufsize]
 
-		def offset=0
-		def len=1
-		while (len>0) {
-			len=inputStream.read(bytes, 0, bufsize)
-			if (len>0)
-			response.outputStream.write(bytes,0,len)
-			offset+=bufsize
+		def offset = 0
+		def len = 1
+		while (len > 0) {
+			len = inputStream.read(bytes, 0, bufsize)
+			if (len > 0)
+			response.outputStream.write(bytes, 0, len)
+			offset += bufsize
 		}
+
 		response.outputStream.flush()
+	}
+
+    /**
+	 * Stream a file to the outputstream of a response.
+	 *
+	 * @param dc The domain class.
+     * @param params The parameters as provided to the controller.
+     * @param fileCategory The file category.
+     * @param name The name of the file.
+     * @param response The response object as provided to the controller.
+	 */
+	def streamFile(def dc, def id, def fileCategory, def name, def response) {
+        def filePath = filePath(dc, id, fileCategory) + "/${name}"
+        def file = new File(filePath)
+		stream(file, file.name, response)
 	}
 
     /**
