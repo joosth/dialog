@@ -532,7 +532,15 @@ class DialogTagLib {
         newAttrs.cols = attrs.cols ?: 80
         newAttrs.rows = attrs.rows ?: 20
         def xmltext = attrs.object."${attrs.propertyName}"
-        newAttrs.value = xmltext ? dialogService.prettyPrint(xmltext) : ""
+        def prettyXmlText = xmltext
+        if (xmltext) {
+            try {
+                prettyXmlText=dialogService.prettyPrint(xmltext)
+            } catch (Exception e) {
+                // Do nothing if XML parsing fails                
+            }
+        }
+        newAttrs.value = prettyXmlText
         newAttrs.name = attrs.propertyName
         if (newAttrs["class"]) {
             newAttrs["class"] += " dialog-open-events"
@@ -544,7 +552,7 @@ class DialogTagLib {
 
             switch (attrs.mode) {
                 case "show":
-                    String s = xmltext ? dialogService.prettyPrint(xmltext) : ""
+                    String s = prettyXmlText
                     return """${g.textArea(newAttrs) {s.encodeAsHTML()}}"""
                     break
 
@@ -641,7 +649,7 @@ class DialogTagLib {
                     attrs.mode="edit" // select edit mode of edit control
                     attrs.norow="true"
                     def value = attrs.object."${attrs.propertyName}"
-                    
+
                     if(value) {
                         def valueId = value ? value.id : null
 
@@ -650,7 +658,7 @@ class DialogTagLib {
                         attrs.optionKey = "key"
                         attrs.optionValue = "value"
                     }
-                    
+
                     return select(attrs)
                     break
 
@@ -707,7 +715,7 @@ class DialogTagLib {
 
                     //def value=attrs.object."${attrs.propertyName}"?:""
                     def value=attrs.object."${attrs.propertyName}" ? attrs.object."${attrs.propertyName}" : "${attrs.value}"
-                    
+
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
