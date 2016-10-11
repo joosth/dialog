@@ -603,7 +603,7 @@ class DialogTagLib {
         def optionValues = []
         def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
         def property = domainClass.getPropertyByName(attrs.propertyName)
-
+        
         out << row (attrs) {
 
             switch (attrs.mode) {
@@ -646,9 +646,19 @@ class DialogTagLib {
                         def valueId = value ? value.id : null
 
                         attrs.from = [[key:valueId, value:value]]
-
+                        
                         attrs.optionKey = "key"
                         attrs.optionValue = "value"
+                                                                        
+                        if(property.isOptional()) {
+                            attrs.from.add([(attrs.optionKey):"", (attrs.optionValue):"-"])
+                            attrs.ignoreOptional = true
+                        }
+                        
+//                        if(attrs.noSelection) {
+//                            attrs.from.add([(attrs.optionKey):"", (attrs.optionValue):"-"])
+//                            attrs.noSelection = false
+//                        }
                     }
                     
                     return select(attrs)
@@ -689,7 +699,7 @@ class DialogTagLib {
                     def cp = domainClass.constrainedProperties[attrs.propertyName]
 
                     def optionValues = []
-
+                    
                     if (attrs.from) {
                         optionValues = attrs.from
                     } else {
@@ -704,16 +714,32 @@ class DialogTagLib {
                             }
                         }
                     }
-
+                    
                     //def value=attrs.object."${attrs.propertyName}"?:""
-                    def value=attrs.object."${attrs.propertyName}" ? attrs.object."${attrs.propertyName}" : "${attrs.value}"
+                    def value=attrs.object."${attrs.propertyName}" ? attrs.object."${attrs.propertyName}" : attrs.value
+                    
+//                    if (property.isOptional()) {
+//                        if(optionValues instanceof HashMap) {
+//                            optionValues.put("", "-")
+//                        } else {
+//                            optionValues.add([(attrs.optionKey?:"key"):"", (attrs.optionValue?:"value"):"-"])
+//                        }
+//                    }
                     
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
-                    if (property.isOptional()) {
+                    if (property.isOptional() && !attrs.ignoreOptional) {
                         opts.put("noSelection", ["": "-"])
                     }
+
+//                    if (property.isOptional()) {
+//                        if(attrs.jsonUrl) {
+//                            opts["from"].add([key:"", value:"-"])
+//                        } else {
+//                            opts.put("noSelection", ["": "-"])
+//                        }
+//                    }
 
                     def copiedAttrs = ""
                     def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
