@@ -35,10 +35,11 @@ if (!window.dialog.datetimepicker) {
 dialog.datetimepicker.openDate = function openDate (e, params) {
 
     var dateEntryElementId = $(this).attr('id').replace(/\./g, "\\.").replace(/\[/g, "\\[").replace(/\]/g, "\\]");
-    var timeEntryElementId = dateEntryElementId.replace("-date", "-time");
-    var updateElementId = dateEntryElementId.replace("entry-", "update-").replace("-date", "");
+    var timeEntryElementId = dateEntryElementId.substring(0,dateEntryElementId.lastIndexOf("-date"))+"-time";
+    var updateElementId = dateEntryElementId.replace("entry-", "update-");
+    updateElementId=updateElementId.substring(0,updateElementId.lastIndexOf("-date"));
     var widgetType = $("#" + timeEntryElementId).length > 0 ? "DATETIME" : "DATE"
-    
+
     //Check browser support for HTML5 date widget..
     if (Modernizr.inputtypes.date) {
 
@@ -100,10 +101,11 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
 dialog.datetimepicker.openTime = function openTime (e, params) {
 
     var timeEntryElementId = $(this).attr('id').replace(/\./g, "\\.").replace(/\[/g, "\\[").replace(/\]/g, "\\]");
-    var dateEntryElementId = timeEntryElementId.replace("-time", "-date");
-    var updateElementId = timeEntryElementId.replace("entry-", "update-").replace("-time", "");
+    var dateEntryElementId = dateEntryElementId.substring(0,dateEntryElementId.lastIndexOf("-time"))+"-date";
+    var updateElementId = dateEntryElementId.replace("entry-", "update-");
+    updateElementId=updateElementId.substring(0,updateElementId.lastIndexOf("-time"));
     var widgetType = $("#" + dateEntryElementId).length > 0 ? "DATETIME" : "TIME"
-    
+
     //Check browser support for HTML5 date widget..
     if (Modernizr.inputtypes.time) {
 
