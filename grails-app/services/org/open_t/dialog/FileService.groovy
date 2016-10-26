@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FileFileFilter
+import org.apache.commons.io.IOUtils
 
 class FileService {
 
@@ -39,49 +40,36 @@ class FileService {
      * @dc The domain class or String representing the domain class
      * @return Map to be rendered as JSON
      */
-	def uploadFile(request,params,fileCategory="images",dc=null) {
-		def filename
-		def is
-		def mimetype
-		if (params.qqfile.class.name=="org.springframework.web.multipart.commons.CommonsMultipartFile") {
-			filename=params.qqfile.getOriginalFilename()
-			is =params.qqfile.getInputStream()
-			mimetype=params.qqfile.getContentType()
-		} else {
-			filename=params.qqfile
-			is =request.getInputStream()
-			mimetype=request.getHeader("Content-Type")
-		}
+    def uploadFile(request,params,fileCategory="images",dc=null) {
+        def mimetype
+        def is
 
-		char[] cbuf=new char[100000]
-		byte[] bbuf=new byte[100000]
+        def filename=java.net.URLDecoder.decode(request.getHeader("X-File-Name")?:"unknown-file-name.bin", "UTF-8");
 
-		File tempFile=File.createTempFile("upload", "bin");
-		OutputStream os=new FileOutputStream(tempFile)
+        is =request.getInputStream()
+        mimetype=request.getHeader("Content-Type")
 
-		int nread =is.read(bbuf, 0, 100000)
-		int total=nread
-		while (nread>0) {
-			os.write(bbuf, 0, nread)
-			nread =is.read(bbuf, 0, 100000)
-			if (nread>0)
-				total+=nread
-		}
-		os.flush()
+        log.debug "MIMETYPE: ${mimetype}"
+
+        def tempFile=File.createTempFile("upload", "bin");
+        OutputStream os=new FileOutputStream(tempFile)
+        IOUtils.copy(is,os)
+        os.flush()
 
 		is.close()
 		os.close()
-        def isDirect=(params.direct==true || params.direct=="true")
-		if (isDirect && dc!=null && (params.identifier!=null && params.identifier!="null" && params.identifier!="undefined")) {
-			def diPath=filePath(dc,params.identifier,fileCategory)
-			def destFile= new File("${diPath}/${filename}")
-			FileUtils.copyFile(tempFile,destFile)
-			tempFile.delete()
-		}
 
-		def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName]
-		return res
-	}
+        def isDirect=(params.direct==true || params.direct=="true")
+        if (isDirect && dc!=null && (params.identifier!=null && params.identifier!="null" && params.identifier!="undefined")) {
+            def diPath=filePath(dc,params.identifier,fileCategory)
+            def destFile= new File("${diPath}/${filename}")
+            FileUtils.copyFile(tempFile,destFile)
+            tempFile.delete()
+        }
+
+        def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName,message:"Upload completed"]
+        return res
+    }
 
     /*
      * Pack a value and convert it to a 8-byte 36-based formatted number
@@ -150,8 +138,6 @@ class FileService {
      */
 	def filePath(dc,id,fileCategory) {
 		def basePath=grailsApplication.config.dialog.files.basePath
-		def name = dc.class==java.lang.String ? dc : dc.getName()
-		name=name.replaceAll (".*\\.", "")
 		return "${basePath}/${relativePath(dc,id,fileCategory)}"
 	}
 
@@ -184,11 +170,11 @@ class FileService {
         log.debug "PARAMS: ${params}"
 		def diUrl=fileUrl(dc,params.id,fileCategory)
 
-		def aaData=[:]
-		Integer iTotalRecords=0
+		def data=[:]
+		Integer recordsTotal=0
 		if(params.id&& params.id!="null") {
 			File dir = new File(filePath(dc,params.id,fileCategory))
-			aaData=dir.listFiles().collect { file ->
+			data=dir.listFiles().collect { file ->
                 def downloadLink
                 if (linkType=="external") {
                     downloadLink="${diUrl}/${file.name}"
@@ -204,7 +190,7 @@ class FileService {
                         def actionsList=actionsParameter.split(',')
                         // TODO add other actions ('show','edit')
                         if (actionsList.contains("delete")) {
-                            actionsString +="""<span class="btn btn-small" onclick="dialog.deleteFile(${aParams.id},'${aParams.controller}','${aFile.name}',null)">&times;</span>"""
+                            actionsString +="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteFile(${aParams.id},'${aParams.controller}','${aFile.name}',null)" title="delete"><i class="fa fa-trash"></a>"""
                         }
                         actionsString+="</div>"
                         return actionsString
@@ -215,30 +201,30 @@ class FileService {
 				 1:file.length(),
 				 2:format.format(file.lastModified()),
                  3: actions(params,file)]
-			}.sort { file -> file[new Integer(params.iSortCol_0)] }
+			}.sort { file -> file[new Integer(params."order[0][column]")] }
 
-			if (params.sSortDir_0=="desc") {
-				aaData=aaData.reverse()
+			if (params."order[0][dir]"=="desc") {
+				data=data.reverse()
 			}
-			iTotalRecords=aaData.size()
+			recordsTotal=data.size()
 
-			if (iTotalRecords>0) {
+			if (recordsTotal>0) {
 
-				Integer firstResult = params.iDisplayStart ? new Integer(params.iDisplayStart) : 0
-				Integer maxResults = params.iDisplayLength ? new Integer(params.iDisplayLength) : 10
+				Integer firstResult = params.start ? new Integer(params.start) : 0
+				Integer maxResults = params.length ? new Integer(params.length) : 10
 
 				// pagination
-				if (firstResult > iTotalRecords) {
-					firstResult = iTotalRecords
+				if (firstResult > recordsTotal) {
+					firstResult = recordsTotal
 				}
-				if ((firstResult + maxResults) > iTotalRecords) {
-					maxResults = iTotalRecords - firstResult
+				if ((firstResult + maxResults) > recordsTotal) {
+					maxResults = recordsTotal - firstResult
 				}
-				aaData = aaData[firstResult..firstResult + maxResults - 1]
+				data = data[firstResult..firstResult + maxResults - 1]
 			}
 
 		}
-		def json = [sEcho:params.sEcho,iTotalRecords:iTotalRecords,iTotalDisplayRecords:iTotalRecords,aaData:aaData]
+		def json = [draw:params.draw,recordsTotal:recordsTotal,recordsFiltered:recordsTotal,data:data]
 	}
 
     /**
@@ -375,37 +361,46 @@ class FileService {
 		return [result:result]
 	}
 
-    /**
-	 * Stream file
+	/**
+	 * Stream any given file over an HTTP response as an octet-stream.
 	 *
-	 * @param dc The domain class
-     * @param params The parameters as provided to the controller
-     * @param fileCategory The file category
-     * @param name The name of the file
-     * @param response The response object as provided to the controller
+	 * @param file The file to stream.
+	 * @param response The HTTP response to write the file to.
+	 * @since 09/01/2016
 	 */
-	def streamFile(dc,id,fileCategory,name,response) {
+	def stream(def file, def name, def response, def contentType = "application/pdf") {
+		response.setHeader("Content-disposition", "attachment; filename=\"${name}\"")
+		response.setHeader("Content-Type", contentType)
 
-        def filePath=filePath(dc,id,fileCategory)+"/"+name
-        def file=new File(filePath)
+		def inputStream = new FileInputStream(file)
+		def bufsize = 100000
+		byte[] bytes = new byte[(int) bufsize]
 
-        response.setHeader("Content-disposition", "attachment; filename=\"" +file.name+"\"")
-        // TODO add Tika file type recognition
-		response.setHeader("Content-Type", "application/octet-stream")
-
-		def inputStream=new FileInputStream(file)
-		def bufsize=100000
-		byte[] bytes=new byte[(int)bufsize]
-
-		def offset=0
-		def len=1
-		while (len>0) {
-			len=inputStream.read(bytes, 0, bufsize)
-			if (len>0)
-			response.outputStream.write(bytes,0,len)
-			offset+=bufsize
+		def offset = 0
+		def len = 1
+		while (len > 0) {
+			len = inputStream.read(bytes, 0, bufsize)
+			if (len > 0)
+			response.outputStream.write(bytes, 0, len)
+			offset += bufsize
 		}
+
 		response.outputStream.flush()
+	}
+
+    /**
+	 * Stream a file to the outputstream of a response.
+	 *
+	 * @param dc The domain class.
+     * @param params The parameters as provided to the controller.
+     * @param fileCategory The file category.
+     * @param name The name of the file.
+     * @param response The response object as provided to the controller.
+	 */
+	def streamFile(def dc, def id, def fileCategory, def name, def response) {
+        def filePath = filePath(dc, id, fileCategory) + "/${name}"
+        def file = new File(filePath)
+		stream(file, file.name, response)
 	}
 
     /**
@@ -423,4 +418,23 @@ class FileService {
             FileUtils.copyDirectory(fromDir,toDir,FileFileFilter.FILE)
         }
     }
+
+	/**
+	 * Fetch a file input stream from a fileupload that was generated by JS.
+	 *
+	 * @param dc The domain class type.
+	 * @param fileupload The information that was given by the JS.
+	 * @return A FileInputStream instance if there was a file found at the fileupload
+	 * location. Null if otherwise.
+	 * @since 08/30/2016
+	 */
+	def fetchFileStream(def dc, def fileupload) {
+		def info = fileupload.split("\\|")
+		def file = new File(info[1])
+		if (file.exists()) {
+			return new FileInputStream(file)
+		}
+
+		return null
+	}
 }

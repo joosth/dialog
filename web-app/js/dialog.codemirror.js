@@ -21,76 +21,78 @@
 dialog.codemirror = {};
 dialog.codemirror.editors = {};
 
+dialog.codemirror.openpre =function open (e,params) {
+    $(this).find("pre").each( function() {
+        CodeMirror.colorize([this]);
+	});
+    return false;
+};
+
 dialog.codemirror.open =function open (e,params) {
-	$(e.target).find("pre").each( function() {
-		CodeMirror.colorize([this]);
-	});
+    var id=$(this).attr("id");
+    var width=$(this).attr("width");
+    var height=$(this).attr("height");
+    if (id){
+        var mode = $(this).attr('codeMirrorMode');
+        var textarea = document.getElementById(id);
 
-	$(e.target).find("td.codemirror textarea").each( function() {
+        // Create editor based on codeMirrorMode attribute.
+        if (mode=='text/html') {
+            dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/html',
+                lineNumbers: true,
+                extraKeys: {
+                    "'>'": function(cm) { cm.closeTag(cm, '>'); },
+                    "'/'": function(cm) { cm.closeTag(cm, '/'); }
+                }
+          });
 
-		var id=$(this).attr("id");
-		var width=$(this).attr("width");
-		var height=$(this).attr("height");
-		if (id){
-			var mode = $(this).attr('codeMirrorMode');
-			var textarea = document.getElementById(id);
+        }
+        //
+        if (mode=='text/x-groovy') {
+            dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-groovy',
+                lineNumbers: true,
+                matchBrachets:true
 
-			// Create editor based on codeMirrorMode attribute.
-			if (mode=='text/html') {
-				dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
-					mode: 'text/html',
-					lineNumbers: true,
-					extraKeys: {
-						"'>'": function(cm) { cm.closeTag(cm, '>'); },
-						"'/'": function(cm) { cm.closeTag(cm, '/'); }
-					}
-		      });
+          });
+        }
 
-			}
-			//
-			if (mode=='text/x-groovy') {
-				dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
-					mode: 'text/x-groovy',
-					lineNumbers: true,
-					matchBrachets:true
+        if (mode=='text/x-sql') {
+            dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
+                mode: 'text/x-sql',
+                lineNumbers: true
+          });
+        }
 
-		      });
-			}
-			dialog.codemirror.editors[id].setSize(width,height);
+        dialog.codemirror.editors[id].setSize(width,height);
+    }
 
-		}
-	});
-	return false
+    $(this).addClass("dialog-submit-events");
+    $(this).addClass("dialog-close-events");
 
 }
 
 dialog.codemirror.submit =function submit (e,params) {
-	$(e.target).find("td.codemirror textarea").each( function() {
-		var id=$(this).attr("id");
-		if (id) {
-			dialog.codemirror.editors[id].save();
-		}
-	});
-	return false;
+    var id=$(this).attr("id");
+    if (id) {
+        dialog.codemirror.editors[id].save();
+    }
 }
 
 
 dialog.codemirror.close =function close (e,params) {
-	$(e.target).find("td.codemirror textarea").each( function() {
-		var id=$(this).attr("id");
-		if (id) {
-			dialog.codemirror.editors[id].toTextArea();
-			delete dialog.codemirror.editors[id];
-		}
-	});
-
-
-	return false;
-}
+    var id=$(this).attr("id");
+    if (id) {
+        dialog.codemirror.editors[id].toTextArea();
+        delete dialog.codemirror.editors[id];
+    }
+};
 
 
 $(function() {
-	$("body").on("dialog-open",dialog.codemirror.open);
-	$("body").on("dialog-submit",dialog.codemirror.submit);
-	$("body").on("dialog-close",dialog.codemirror.close);
+	$(document).on("dialog-open",".codemirror textarea", dialog.codemirror.open);
+    $(document).on("dialog-open",".dialog-open-events", dialog.codemirror.openpre);
+	$(document).on("dialog-submit",".codemirror textarea",dialog.codemirror.submit);
+	$(document).on("dialog-close",".codemirror textarea",dialog.codemirror.close);
 });

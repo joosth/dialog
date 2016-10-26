@@ -7,7 +7,6 @@
         <title><g:layoutTitle default="Dialog plugin demo" /></title>
         
         
-		<r:require modules="dialog-demo"/>
         <g:layoutHead />
 		<r:layoutResources/>		
 		<dialog:head />   

@@ -30,7 +30,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.codehaus.groovy.grails.web.util.WebUtils
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
 import org.springframework.transaction.annotation.Transactional
-
+import org.springframework.context.MessageSourceResolvable
 /*
  * Provide generic edit,submit,delete operations for dialog handling
  */
@@ -83,18 +83,29 @@ class DialogService {
             return returnMap
         }
     }
-    
+
     /**
      * Get a message for the current locale
      * @param code The code
      * @param args The optional argument list
      */
-	def getMessage(code,List args=null) {
+	def getMessage(String code,List args=null) {
 		def webUtils = WebUtils.retrieveGrailsWebRequest()
 		def request=webUtils.getCurrentRequest()
 		def locale = RCU.getLocale(request)
         def args2 = args == null ? null : args.toArray()
 		return messageSource.getMessage(code,args2,code,locale)
+	}
+
+    /**
+     * Get a message for the current locale
+     * @param resolvable The resolvable
+     */
+	def getMessage(MessageSourceResolvable resolvable) {
+		def webUtils = WebUtils.retrieveGrailsWebRequest()
+		def request=webUtils.getCurrentRequest()
+		def locale = RCU.getLocale(request)
+		return messageSource.getMessage(resolvable,locale)
 	}
 
 	/**
@@ -136,7 +147,7 @@ class DialogService {
 	    		domainClassInstance.properties = params
     		}
 			// check for position and update if necessary
-			if ((action=='created') && (defaultDomainClass.hasProperty("position")) && (domainClassInstance.position==0)) {
+            if ((defaultDomainClass.hasProperty("position")) && (domainClassInstance.position==0)) {
 				def maxPosition=0
 				if (defaultDomainClass.hasProperty("belongsTo") && domainClassInstance.belongsTo?.size() == 1) {
 					domainClassInstance.belongsTo.each {key,value ->
@@ -154,7 +165,7 @@ class DialogService {
             def successFlag=!domainClassInstance.hasErrors() && domainClassInstance.save(flush: true)
 
             def resultMessage=""
-            def theErrorFields=[]
+            def theErrorFields=[:]
             if (successFlag) {
             	domainClassInstance.save(flush: true)
             	 def session = sessionFactory.getCurrentSession()
@@ -166,11 +177,16 @@ class DialogService {
             	resultMessage="${domainClassLabel} ${domainClassInstance.id} ${actionLabel}."
             } else {
 				if (domainClassInstance) {
-					domainClassInstance.errors.allErrors.each {
-						theErrorFields+=it.field
+					domainClassInstance.errors?.fieldErrors?.each { fieldError ->
+                        theErrorFields.put(fieldError.field,getMessage(fieldError))
 					}
 				}
-            	resultMessage=g.renderErrors(bean:domainClassInstance)
+
+                if (domainClassInstance.errors.globalErrorCount>0) {
+                    resultMessage=g.renderErrors(bean:domainClassInstance)
+                } else {
+                    resultMessage=getMessage("dialog.submit.invalidfields")
+                }
             }
 
     		def result = [
@@ -192,7 +208,7 @@ class DialogService {
 				message:e.message,
 				id: null,
 				name: "",
-				errorFields:[]
+				errorFields:[:]
 			]
 			res=[result:result]
 		}
@@ -247,7 +263,7 @@ class DialogService {
         }
 
 
-        def theErrorFields=[]
+        def theErrorFields=[:]
 
 		def result = [
 		              	success:successFlag,
@@ -379,14 +395,14 @@ class DialogService {
 
 			def json=[]
 			documentList.each { doc ->
-				if (labelColumnName) {
-					if (descriptionColumnName) {
-						json+=[value:doc.id,label:doc."${labelColumnName}", description:doc."${descriptionColumnName}"]
-					} else {
-						json+=[value:doc.id,label:doc."${labelColumnName}"]
-					}
+				if (labelColumnName!=null && doc.hasProperty(labelColumnName)) {
+					if (descriptionColumnName!=null && doc.hasProperty(descriptionColumnName)) {
+	                      json+=[value:doc.id,label:doc."${labelColumnName}", description:doc."${descriptionColumnName}"]
+                    } else {
+                        json+=[value:doc.id,label:doc."${labelColumnName}"]
+                    }
 				} else {
-					json+=[value:doc.id,label:doc.toString()]
+                    json+=[value:doc.id,label:doc.toString()]
 				}
 			}
 			return json

@@ -13,10 +13,10 @@
             <g:if test="${title}">${title}</g:if>
             <g:else><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></g:else>
         </h3>
-        <div class="datatable" id="tableWrapper_${dc.getName().replace('.','_').replace('class ','')}">
-            <table iDisplayLength="10" datatable-type="master" bFilter="${bFilter ? true : false}"
+        <div class="datatable dialog-open-events" id="tableWrapper_${dc.getName().replace('.','_').replace('class ','')}">
+            <table pageLength="10" datatable-type="master" filter="${filter ? true : false}"
                     jsonUrl="${createLink(base:'/',controller:controllerName,action: jsonlist ? jsonlist :'jsonlist',params:jsonlistparams?jsonlistparams:[:]).substring(1)}"
-                    cellpadding="0" cellspacing="0" border="0" class="detailTable datatable table table-striped table-bordered display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace('.','_').replace('class ','')}"
+                    cellpadding="0" cellspacing="0" border="0" class="detailTable dialog-open-events datatable table table-striped table-bordered display${rowreordering?' rowreordering':''}" id="detailTable_${dc.getName().replace('.','_').replace('class ','')}"
                     positionUrl="/${controllerName}/${position ? position :'position'}" toolbar="${toolbar?:''}" >
                 <thead>
                     <tr>
@@ -28,7 +28,7 @@
                                 <th class="${(property=='id' || new DefaultGrailsDomainClass(dc).hasPersistentProperty(property))?'sortable':'nonsortable'} ${controllerName}-${property}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
                             </g:else>
 						</g:each>
-						<th width="50px"><g:message code="dialog.list.actions.label" default="Actions" /></th>
+						<th><g:message code="dialog.list.actions.label" default="Actions" /></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -1,40 +1,42 @@
+.autocomplete-description { font-size: 10px; }
+.autocomplete-container { height: 18px; display: inline-block; }
 
-/*
-input:required:invalid, input:focus:invalid { background-image: url(/dialog/css/theme/images/validation/invalid.png); background-position: right top; background-repeat: no-repeat; }
-input:required:valid { background-image: url(/dialog/css/theme/images/validation/valid.png); background-position: right top; background-repeat: no-repeat; }
-*/
-
-
-.wide input { width:300px;}
-.extrawide input { width:600px;}
-
-.input-mini input { width: 60px;}
-.input-small input { width: 90px;}
-.input-medium input { width: 150px;}
-.input-medium input { width: 150px;}
-.input-large input { width: 210px;}
-.input-xlarge input { width: 270px;}
-.input-xxlarge input { width: 530px;}
-
-.autocomplete-description {font-size:10px;}
 .ac-idle { border: 0px solid #ffffff;padding:0px;}
-.ac-selected { border: 1px solid #888;padding:3px; background: url("theme/images/ui-bg_highlight.png") repeat-x scroll 50% 50% #CCCCCC;
+.ac-selected { border: 1px solid #888;padding:3px; background: scroll 50% 50% #CCCCCC;
     border-radius: 3px;margin:1px;margin-top:4px;}
 .ac-selected input { border: 0px solid #ddd;padding:0px;background-color: transparent;}
 .ac-selecting { border: 0px solid #223311;padding:1px;}
 .ac-icon {display: inline-block;vertical-align:middle;}
-td.name { padding-top:4px;font-size:14px;padding-right:4px;}
-td.value { padding-top:4px;;font-size:14px;}
+
 div.dialog-message {margin-bottom:10px;font-style:italic}
 
-.autocomplete-container { height:18px;display: inline-block;}
+tr.prop td {
+    padding-top:8px;
+    padding-right:4px;
+    font-size: 14px;
+    font-weight: normal;
+    vertical-align: top;
+}
 
-td.tinymce textarea {width:100%;}
+p.error-message {
+    font-size: 14px;
+    color:red;
+    padding-top:4px;
+}
+
+tr.error input,tr.error textarea,tr.error select {
+    border-color: red !important;
+    outline: 0 none;
+}
+
+tr.error td input:focus,tr.error td textarea:focus,tr.error td select:focus {
+    border-color: red !important;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset, 0 0 8px rgba(236,168,82,0.6) !important;
+    outline: 0 none;
+}
 
 
 table.rowreordering tr { cursor:pointer;}
-div.errors {color:red;}
-.help-icon,.help { background-image: url(../images/help-16x16.png);width:16px;height:16px;cursor:pointer;background-position:5px 5px;display:inline-block;}
 .dialog-horizontal-wrapper {display: inline-block; white-space: nowrap;}
 div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;width:100%;}
 
@@ -57,33 +59,41 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
     text-align: left;
 }
 
-
-
-
-
-
-.error {color: red;}
 .action {min-height:16px; padding:2px 0 2px 13px;background-repeat:no-repeat;display:inline-block;}
 
 .btn:focus {outline:none;}
 
-.processing {
-	float:right; color:#888;
-	font-size: 14px;
-    line-height: 20px;
-    margin-right:10px;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    margin-top:4px;
-}
-.dialog-form-table { width:100%;}
-#progressbar { width:800px;}
 input.cke_dialog_ui_input_text { height: 26px !important; }
-za.cke_dialog_ui_button { height: 18px !important; }
+a.cke_dialog_ui_button { height: 18px !important; }
 
-.delete-dialog { height:200px;}
+span.help-block { display: none;}
+span.error-message { color:#a94442;}
+.btn-toolbar-above-datatable {
+    margin-bottom:5px;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
 
-/* A few corrections for the dialog box (fix padding) and add shadow */
-div.ui-dialog div.ui-dialog-titlebar span.ui-dialog-title { padding: 0px !important;}
-div.ui-dialog div.ui-dialog-content { padding: 5px 15px; }
-div.ui-dialog { padding: 0px; box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3); }
+.row-no-top-margin {
+    margin-top: 0 !important;
+}
 
+.select2-label { display:block;}
+.select2-description { display:block;font-size:75%;}

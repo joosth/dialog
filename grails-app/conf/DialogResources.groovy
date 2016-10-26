@@ -1,123 +1,141 @@
 modules = {
-	dialog {
-		dependsOn 'jquery'
-		resource url:'js/jquery/jquery-ui-1.9.2.custom.min.js'
-		resource url: 'css/bootstrap-theme/jquery-ui-1.9.2.custom.css'
-	    resource url:'/js/dialog.js'
-		resource url:'/css/dialog.css'
 
-	}
+    dialog {
+        dependsOn 'dialog-jquery'
 
-	'dialog-altselect' {
-		dependsOn 'dialog'
-		resource url:'/js/jquery/jquery.ui.altselect.js'
-		resource url:'/css/ui.altselect.css'
-	}
+        resource url: [plugin: 'jquery-dialog', dir:'js', file:'dialog.js']
+        resource url: [plugin: 'jquery-dialog', dir:'css', file:'dialog.css']
+    }
 
-	'dialog-tinymce' {
-		dependsOn 'dialog'
-		resource url:'/js/tiny_mce/tiny_mce.js'
-		resource url:'/js/tiny_mce/jquery.tinymce.js'
-		resource url:'/js/dialog.tinymce.js'
-	}
+    'dialog-jquery' {
+        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.4.js']
+    }
 
 	'dialog-ckeditor' {
 		dependsOn 'dialog'
-		resource url:'js/ckeditor/ckeditor.js'
-		resource url:'/js/dialog.ckeditor.js'
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/ckeditor', file: 'ckeditor.js', linkOverride: "ext/ckeditor"]
+		resource url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog.ckeditor.js']
 	}
 
 	'dialog-codemirror' {
 		dependsOn 'dialog'
-		resource url:'/css/dialog.codemirror.css'
-		resource url:'js/codemirror/lib/codemirror.css'
-		resource url:'/js/codemirror/lib/codemirror.js'
+		resource url: [plugin: 'jquery-dialog', dir:'css',file:'dialog.codemirror.css']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/lib/',file:'codemirror.css']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/lib/',file:'codemirror.js']
 
-		resource url: '/js/codemirror/addon/runmode/runmode.js'
-		resource url: '/js/codemirror/addon/runmode/colorize.js'
-		resource url:'/js/codemirror/mode/xml/xml.js'
-		resource url:'/js/codemirror/mode/javascript/javascript.js'
-		resource url:'/js/codemirror/mode/css/css.js'
-		resource url:'/js/codemirror/mode/htmlmixed/htmlmixed.js'
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/runmode/',file:'runmode.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/runmode/',file:'colorize.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/xml/',file:'xml.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/javascript/',file:'javascript.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/css/',file:'css.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/htmlmixed/',file:'htmlmixed.js']
 
-		resource url:'/js/codemirror/mode/groovy/groovy.js'
-		resource url:'/js/codemirror/mode/less/less.js'
-		resource url:'/js/codemirror/mode/shell/shell.js'
-		resource url:'/js/codemirror/mode/clike/clike.js'
-		resource url:'/js/dialog.codemirror.js'
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/groovy/',file:'groovy.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/shell/',file:'shell.js']
+		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/clike/',file:'clike.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/sql/',file:'sql.js']
+		resource url: [plugin: 'jquery-dialog', dir:'js',file:'dialog.codemirror.js']
 
 	}
 
 	'dialog-fileuploader' {
 		dependsOn 'dialog'
-		resource url:'/css/fileuploader.css'
-	    resource url:'/js/fileuploader.js'
-		resource url:'/js/dialog.fileuploader.js'
-
+		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.uploader.js']
 	}
 
 	'dialog-dataTables' {
 		dependsOn 'dialog'
-		resource url:'/js/jquery/jquery.dataTables.js'
-		resource url:'/js/jquery/jquery.dataTables.rowReordering.js'
-		resource url:'/js/jquery/dataTables/DT_bootstrap.js'
-		resource url:'/css/DT_bootstrap.css'
-		resource url:'/js/dialog.datatables.js'
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'dataTables.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'rowReorder.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/css/', file: 'responsive.bootstrap.css']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'jquery.dataTables.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.bootstrap.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.rowReorder.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'dataTables.responsive.js']
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/DataTables/js/', file: 'responsive.bootstrap.js']
+		resource url: [plugin: 'jquery-dialog', dir: '/js/', file: 'dialog.datatables.js']
 	}
 
-	'dialog-tree' {
-		dependsOn 'dialog-bootstrap'
-		resource url:'js/jquery/jquery.jstree.js'
-		resource url:'js/dialog.tree.js'
-		resource url:'/css/jquery.jstree.css'
-
-	}
+    'dialog-tree' {
+        dependsOn 'dialog-jquery'
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/jstree/themes/default', file: 'style.css']
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/jstree', file: 'jstree.js']
+        resource url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog.tree.js']
+    }
 
 	'dialog-bootstrap' {
 		dependsOn 'dialog'
+	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/css', file:'bootstrap.css']
+	    resource url: [plugin: 'jquery-dialog', dir:'ext/bootstrap/js', file:'bootstrap.js']
+	    resource url: [plugin: 'jquery-dialog', dir:'ext/respondjs', file:'respondjs.min.js']
+	}
 
+	'dialog-fontawesome' {
+		dependsOn 'dialog'
+	    resource url: [plugin: 'jquery-dialog', dir: 'ext/font-awesome/css', file: 'font-awesome.css']
 	}
 
 	'dialog-last' {
 		dependsOn 'dialog'
-		resource url:'/js/dialog.last.js'
-	}
-
-	'dialog-bootbox' {
-		dependsOn 'jquery'
-		resource url:'/js/bootbox.js'
+		resource url: [plugin: 'jquery-dialog', dir:'/js/',file:'dialog.last.js']
 	}
 
 	'dialog-flot' {
-		dependsOn 'jquery'
-		resource url:'/js/flot/jquery.flot.js'
+		dependsOn 'dialog-jquery'
+		resource url: [plugin: 'jquery-dialog', dir:'ext/flot', file:'jquery.flot.js']
 	}
 
-	'dialog-autocomplete' {
-		dependsOn 'dialog'
-		resource url:'/js/dialog.autocomplete.js'
+    'dialog-x2js' {
+		resource url: [plugin: 'jquery-dialog', dir: '/ext/x2js', file: 'xml2json.min.js']
+    }
+
+    'dialog-select2' {
+        dependsOn 'dialog,dialog-x2js'
+        resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/js/',file:'select2.full.min.js']
+		resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/js/i18n',file:'nl.js']
+		resource url: [plugin: 'jquery-dialog', dir:'/ext/select2/css',file:'select2.min.css']
+        resource url: [plugin: 'jquery-dialog', dir:'/js',file:'dialog.select2.js']
+    }
+
+    'dialog-autocomplete' {
+        dependsOn 'dialog-select2'        
+    }
+
+    'dialog-altselect' {
+		dependsOn 'dialog-select2'
 	}
 
     'dialog-maskedinput' {
-		dependsOn 'dialog'
-		resource url:'js/jquery/jquery.maskedinput.js'
+		dependsOn 'dialog-jquery'
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/maskedinput', file: 'jquery.maskedinput.js']
 	}
+
+    'dialog-momentjs' {
+        dependsOn 'dialog-jquery'
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/momentjs', file: 'moment-with-locales.js']
+    }
 
 
     'dialog-datepicker' {
-		dependsOn 'dialog,dialog-maskedinput,dialog-modernizr'
-		resource url:'/js/dialog.datepicker.js'
-	}
+        dependsOn 'dialog-datetimepicker'
+    }
 
-    'dialog-timepicker' {
-		dependsOn 'dialog'
-        resource url:'/js/jquery/jquery-ui-sliderAccess.js'
-        resource url:'/js/jquery/jquery-ui-timepicker-addon.js'
-        resource url:'/css/jquery-ui-timepicker-addon.css'
-	}
+
+    'dialog-datetimepicker' {
+        dependsOn 'dialog-jquery, dialog-momentjs, dialog-bootstrap, dialog-modernizr, dialog-fontawesome, dialog-maskedinput'
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/bootstrap-datetimepicker/css', file: 'bootstrap-datetimepicker.min.css']
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/bootstrap-datetimepicker/js', file: 'bootstrap-datetimepicker.min.js']
+        resource url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog-datetimepicker.js']
+    }
 
 	'dialog-modernizr' {
 		dependsOn 'dialog'
-		resource url:'/js/modernizr.js'
+		resource url: [plugin: 'jquery-dialog', dir: 'ext/modernizr', file:'modernizr.js']
 	}
+
+	'dialog-angularjs' {
+		dependsOn 'dialog-jquery'
+		resource url: [plugin: 'jquery-dialog', dir:'ext/angularjs', file:'angular.js']
+	}
+
 }

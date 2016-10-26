@@ -6,7 +6,7 @@
     	<!-- This is main.gsp in the dialog plugin demo -->
         <title><g:layoutTitle default="Dialog" /></title>
         
-		<r:require modules="dialog,dialog-bootstrap,bootstrap-responsive-css,bootstrap-tooltip,bootstrap-popover,bootstrap-modal"/>
+		<r:require modules="dialog,dialog-bootstrap"/>
         <g:layoutHead />
 		<r:layoutResources/>		
 		<dialog:head />   

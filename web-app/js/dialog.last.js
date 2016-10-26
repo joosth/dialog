@@ -21,5 +21,6 @@
 
 
 $(function() {
-	$("body").trigger("dialog-open",{});
+	$(document).trigger("dialog-init",{});
+    $(".dialog-open-events").trigger("dialog-open",{});
 });
