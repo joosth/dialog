@@ -38,7 +38,7 @@ class DialogTagLib {
 
     /**
      * Element to place in HTML page's <head> section
-     * Initializes namespace dialog and hashlist for datatable
+     * Initializes namespace dialog for datatable
      * Sets base URL to be used.
      * @param request The HTTPServletRequest
      */
@@ -47,7 +47,6 @@ class DialogTagLib {
             """
             <script type="text/javascript">
                 var dialog = {};
-                dialog.dataTableHashList = {};
                 dialog.options = {
                     "refreshPage": false
                 };

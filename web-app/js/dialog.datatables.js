@@ -34,12 +34,13 @@ dialog.datatables.open =function open (e,params) {
     var pageLength=parseInt(curMatch.attr("pageLength")) || 5;
     var rowReorder = curMatch.hasClass("rowreordering");
     var autoWidth = curMatch.attr("autoWidth")=="true";
-    
-    dialog.dataTableHashList[tableId] = curMatch.on('init.dt', function () {
+
+    curMatch.on('init.dt', function () {
         if (rowReorder) {
-            dialog.dataTableHashList[tableId].on('row-reorder', function (e, details, edit) {
+            var curTable = curMatch.dataTable().api();
+            curTable.on('row-reorder', function (e, details, edit) {
                 for (var i = 0, ien = details.length ; i < ien ; i++) {
-                    var row = dialog.dataTableHashList[tableId].row(details[i].node);
+                    var row = curTable.row(details[i].node);
                     $.ajax({
                         type: "POST",
                         cache: false,
@@ -107,20 +108,18 @@ dialog.datatables.refreshDatatableEvent = function refreshDatatableEvent(event,e
 
 		if (eventData.dc!=null) {
 	        var tableId="detailTable_" + eventData.dc.replace(".","_").replace("class ","");
+	        	// TODO all tables are refreshed which is a little crude.
 
-	        for(key in dialog.dataTableHashList) {
-	        	// TODO this is a crude measure. Commented the check out so that all datatables will refresh.
-	        	//if (eventData.dc=="ALL" || key.toLowerCase().indexOf(eventData.dc.toLowerCase())!=-1) {
-	        		dialog.datatables.refreshDataTable(key,dialog.dataTableHashList,lastPage);
-	        	//}
-	        }
+                $(".detailTable,table.datatable").each( function( index, element ) {
+    		          dialog.datatables.refreshDataTable(element,lastPage);
+                });
 		}
 	}
 };
 
 
-dialog.datatables.refreshDataTable = function (key, list, lastPage) {
-	var curTable = list[key];
+dialog.datatables.refreshDataTable = function (element, lastPage) {
+	var curTable = $(element).dataTable().api();
 	if (typeof(curTable) !== 'undefined' && curTable != null) {
 		if (lastPage == false) {
 			curTable.draw(false);
