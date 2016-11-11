@@ -385,8 +385,11 @@ class FileService {
 			response.outputStream.write(bytes, 0, len)
 			offset += bufsize
 		}
-
-		response.outputStream.flush()
+        try {
+		    response.outputStream.flush()
+        } catch (Exception e) {
+            // Do nothing
+        }
 	}
 
     /**
