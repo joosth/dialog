@@ -368,9 +368,8 @@ class FileService {
 	 * @param response The HTTP response to write the file to.
 	 * @since 09/01/2016
 	 */
-	def stream(def file, def name, def response, def contentType = "application/pdf") {		
-        response.setHeader("Content-disposition", "inline; filename=\"${name}\"")
-
+	def stream(def file, def name, def response, def contentType = "application/pdf") {
+		response.setHeader("Content-disposition", "inline; filename=\"${name}\"")
 		response.setHeader("Content-Type", contentType)
 
 		def inputStream = new FileInputStream(file)
@@ -385,11 +384,12 @@ class FileService {
 			response.outputStream.write(bytes, 0, len)
 			offset += bufsize
 		}
-        try {
-		    response.outputStream.flush()
-        } catch (Exception e) {
-            // Do nothing
-        }
+
+		try {
+			response.outputStream.flush()
+		} catch (Exception e) {
+			/* Do nothing... */
+		}
 	}
 
     /**
