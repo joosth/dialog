@@ -1408,4 +1408,16 @@ class DialogTagLib {
 
         writer << '</ul>'
     }
+
+    /**
+     *  Displays a bootstrap alert
+     *  The type can be info (default), warning, danger, success
+     */
+    def alert = { attrs, body ->
+        def alertType=attrs.type?:"info"
+        out <<"""<div class="alert alert-${alertType} alert-dismissible" role="alert" ><button type="button" class="close" data-dismiss="alert" ><span aria-hidden="true">&times;</span></button>"""
+        out << body()
+        out << "</div>"
+   }
+
 }
