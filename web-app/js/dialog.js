@@ -17,6 +17,16 @@
 * along with this program.  If not, see http://www.gnu.org/licenses
 */
 
+
+/**
+ * Dummy console in case the browser doesn't support console.log
+ */
+
+if (typeof console == "undefined" ) {
+	console = { log: function () {} }
+}
+
+
 /**
  * Capitalize a string
  */
