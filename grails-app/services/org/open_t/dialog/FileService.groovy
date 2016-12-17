@@ -369,7 +369,7 @@ class FileService {
 	 * @since 09/01/2016
 	 */
 	def stream(def file, def name, def response, def contentType = "application/pdf") {
-		response.setHeader("Content-disposition", "inline; filename=\"${name}\"")
+		response.setHeader("Content-Disposition", "inline; filename=\"${name}\"")
 		response.setHeader("Content-Type", contentType)
 
 		def inputStream = new FileInputStream(file)
