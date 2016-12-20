@@ -78,6 +78,10 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
                 clear: "fa fa-trash",
                 close: "fa fa-times"
             },
+            widgetPositioning: {
+                horizontal : "auto",
+                vertical   : "bottom"
+            },
             locale: moment.locale(),
             minDate: minDate,
             maxDate: maxDate,
