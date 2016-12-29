@@ -105,9 +105,9 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
 dialog.datetimepicker.openTime = function openTime (e, params) {
 
     var timeEntryElementId = $(this).attr('id').replace(/\./g, "\\.").replace(/\[/g, "\\[").replace(/\]/g, "\\]");
-    var dateEntryElementId = dateEntryElementId.substring(0,dateEntryElementId.lastIndexOf("-time"))+"-date";
+    var dateEntryElementId = timeEntryElementId.substring(0,timeEntryElementId.lastIndexOf("-time"))+"-date";
     var updateElementId = dateEntryElementId.replace("entry-", "update-");
-    updateElementId=updateElementId.substring(0,updateElementId.lastIndexOf("-time"));
+    updateElementId=updateElementId.substring(0,updateElementId.lastIndexOf("-date"));
     var widgetType = $("#" + dateEntryElementId).length > 0 ? "DATETIME" : "TIME"
 
     //Check browser support for HTML5 date widget..
