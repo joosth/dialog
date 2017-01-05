@@ -3,8 +3,8 @@
 </g:if>
 
 <g:if test="${listConfig!=null}" >
-	<g:render template="/dialog/clist" />
+	<g:render template="/dialog/clist" plugin="jquery-dialog"/>
 </g:if>
 <g:else>
-	<g:render template="/dialog/list" />
+	<g:render template="/dialog/list" plugin="jquery-dialog" />
 </g:else>
