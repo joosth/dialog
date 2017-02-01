@@ -174,12 +174,12 @@ class DialogTagLib {
 
             //label
             if (attrs.noLabel != "true") {
-                out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
+                out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-3 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
             }
 
             //control en help
             if (attrs.vertical != "true") {
-                out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
+                out << """<div class="col-sm-${attrs.noLabel != "true" ? "9" : "12"}">"""
             }
             out << body()
             if (attrs.noHelp != "true") {
@@ -226,12 +226,12 @@ class DialogTagLib {
 
         //label
         if (attrs.noLabel != "true") {
-            out << """<label for="${attrs.name}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${label}</label>"""
+            out << """<label for="${attrs.name}"${attrs.vertical != "true" ? " class='col-sm-3 control-label'" : ""}>${label}</label>"""
         }
 
         //control en help
         if (attrs.vertical != "true") {
-            out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
+            out << """<div class="col-sm-${attrs.noLabel != "true" ? "9" : "12"}">"""
         }
         out << body()
 
@@ -536,7 +536,7 @@ class DialogTagLib {
             try {
                 prettyXmlText=dialogService.prettyPrint(xmltext)
             } catch (Exception e) {
-                // Do nothing if XML parsing fails                
+                // Do nothing if XML parsing fails
             }
         }
         newAttrs.value = prettyXmlText
