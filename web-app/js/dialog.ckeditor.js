@@ -45,7 +45,6 @@ CKEDITOR.config.protectedSource.push( /<g:[.\s\S]*>[.\s\S]*<\/g:[.\s\S]*>/gi );	
 CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*>[.\s\S]*<\/c:[.\s\S]*>/gi );	 // Catviz Tags
 CKEDITOR.config.protectedSource.push( /<g:[.\s\S]*\/>/gi );	 // Grails Tags (Self-closing)
 CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*\/>/gi );	 // Catviz Tags (Self-closing)
-CKEDITOR.config.contentsCss='css/theme/theme.css';
 CKEDITOR.config.format_pre = { element : 'div', attributes: {'class':'well'}};
 //CKEDITOR.config.format_tags='h1;h2;div;p;well';
 CKEDITOR.config.toolbar = 'Compact';
