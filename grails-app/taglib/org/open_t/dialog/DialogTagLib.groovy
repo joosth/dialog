@@ -796,7 +796,7 @@ class DialogTagLib {
         out <<
             """
             <div class="modal" id="${name}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-lg" role="document" style="min-width:${attrs.width?:0};" > 
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
