@@ -107,10 +107,11 @@ dialog.datatables.refreshDatatableEvent = function refreshDatatableEvent(event,e
 		var lastPage = eventData.id==null;
 
 		if (eventData.dc!=null) {
-	        var tableId="detailTable_" + eventData.dc.replace(".","_").replace("class ","");
-	        	// TODO all tables are refreshed which is a little crude.
+	        var dc = eventData.dc.replace(".","_").replace("class ","");
+		dc = dc.charAt(0).toLowerCase() + dc.slice(1);
+		var tableId="detailTable_" + dc;
 
-                $(".detailTable,table.datatable").each( function( index, element ) {
+                $("#" + tableId).each( function( index, element ) {
     		          dialog.datatables.refreshDataTable(element,lastPage);
                 });
 		}

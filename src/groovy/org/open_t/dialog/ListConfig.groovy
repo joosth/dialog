@@ -86,6 +86,9 @@ class ListConfig {
                 case "show":
                     s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',nosubmit:true,refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-search"></i></a>"""
                 break
+				case "complete":
+                    s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-check"></i></a>"""
+                break
 				default:
 					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-pencil"></i></a>"""
 			}
