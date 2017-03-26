@@ -372,24 +372,27 @@ class FileService {
 		response.setHeader("Content-Disposition", "inline; filename=\"${name}\"")
 		response.setHeader("Content-Type", contentType)
 
-		def inputStream = new FileInputStream(file)
-		def bufsize = 100000
-		byte[] bytes = new byte[(int) bufsize]
+        // Check if file is present and readable
+        if (file && file.canRead()) {
+    		def inputStream = new FileInputStream(file)
+    		def bufsize = 100000
+    		byte[] bytes = new byte[(int) bufsize]
 
-		def offset = 0
-		def len = 1
-		while (len > 0) {
-			len = inputStream.read(bytes, 0, bufsize)
-			if (len > 0)
-			response.outputStream.write(bytes, 0, len)
-			offset += bufsize
-		}
+    		def offset = 0
+    		def len = 1
+    		while (len > 0) {
+    			len = inputStream.read(bytes, 0, bufsize)
+    			if (len > 0)
+    			response.outputStream.write(bytes, 0, len)
+    			offset += bufsize
+    		}
 
-		try {
-			response.outputStream.flush()
-		} catch (Exception e) {
-			/* Do nothing... */
-		}
+    		try {
+    			response.outputStream.flush()
+    		} catch (Exception e) {
+    			/* Do nothing... */
+    		}
+        }
 	}
 
     /**
