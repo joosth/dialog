@@ -129,6 +129,19 @@ dialog.datatables.refreshDataTable = function (element, lastPage) {
 	}
 };
 
+/**
+ * Initialize simple HTML datatable
+ */
+dialog.datatables.openHtmlDatatable = function (e,params) {
+    $(this).DataTable({
+        "dom": "<'row toolbar'<'col-sm-6'l><'col-sm-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    });
+
+}
+
 $(function() {
 	$(document).on("dialog-open",".detailTable,table.datatable",dialog.datatables.open);
+    $(document).on("dialog-open","table.html-datatable",dialog.datatables.openHtmlDatatable);
 });
