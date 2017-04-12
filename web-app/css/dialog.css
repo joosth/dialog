@@ -63,9 +63,6 @@ div.statusmessage { height:20px; margin-top:3px;margin-bottom:3px;float:left;wid
 
 .btn:focus {outline:none;}
 
-input.cke_dialog_ui_input_text { height: 26px !important; }
-a.cke_dialog_ui_button { height: 18px !important; }
-
 span.help-block { display: none;}
 span.error-message { color:#a94442;}
 .btn-toolbar-above-datatable {
