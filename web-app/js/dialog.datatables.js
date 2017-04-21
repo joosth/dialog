@@ -133,10 +133,13 @@ dialog.datatables.refreshDataTable = function (element, lastPage) {
  * Initialize simple HTML datatable
  */
 dialog.datatables.openHtmlDatatable = function (e,params) {
+    var pageLength=parseInt($(this).attr("pageLength")) || 5;
     $(this).DataTable({
+        "pageLength": pageLength,
+        "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
         "dom": "<'row toolbar'<'col-sm-6'l><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>"
     });
 
 }
