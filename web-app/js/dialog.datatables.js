@@ -139,7 +139,11 @@ dialog.datatables.openHtmlDatatable = function (e,params) {
         "lengthMenu": [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
         "dom": "<'row toolbar'<'col-sm-6'l><'col-sm-6'f>>" +
             "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>"
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        "columnDefs": [
+                { "targets": [-1, "nonsortable"], "orderable": false },
+                { "targets": ["_all"], "orderable": true }
+            ]
     });
 
 }
