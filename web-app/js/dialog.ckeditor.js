@@ -22,24 +22,29 @@ dialog.ckeditor = {};
 
 
 dialog.ckeditor.init = function(e,params) {
-	CKEDITOR.stylesSet.add('my_custom_style', [
-	                                           //{ name: 'My Custom Block', element: 'h3', styles: { color: 'blue'} },
-	                                           //{ name: 'My Custom Inline', element: 'span', attributes: {'class': 'mine'} },
+    CKEDITOR.stylesSet.add('my_custom_style', [
+                                               //{ name: 'My Custom Block', element: 'h3', styles: { color: 'blue'} },
+                                               //{ name: 'My Custom Inline', element: 'span', attributes: {'class': 'mine'} },
 
                                                { name: 'Alert (info)', element: 'div', attributes: {'class':'alert alert-info'} },
                                                { name: 'Alert (danger)', element: 'div', attributes: {'class':'alert alert-danger'} },
                                                { name: 'Alert (warning)', element: 'div', attributes: {'class':'alert alert-warning'} },
                                                { name: 'Alert (success)', element: 'div', attributes: {'class':'alert alert-success'} },
-	                                           { name: 'Important label', element: 'span', attributes: {'class':'label label-important'} },
+                                               { name: 'Important label', element: 'span', attributes: {'class':'label label-default'} },
+                                               { name: 'Primary label', element: 'span', attributes: {'class':'label label-primary'} },
+                                               { name: 'Success label', element: 'span', attributes: {'class':'label label-success'} },
+                                               { name: 'Info label', element: 'span', attributes: {'class':'label label-info'} },
+                                               { name: 'Warning label', element: 'span', attributes: {'class':'label label-warning'} },
+                                               { name: 'Danger label', element: 'span', attributes: {'class':'label label-danger'} },
+                                               { name: 'CSS code', element: 'pre', attributes: {'data-lang':'text/css'} },
+                                               { name: 'Groovy code', element: 'pre', attributes: {'data-lang':'text/x-groovy'} },
+                                               { name: 'HTML code', element: 'pre', attributes: {'data-lang':'text/html'} },
+                                               { name: 'Java code', element: 'pre', attributes: {'data-lang':'text/x-java'} },
+                                               { name: 'JavaScript code', element: 'pre', attributes: {'data-lang':'text/javascript'} },
+                                               { name: 'Less code', element: 'pre', attributes: {'data-lang':'text/x-less'} },
+                                               { name: 'Shell code', element: 'pre', attributes: {'data-lang':'text/x-sh'} },
+                                               { name: 'XML code', element: 'pre', attributes: {'data-lang':'application/xml'} }
 
-	                                           { name: 'CSS code', element: 'pre', attributes: {'data-lang':'text/css'} },
-	                                           { name: 'Groovy code', element: 'pre', attributes: {'data-lang':'text/x-groovy'} },
-	                                           { name: 'HTML code', element: 'pre', attributes: {'data-lang':'text/html'} },
-	                                           { name: 'Java code', element: 'pre', attributes: {'data-lang':'text/x-java'} },
-	                                           { name: 'JavaScript code', element: 'pre', attributes: {'data-lang':'text/javascript'} },
-	                                           { name: 'Less code', element: 'pre', attributes: {'data-lang':'text/x-less'} },
-	                                           { name: 'Shell code', element: 'pre', attributes: {'data-lang':'text/x-sh'} },
-	                                           { name: 'XML code', element: 'pre', attributes: {'data-lang':'application/xml'} }
 
 
 
