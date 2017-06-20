@@ -1,21 +1,22 @@
 /*
-* Grails Dialog plug-in
-* Copyright 2011 Open-T B.V., and individual contributors as indicated
-* by the @author tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Affero General Public License
-* version 3 published by the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Affero General Public License for more details.
-
-* You should have received a copy of the GNU Affero General Public License
-* along with this program.  If not, see http://www.gnu.org/licenses
-*/
+ * Grails Dialog Plugin
+ *
+ * Copyright 2009-2017, Open-T B.V., and individual contributors as indicated
+ * by the @author tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * version 3 published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses
+ */
 package org.open_t.dialog
 
 import javax.xml.transform.OutputKeys
@@ -35,6 +36,14 @@ import org.springframework.context.MessageSourceResolvable
  * Provide generic edit,submit,delete operations for dialog handling
  */
 class DialogService {
+
+	/* STATIC VARIABLES */
+
+	/**
+	 * Set the default locale to en_US.
+	 */
+	static final Locale DEFAULT_LOCALE = new Locale("en_US")
+
 
 	def grailsApplication
 	def sessionFactory
@@ -85,16 +94,32 @@ class DialogService {
     }
 
     /**
-     * Get a message for the current locale
-     * @param code The code
-     * @param args The optional argument list
+     * Get a message for the current locale. When there is no context available,
+	 * default to the en_US locale.
+	 *
+     * @param code The code.
+     * @param args The optional argument list.
+	 * @since 06/19/2017
      */
-	def getMessage(String code,List args=null) {
-		def webUtils = WebUtils.retrieveGrailsWebRequest()
-		def request=webUtils.getCurrentRequest()
-		def locale = RCU.getLocale(request)
-        def args2 = args == null ? null : args.toArray()
-		return messageSource.getMessage(code,args2,code,locale)
+	def getMessage(String code, List args = null) {
+		def useDefault = false
+		def webUtils = null
+		try {
+			webUtils = WebUtils.retrieveGrailsWebRequest()
+		} catch (Exception e) {
+			log.warn("Unable to retrieve locale from a WebRequest. Using the default locale ${DEFAULT_LOCALE}")
+			useDefault = true
+		}
+
+		def request = null
+		def locale = DEFAULT_LOCALE
+		if (!useDefault) {
+			request = webUtils.getCurrentRequest()
+			locale = RCU.getLocale(request)
+		}
+
+        def nextArgs = args == null ? null : args.toArray()
+		return messageSource.getMessage(code, nextArgs, code, locale)
 	}
 
     /**
