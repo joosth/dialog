@@ -151,11 +151,18 @@ dialog.datatables.openHtmlDatatable = function (e,params) {
     });
     /* Unmark elements that are shown initially */
     $(this).find(".dialog-open-events").removeClass("datatables-reinit");
+    return false;
 }
 
-dialog.datatables.htmlDraw= function () {
-    /* Initialize an unmark elements that are shown  */
-    $(this).find(".dialog-open-events").filter(".datatables-reinit").trigger("dialog-open", { "this": this }).removeClass("datatables-reinit");
+dialog.datatables.htmlDraw= function (e) {
+    var curTable = $(e.currentTarget).dataTable().api();
+    var page=curTable.page.info().page;
+
+    if (page!=0) {
+        $(this).find(".dialog-open-events").filter(".datatables-reinit").trigger("dialog-open", { "this": this }).removeClass("datatables-reinit");
+    }
+
+    return false;
 }
 
 
