@@ -14,7 +14,7 @@ modules = {
 	'dialog-ckeditor' {
 		dependsOn 'dialog'
 		resource url: [plugin: 'jquery-dialog', dir: 'ext/ckeditor', file: 'ckeditor.js', linkOverride: "ext/ckeditor"]
-		resource id: 'custom', url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog.ckeditor.js']
+		resource id: 'ckeditor', url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog.ckeditor.js']
 	}
 
 	'dialog-codemirror' {
