@@ -67,7 +67,7 @@ CKEDITOR.config.toolbar_Compact =
 		{ name: 'document', items : [ 'Source' , '-','About' ]},
 	];
 
-}
+};
 
 
 dialog.ckeditor.open =function open (e,params) {
