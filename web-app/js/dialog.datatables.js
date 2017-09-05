@@ -129,6 +129,46 @@ dialog.datatables.refreshDataTable = function (element, lastPage) {
 	}
 };
 
+/**
+ * Initialize simple HTML datatable
+ */
+dialog.datatables.openHtmlDatatable = function (e,params) {
+    var pageLength=parseInt($(this).attr("pageLength")) || 5;
+
+    /* Mark elements that need initialization after they escape pagination */
+    $(this).find(".dialog-open-events").addClass("datatables-reinit");
+
+    $(this).DataTable({
+        "pageLength": pageLength,
+        "lengthMenu": [[5, 10, 25], [5, 10, 25]],
+        "dom": "<'row toolbar'<'col-sm-6'l><'col-sm-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        "columnDefs": [
+                { "targets": [-1, "nonsortable"], "orderable": false },
+                { "targets": ["_all"], "orderable": true }
+            ]
+    });
+    /* Unmark elements that are shown initially */
+    $(this).find(".dialog-open-events").removeClass("datatables-reinit");
+    return false;
+}
+
+dialog.datatables.htmlDraw= function (e) {
+    var curTable = $(e.currentTarget).dataTable().api();
+    var page=curTable.page.info().page;
+
+    if (page!=0) {
+        $(this).find(".dialog-open-events").filter(".datatables-reinit").trigger("dialog-open", { "this": this }).removeClass("datatables-reinit");
+    }
+
+    return false;
+}
+
+
+
 $(function() {
 	$(document).on("dialog-open",".detailTable,table.datatable",dialog.datatables.open);
+    $(document).on("dialog-open","table.html-datatable",dialog.datatables.openHtmlDatatable);
+    $(document).on("draw.dt","table.html-datatable",dialog.datatables.htmlDraw);
 });

@@ -22,20 +22,30 @@ dialog.ckeditor = {};
 
 
 dialog.ckeditor.init = function(e,params) {
-	CKEDITOR.stylesSet.add('my_custom_style', [
-	                                           //{ name: 'My Custom Block', element: 'h3', styles: { color: 'blue'} },
-	                                           //{ name: 'My Custom Inline', element: 'span', attributes: {'class': 'mine'} },
+    CKEDITOR.stylesSet.add('my_custom_style', [
+                                               //{ name: 'My Custom Block', element: 'h3', styles: { color: 'blue'} },
+                                               //{ name: 'My Custom Inline', element: 'span', attributes: {'class': 'mine'} },
 
-	                                           { name: 'CSS code', element: 'pre', attributes: {'data-lang':'text/css'} },
-	                                           { name: 'Groovy code', element: 'pre', attributes: {'data-lang':'text/x-groovy'} },
-	                                           { name: 'HTML code', element: 'pre', attributes: {'data-lang':'text/html'} },
-	                                           { name: 'Java code', element: 'pre', attributes: {'data-lang':'text/x-java'} },
-	                                           { name: 'JavaScript code', element: 'pre', attributes: {'data-lang':'text/javascript'} },
-	                                           { name: 'Less code', element: 'pre', attributes: {'data-lang':'text/x-less'} },
-	                                           { name: 'Shell code', element: 'pre', attributes: {'data-lang':'text/x-sh'} },
-	                                           { name: 'XML code', element: 'pre', attributes: {'data-lang':'application/xml'} },
-	                                           { name: 'Alert', element: 'div', attributes: {'class':'alert'} },
-	                                           { name: 'Important label', element: 'span', attributes: {'class':'label label-important'} }
+                                               { name: 'Alert (info)', element: 'div', attributes: {'class':'alert alert-info'} },
+                                               { name: 'Alert (danger)', element: 'div', attributes: {'class':'alert alert-danger'} },
+                                               { name: 'Alert (warning)', element: 'div', attributes: {'class':'alert alert-warning'} },
+                                               { name: 'Alert (success)', element: 'div', attributes: {'class':'alert alert-success'} },
+                                               { name: 'Important label', element: 'span', attributes: {'class':'label label-default'} },
+                                               { name: 'Primary label', element: 'span', attributes: {'class':'label label-primary'} },
+                                               { name: 'Success label', element: 'span', attributes: {'class':'label label-success'} },
+                                               { name: 'Info label', element: 'span', attributes: {'class':'label label-info'} },
+                                               { name: 'Warning label', element: 'span', attributes: {'class':'label label-warning'} },
+                                               { name: 'Danger label', element: 'span', attributes: {'class':'label label-danger'} },
+                                               { name: 'CSS code', element: 'pre', attributes: {'data-lang':'text/css'} },
+                                               { name: 'Groovy code', element: 'pre', attributes: {'data-lang':'text/x-groovy'} },
+                                               { name: 'HTML code', element: 'pre', attributes: {'data-lang':'text/html'} },
+                                               { name: 'Java code', element: 'pre', attributes: {'data-lang':'text/x-java'} },
+                                               { name: 'JavaScript code', element: 'pre', attributes: {'data-lang':'text/javascript'} },
+                                               { name: 'Less code', element: 'pre', attributes: {'data-lang':'text/x-less'} },
+                                               { name: 'Shell code', element: 'pre', attributes: {'data-lang':'text/x-sh'} },
+                                               { name: 'XML code', element: 'pre', attributes: {'data-lang':'application/xml'} }
+
+
 
 
 	                                         ]);
@@ -45,29 +55,8 @@ CKEDITOR.config.protectedSource.push( /<g:[.\s\S]*>[.\s\S]*<\/g:[.\s\S]*>/gi );	
 CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*>[.\s\S]*<\/c:[.\s\S]*>/gi );	 // Catviz Tags
 CKEDITOR.config.protectedSource.push( /<g:[.\s\S]*\/>/gi );	 // Grails Tags (Self-closing)
 CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*\/>/gi );	 // Catviz Tags (Self-closing)
-CKEDITOR.config.contentsCss='css/theme/theme.css';
 CKEDITOR.config.format_pre = { element : 'div', attributes: {'class':'well'}};
-//CKEDITOR.config.format_tags='h1;h2;div;p;well';
-CKEDITOR.config.toolbar = 'Compact';
-CKEDITOR.config.toolbar_Compact =
-	[
-	 	{ name: 'tools', items : [ 'Maximize', 'ShowBlocks' ] },
-		{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-		{ name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },
-		{ name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
-		                   			'-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'] },
-			'/',
-		{ name: 'basicstyles', items : [ 'Bold','Italic','Underline', 'TextColor','-','RemoveFormat' ] },
-		//{ name: 'styles', items : [ 'my_custom_style' ] },
-		//{ name: 'styles', items : [ 'Format'] },
-		{ name: 'styles', items : [ 'Format','Styles'] },
-
-		{ name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-		{ name: 'insert', items : [ 'Image','Table','HorizontalRule','Smiley','SpecialChar' ] },
-		{ name: 'document', items : [ 'Source' , '-','About' ]},
-	];
-
-}
+CKEDITOR.config.contentsCss=dialog.baseUrl+'/static/bundle-bundle_dialog-bootstrap_head.css'
 
 
 dialog.ckeditor.open =function open (e,params) {

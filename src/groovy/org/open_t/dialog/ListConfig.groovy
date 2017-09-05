@@ -79,15 +79,20 @@ class ListConfig {
 		actions.each { action ->
 			String defaultLabel = messageSource.getMessage("list.action.${action}.label".toString(),null, "${action}",locale)
 			String label = messageSource.getMessage("list.${name}.action.${action}.label".toString(),null, defaultLabel,locale)
+
+            String defaultIcon = messageSource.getMessage("list.action.${action}.icon".toString(),null, "${action}",locale)
+            String icon = messageSource.getMessage("list.${name}.action.${action}.icon".toString(),null, defaultIcon,locale)
+
+
 			switch(action) {
 				case "delete":
-					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-trash"></i></a>"""
+					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.deleteDialog('${props.itemId}','${props.propName}',{ refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="${icon}"></i></a>"""
 				break
                 case "show":
-                    s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',nosubmit:true,refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-search"></i></a>"""
+                    s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',nosubmit:true,refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="${icon}"></i></a>"""
                 break
 				default:
-					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="fa fa-pencil"></i></a>"""
+					s+="""<a class="btn btn-default btn-sm" href="#" onclick="dialog.formDialog('${props.itemId}','${this.controller}',{ dialogname:'${action}',refresh : '${props.detailTableId}'}, null)" title="${label}"><i class="${icon}"></i></a>"""
 			}
 		}
 		s+="""</div>"""

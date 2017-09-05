@@ -26,8 +26,8 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
  */
 @Validateable
 class Command  {
-	def id
-	def version
+	def id=0
+	def version=0
 
     /**
      * Populate properties from given map, ignoring id and value

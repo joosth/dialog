@@ -174,12 +174,12 @@ class DialogTagLib {
 
             //label
             if (attrs.noLabel != "true") {
-                out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
+                out << """<label for="${attrs.propertyName}"${attrs.vertical != "true" ? " class='col-sm-3 control-label'" : ""}>${g.message(code: "${domainPropertyName}.${propertyName}.label", default: "${naturalName}")}</label>"""
             }
 
             //control en help
             if (attrs.vertical != "true") {
-                out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
+                out << """<div class="col-sm-${attrs.noLabel != "true" ? "9" : "12"}">"""
             }
             out << body()
             if (attrs.noHelp != "true") {
@@ -226,12 +226,12 @@ class DialogTagLib {
 
         //label
         if (attrs.noLabel != "true") {
-            out << """<label for="${attrs.name}"${attrs.vertical != "true" ? " class='col-sm-2 control-label'" : ""}>${label}</label>"""
+            out << """<label for="${attrs.name}"${attrs.vertical != "true" ? " class='col-sm-3 control-label'" : ""}>${label}</label>"""
         }
 
         //control en help
         if (attrs.vertical != "true") {
-            out << """<div class="col-sm-${attrs.noLabel != "true" ? "10" : "12"}">"""
+            out << """<div class="col-sm-${attrs.noLabel != "true" ? "9" : "12"}">"""
         }
         out << body()
 
@@ -536,7 +536,7 @@ class DialogTagLib {
             try {
                 prettyXmlText=dialogService.prettyPrint(xmltext)
             } catch (Exception e) {
-                // Do nothing if XML parsing fails                
+                // Do nothing if XML parsing fails
             }
         }
         newAttrs.value = prettyXmlText
@@ -796,7 +796,7 @@ class DialogTagLib {
         out <<
             """
             <div class="modal" id="${name}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-lg" role="document" style="min-width:${attrs.width?:0};" > 
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
@@ -1408,4 +1408,16 @@ class DialogTagLib {
 
         writer << '</ul>'
     }
+
+    /**
+     *  Displays a bootstrap alert
+     *  The type can be info (default), warning, danger, success
+     */
+    def alert = { attrs, body ->
+        def alertType=attrs.type?:"info"
+        out <<"""<div class="alert alert-${alertType} alert-dismissible" role="alert" ><button type="button" class="close" data-dismiss="alert" ><span aria-hidden="true">&times;</span></button>"""
+        out << body()
+        out << "</div>"
+   }
+
 }
