@@ -1,6 +1,7 @@
 /*
- * Grails Dialog plug-in
- * Copyright 2011 Open-T B.V., and individual contributors as indicated
+ * Dialog
+ *
+ * Copyright 2009-2017, Open-T B.V., and individual contributors as indicated
  * by the @author tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -10,13 +11,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses
+ * along with this program. If not, see http://www.gnu.org/licenses
  */
-
 package org.open_t.dialog
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
@@ -24,7 +24,9 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
 
 /**
- * Tag library for Dialog plugin
+ * Tag library for Dialog plugin.
+ *
+ * 10/10/2017 - Added the notOptional flag to the select tag.
  *
  * @author Joost Horward
  */
@@ -676,6 +678,8 @@ class DialogTagLib {
      * @param optionKey attribute to be supplied to the &lt;select&gt; element
      * @param optionValue attribute to be supplied to the &lt;select&gt; element
      * @param multiple attribute to be supplied to the &lt;select&gt; element
+     * @param notOptional attribute to determine whether a dash is added as default
+     * option or not.
      * @param style attribute to be supplied to the &lt;select&gt; element
      */
     def select = { attrs ->
@@ -718,7 +722,10 @@ class DialogTagLib {
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
-                    if (property.isOptional()) {
+                    /* 10/10/2017 - Added an attribute for determining whether the
+                    select is optional, or absolutely not optional. Will leave the
+                    dash (default option) out if notOptional is true. */
+                    if (property.isOptional() && !attrs.notOptional) {
                         opts.put("noSelection", ["": "-"])
                     }
 
@@ -796,7 +803,7 @@ class DialogTagLib {
         out <<
             """
             <div class="modal" id="${name}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document" style="min-width:${attrs.width?:0};" > 
+                <div class="modal-dialog modal-lg" role="document" style="min-width:${attrs.width?:0};" >
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
