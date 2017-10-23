@@ -1,6 +1,6 @@
 /*!
  * modernizr v3.5.0
- * Build https://modernizr.com/download?-setclasses-dontmin
+ * Build https://modernizr.com/download?-inputtypes-localstorage-sessionstorage-setclasses-dontmin
  *
  * Copyright (c)
  *  Faruk Ates
@@ -86,6 +86,81 @@
   // Overwrite name so constructor name is nicer :D
   Modernizr = new Modernizr();
 
+
+/*!
+{
+  "name": "Local Storage",
+  "property": "localstorage",
+  "caniuse": "namevalue-storage",
+  "tags": ["storage"],
+  "knownBugs": [],
+  "notes": [],
+  "warnings": [],
+  "polyfills": [
+    "joshuabell-polyfill",
+    "cupcake",
+    "storagepolyfill",
+    "amplifyjs",
+    "yui-cacheoffline"
+  ]
+}
+!*/
+
+  // In FF4, if disabled, window.localStorage should === null.
+
+  // Normally, we could not test that directly and need to do a
+  //   `('localStorage' in window)` test first because otherwise Firefox will
+  //   throw bugzil.la/365772 if cookies are disabled
+
+  // Similarly, in Chrome with "Block third-party cookies and site data" enabled,
+  // attempting to access `window.sessionStorage` will throw an exception. crbug.com/357625
+
+  // Also in iOS5 Private Browsing mode, attempting to use localStorage.setItem
+  // will throw the exception:
+  //   QUOTA_EXCEEDED_ERROR DOM Exception 22.
+  // Peculiarly, getItem and removeItem calls do not throw.
+
+  // Because we are forced to try/catch this, we'll go aggressive.
+
+  // Just FWIW: IE8 Compat mode supports these features completely:
+  //   www.quirksmode.org/dom/html5.html
+  // But IE8 doesn't support either with local files
+
+  Modernizr.addTest('localstorage', function() {
+    var mod = 'modernizr';
+    try {
+      localStorage.setItem(mod, mod);
+      localStorage.removeItem(mod);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
+
+/*!
+{
+  "name": "Session Storage",
+  "property": "sessionstorage",
+  "tags": ["storage"],
+  "polyfills": ["joshuabell-polyfill", "cupcake", "sessionstorage"]
+}
+!*/
+
+  // Because we are forced to try/catch this, we'll go aggressive.
+
+  // Just FWIW: IE8 Compat mode supports these features completely:
+  //   www.quirksmode.org/dom/html5.html
+  // But IE8 doesn't support either with local files
+  Modernizr.addTest('sessionstorage', function() {
+    var mod = 'modernizr';
+    try {
+      sessionStorage.setItem(mod, mod);
+      sessionStorage.removeItem(mod);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  });
 
 
   /**
@@ -231,6 +306,150 @@
   }
 
   ;
+
+  /**
+   * createElement is a convenience wrapper around document.createElement. Since we
+   * use createElement all over the place, this allows for (slightly) smaller code
+   * as well as abstracting away issues with creating elements in contexts other than
+   * HTML documents (e.g. SVG documents).
+   *
+   * @access private
+   * @function createElement
+   * @returns {HTMLElement|SVGElement} An HTML or SVG element
+   */
+
+  function createElement() {
+    if (typeof document.createElement !== 'function') {
+      // This is the case in IE7, where the type of createElement is "object".
+      // For this reason, we cannot call apply() as Object is not a Function.
+      return document.createElement(arguments[0]);
+    } else if (isSVG) {
+      return document.createElementNS.call(document, 'http://www.w3.org/2000/svg', arguments[0]);
+    } else {
+      return document.createElement.apply(document, arguments);
+    }
+  }
+
+  ;
+
+  /**
+   * since we have a fairly large number of input tests that don't mutate the input
+   * we create a single element that can be shared with all of those tests for a
+   * minor perf boost
+   *
+   * @access private
+   * @returns {HTMLInputElement}
+   */
+  var inputElem = createElement('input');
+
+/*!
+{
+  "name": "Form input types",
+  "property": "inputtypes",
+  "caniuse": "forms",
+  "tags": ["forms"],
+  "authors": ["Mike Taylor"],
+  "polyfills": [
+    "jquerytools",
+    "webshims",
+    "h5f",
+    "webforms2",
+    "nwxforms",
+    "fdslider",
+    "html5slider",
+    "galleryhtml5forms",
+    "jscolor",
+    "html5formshim",
+    "selectedoptionsjs",
+    "formvalidationjs"
+  ]
+}
+!*/
+/* DOC
+Detects support for HTML5 form input types and exposes Boolean subproperties with the results:
+
+```javascript
+Modernizr.inputtypes.color
+Modernizr.inputtypes.date
+Modernizr.inputtypes.datetime
+Modernizr.inputtypes['datetime-local']
+Modernizr.inputtypes.email
+Modernizr.inputtypes.month
+Modernizr.inputtypes.number
+Modernizr.inputtypes.range
+Modernizr.inputtypes.search
+Modernizr.inputtypes.tel
+Modernizr.inputtypes.time
+Modernizr.inputtypes.url
+Modernizr.inputtypes.week
+```
+*/
+
+  // Run through HTML5's new input types to see if the UA understands any.
+  //   This is put behind the tests runloop because it doesn't return a
+  //   true/false like all the other tests; instead, it returns an object
+  //   containing each input type with its corresponding true/false value
+
+  // Big thanks to @miketaylr for the html5 forms expertise. miketaylr.com/
+  var inputtypes = 'search tel url email datetime date month week time datetime-local number range color'.split(' ');
+  var inputs = {};
+
+  Modernizr.inputtypes = (function(props) {
+    var len = props.length;
+    var smile = '1)';
+    var inputElemType;
+    var defaultView;
+    var bool;
+
+    for (var i = 0; i < len; i++) {
+
+      inputElem.setAttribute('type', inputElemType = props[i]);
+      bool = inputElem.type !== 'text' && 'style' in inputElem;
+
+      // We first check to see if the type we give it sticks..
+      // If the type does, we feed it a textual value, which shouldn't be valid.
+      // If the value doesn't stick, we know there's input sanitization which infers a custom UI
+      if (bool) {
+
+        inputElem.value         = smile;
+        inputElem.style.cssText = 'position:absolute;visibility:hidden;';
+
+        if (/^range$/.test(inputElemType) && inputElem.style.WebkitAppearance !== undefined) {
+
+          docElement.appendChild(inputElem);
+          defaultView = document.defaultView;
+
+          // Safari 2-4 allows the smiley as a value, despite making a slider
+          bool =  defaultView.getComputedStyle &&
+            defaultView.getComputedStyle(inputElem, null).WebkitAppearance !== 'textfield' &&
+            // Mobile android web browser has false positive, so must
+            // check the height to see if the widget is actually there.
+            (inputElem.offsetHeight !== 0);
+
+          docElement.removeChild(inputElem);
+
+        } else if (/^(search|tel)$/.test(inputElemType)) {
+          // Spec doesn't define any special parsing or detectable UI
+          //   behaviors so we pass these through as true
+
+          // Interestingly, opera fails the earlier test, so it doesn't
+          //  even make it here.
+
+        } else if (/^(url|email)$/.test(inputElemType)) {
+          // Real url and email support comes with prebaked validation.
+          bool = inputElem.checkValidity && inputElem.checkValidity() === false;
+
+        } else {
+          // If the upgraded input compontent rejects the :) text, we got a winner
+          bool = inputElem.value != smile;
+        }
+      }
+
+      inputs[ props[i] ] = !!bool;
+    }
+    return inputs;
+  })(inputtypes);
+
 
   // Run each test
   testRunner();
