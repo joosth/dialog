@@ -1,21 +1,22 @@
 /*
-* Grails Dialog plug-in
-* Copyright 2013 Open-T B.V., and individual contributors as indicated
-* by the @author tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Affero General Public License
-* version 3 published by the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Affero General Public License for more details.
+ * Dialog
+ *
+ * Copyright 2009-2017, Open-T B.V., and individual contributors as indicated
+ * by the @author tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * version 3 published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
 
-* You should have received a copy of the GNU Affero General Public License
-* along with this program.  If not, see http://www.gnu.org/licenses
-*/
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses
+ */
 package org.open_t.dialog
 
 import java.text.SimpleDateFormat
@@ -24,9 +25,46 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FileFileFilter
 import org.apache.commons.io.IOUtils
 
+/**
+ * 11/13/2017 - Improved the path calculation methods to now handle longer file
+ * paths.
+ */
 class FileService {
 
-	static transactional = false
+    /* STATIC VARIABLES */
+
+    /**
+     * java.lang.Integer to define the default depth for a content element path.
+     * @since 11/13/2017
+     */
+    static final int CONTENT_PATH_DEPTH = 14
+
+    /**
+     * java.lang.String to define the file category 'common'.
+     * @since 11/13/2017
+     */
+    static final String COMMON_CATEGORY_NAME = "common"
+
+    /**
+     * java.lang.String to define the method 'getFolderPath'.
+     * @since 11/13/2017
+     */
+    static final String GET_FOLDER_PATH = "getFolderPath"
+
+    /**
+     * java.lang.String to define 'null'.
+     * @since 11/13/2017
+     */
+    static final String STR_NULL = "null"
+
+    /**
+     * The FileService is NOT transactional.
+     * @since 11/13/2017
+     */
+    static transactional = false
+
+
+    /* GLOBAL VARIABLES */
 
 	def grailsApplication
     def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
@@ -70,76 +108,6 @@ class FileService {
         def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName,message:"Upload completed"]
         return res
     }
-
-    /*
-     * Pack a value and convert it to a 8-byte 36-based formatted number
-     * @param n The value
-     * @return The formatted String
-     */
-	def pack(n) {
-        if (!n || n=="null") {
-            n=0
-        }
-		String s= Long.toString(new Long(n),36)
-		return String.format("%1\$8s", s).replace(' ', '0')
-	}
-
-    /**
-     * Create a Packed path from a value
-     * This is a short path that is used to create a balanced folder structure to store files that are attached to domain objects
-     * The path has the form xx/xx/xx/xx
-     * This is sufficient for 2.8T objects
-     *
-     * @param n The Value
-     * @return the Packed path
-     */
-	def packedPath(n) {
-		String s=pack(n)
-		return s.substring(0,2)+"/"+s.substring(2,4)+"/"+s.substring(4,6)+"/"+s.substring(6,8)
-	}
-
-	// TODO offer possibility to provide alternate location per category.
-
-    /**
-     * This calculates the relative path on the filesystem for the files of a domain object
-     *
-     * @param dc The domain class or a String representing the domain class. A string is allowed so there is no need to have access to the actual domain class
-     * @param id The id of the domain object
-     * @param fileCategory The file category. This is a string allowing a top-level tree split which is helpful if permissions of categories are different
-     * @return The path
-     */
-	def relativePath(dc,id,fileCategory) {
-        def name
-        def hasFolderPathMethod=false
-        if (dc.class==java.lang.String) {
-            name=dc
-        } else {
-            name=dc.getName()
-            hasFolderPathMethod = dc.methods.collect { method -> method.name }.contains("getFolderPath")
-        }
-
-		name=name.replaceAll (".*\\.", "")
-
-		if (hasFolderPathMethod) {
-			def dcInstance=dc.get(id)
-			return dcInstance.getFolderPath(fileCategory)
-		} else {
-			return "${fileCategory}/${name}/${packedPath(id)}"
-		}
-	}
-
-    /**
-     * This calculates the full path on the filesystem for the files of a domain object
-     *
-     * @param dc The domain class or a String representing the domain class. A string is allowed so there is no need to have access to the actual domain class
-     * @param id The id of the domain object
-     * @param fileCategory The file category. This is a string allowing a top-level tree split which is helpful if permissions of categories are different
-     * @return The path
-     */
-	def filePath(dc,id,fileCategory) {
-		def basePath=grailsApplication.config.dialog.files.basePath
-		return "${basePath}/${relativePath(dc,id,fileCategory)}"
-	}
 
     /**
      * This calculates the full URL for the files of a domain object
@@ -444,4 +412,120 @@ class FileService {
 
 		return null
 	}
+
+
+    /* NON-VOID METHODS ON PACKING FILE PATHS */
+
+    /**
+     * Retrieve the base path from the grails applications' config.
+     *
+     * @since 03/09/2017
+     * @return A string representing the base path.
+     */
+    def getBasePath() {
+        return grailsApplication.config.wfp.path.files
+    }
+
+    /**
+     * Calculate the file path for the given parameters. Looks something like:
+     * /var/opt/wfp/files/common/Document/00/00/00/ff
+     * or:
+     * /var/opt/wfp/files/common/Document/00/00/00/00/00/00/ff
+     * depending on the number of layers.
+     *
+     * @param domainClass java.lang.String or java.lang.Object to define the domain
+     * class we'd like to store files for.
+     * @param id The document ID.
+     * @param category (Optional) The file category. 'common' by default.
+     * @return A string with the path for the file to be saved.
+     *
+     * 08/01/2017 - Removed the dependency to Dialog's File Service. Set the calculation
+     * of the path to the calculation methods in this class.
+     */
+    def filePath(domainClass, id, category = COMMON_CATEGORY_NAME) {
+        def basePath = getBasePath()
+        def path = "${basePath}/${relativePath(domainClass, id, category)}"
+        def file = new File(path)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+
+        return path
+    }
+
+    /**
+     * Calculate a string from a Long. This will provide a hexadecimal approach
+     * for path calculation later on.
+     *
+     * @param no An arbitrary number. Could be an ID from a domain class.
+     * @param depth (Optional) The depth of the string formatting (CONTENT_PATH_DEPTH
+     * by default).
+     * @return A java.lang.String that is formatted to hexadecimally represent a
+     * long. For example: 00000000ff
+     *
+     * @since 08/01/2017
+     */
+    def pack(no, depth = CONTENT_PATH_DEPTH) {
+        if (null == no || STR_NULL == no) {
+            no = 0
+        }
+
+        def balance = Long.toString(new Long(no), 36)
+        return String.format("%1\$${depth}s", balance).replace(" ", "0")
+    }
+
+    /**
+     * Calculate the actual path from a pack. Will first create a pack like this:
+     * 00000000ff
+     * and convert it to a path like this:
+     * 00/00/00/00/ff
+     *
+     * @param no An arbitrary number. Could be an ID from a domain class.
+     * @return The calculated packed path.
+     *
+     * @since 08/01/2017
+     */
+    def packedPath(no) {
+        def balance = pack(no)
+        def balancedPath = ""
+        def length = balance.length() / 2 - 1
+        (0..(length)).each { i ->
+            def subBalance = balance.substring(i * 2, i * 2 + 2)
+            balancedPath += "/${subBalance}"
+        }
+
+        /* Finally, remove the first slash and return. */
+        return balancedPath.substring(1)
+    }
+
+    /**
+     * Calculate a relative path (relative to the domain class).
+     *
+     * @param domainClass java.lang.String or java.lang.Object to define the domain
+     * class we'd like to store files for.
+     * @param id The document ID.
+     * @param category (Optional) The file category. 'common' by default.
+     * @return Either the folder path of the domain class if it has a folder path,
+     * or a calculated relative path like 'common/Document/00/00/00/00/ff'.
+     *
+     * @since 08/01/2017
+     */
+    def relativePath(domainClass, id, category = COMMON_CATEGORY_NAME) {
+        def name = null
+        def hasFolderPathMethod = false
+        if (domainClass.getClass() == java.lang.String) {
+            name = domainClass
+        } else {
+            name = domainClass.getName()
+            hasFolderPathMethod = domainClass.methods.collect { method -> method.getName() }.contains(GET_FOLDER_PATH)
+        }
+
+        name = name.replaceAll(".*\\.", "")
+        if (hasFolderPathMethod) {
+            def domainClassInstance = domainClass.get(id)
+            return domainClassInstance.getFolderPath(category)
+        } else {
+            return "${category}/${name}/${packedPath(id)}"
+        }
+    }
 }
