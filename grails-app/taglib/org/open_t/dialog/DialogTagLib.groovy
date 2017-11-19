@@ -1211,7 +1211,15 @@ class DialogTagLib {
             link = g.link(linkParams) { icon + label }
         }
 
-        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}">${link}</li>"""
+        def copiedAttrs = ""
+        def skipAttrs = ["class", "code","label","nosubmit","params"]
+        attrs.each { attrKey, attrValue ->
+            if (!skipAttrs.contains(attrKey)) {
+                copiedAttrs += """ ${attrKey}="${attrValue}" """
+            }
+        }
+
+        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}"  ${copiedAttrs}>${link}</li>"""
     }
 
     /**
@@ -1310,6 +1318,10 @@ class DialogTagLib {
             linkTagAttrs.mapping = attrs.mapping
         }
 
+        if (attrs.uri) {
+            linkTagAttrs.uri = attrs.uri
+        }
+
         linkTagAttrs.params = linkParams
 
         def cssClasses = "pagination"
@@ -1364,7 +1376,7 @@ class DialogTagLib {
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
                 linkParams.offset = 0
-                writer << '<li>'
+                writer << '<li offset="0">'
                 writer << link(linkTagAttrs.clone()) {firststep.toString()}
                 writer << '</li>'
                 writer << '<li class="disabled"><span>...</span></li>'
@@ -1379,7 +1391,7 @@ class DialogTagLib {
                 }
                 else {
                     linkParams.offset = (i - 1) * max
-                    writer << "<li>";
+                    writer << '<li offset="'+linkParams.offset+'" >';
                     writer << link(linkTagAttrs.clone()) {i.toString()}
                     writer << "</li>";
                 }
@@ -1398,7 +1410,7 @@ class DialogTagLib {
         // display next link when not on laststep
         if (currentstep < laststep) {
             linkParams.offset = offset + max
-            writer << '<li class="next">'
+            writer << '<li class="next" offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
                 (attrs.next ? attrs.next : messageSource.getMessage("paginate.next", null, "&raquo;", locale))
             }
@@ -1406,7 +1418,7 @@ class DialogTagLib {
         }
         else {
             linkParams.offset = offset + max
-            writer << '<li class="disabled">'
+            writer << '<li class="disabled" offset="'+linkParams.offset+'"">'
             writer << '<span>'
             writer << (attrs.next ? attrs.next : messageSource.getMessage("paginate.next", null, "&raquo;", locale))
             writer << '</span>'
