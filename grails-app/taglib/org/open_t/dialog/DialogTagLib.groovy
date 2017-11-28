@@ -1205,8 +1205,8 @@ class DialogTagLib {
             link = """<a href="#" title="${help}">${icon}${label}</a>"""
         } else {
             def linkParams = [controller: attrs.controller, action: attrs.action, params: attrs.params, title: help]
-            if (attrs.id) {
-                linkParams["id"]=attrs.id
+            if (attrs.param_id) {
+                linkParams["id"]=attrs.param_id
             }
             link = g.link(linkParams) { icon + label }
         }
