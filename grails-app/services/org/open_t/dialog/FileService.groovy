@@ -101,14 +101,14 @@ class FileService {
      */
     def uploadFile(request, params, fileCategory = IMAGES_CATEGORY_NAME, dc = null) {
         def filenameHeader = request.getHeader("X-File-Name") ?: "unknown-file-name.bin"
-        def filename = URLDecoder.decode(filenameHeader, "UTF-8");
+        def filename = URLDecoder.decode(filenameHeader, "UTF-8")
 
         def inputStream = request.getInputStream()
         def mimetype = request.getHeader("Content-Type")
 
         log.debug("Mimetype for ${filename} is ${mimetype}.")
 
-        def temporaryFile = File.createTempFile("upload", "bin");
+        def temporaryFile = File.createTempFile("upload", "bin")
         def outputStream = new FileOutputStream(temporaryFile)
         IOUtils.copy(inputStream, outputStream)
 

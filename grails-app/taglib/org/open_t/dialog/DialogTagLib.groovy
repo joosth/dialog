@@ -27,6 +27,7 @@ import org.springframework.web.servlet.support.RequestContextUtils as RCU
  * Tag library for Dialog plugin.
  *
  * 10/10/2017 - Added the notOptional flag to the select tag.
+ * 12/04/2017 - Added the fileuploadTable tag.
  *
  * @author Joost Horward
  */
@@ -1044,11 +1045,28 @@ class DialogTagLib {
     }
 
     /**
-     * Displays an upload control in the dialog
+     * A tag for adding a simple table that will contain fileuploads.
+     * @since 11/30/2017
      */
+    def fileuploadTable = { attrs ->
+        out <<
+            """
+            <table id="fileupload" class="table table-striped table-bordered table-hover dialog-open-events fileuploadTable" newButton="false">
+                <thead>
+                    <tr>
+                        <th>${g.message(code: "fileuploadtable.name.label")}</th>
+                        <th>${g.message(code: "fileuploadtable.mimetype.label")}</th>
+                        <th>${g.message(code: "fileuploadtable.size.label")}</th>
+                        <th class="actions">${g.message(code: "fileuploadtable.actions.label")}</th>
+                    </tr>
+                </thead>
+            </table>
+            """
+    }
 
-
-    // Upload area wrapper. Takes controller and action attributes
+    /**
+     * Displays an upload control in the dialog.
+     */
     def upload = { attrs, body ->
         def copiedAttrs = ""
         def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
@@ -1101,9 +1119,12 @@ class DialogTagLib {
 
     // Upload button
     def uploadButton = { attrs, body ->
-            out << """<span href="#" class="btn btn-default btn-file upload-button">
+        out <<
+            """
+            <span href="#" class="btn btn-default btn-file upload-button">
                 <span class="fa fa-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
-            </span>"""
+            </span>
+            """
     }
 
     /**
