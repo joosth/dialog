@@ -1,25 +1,23 @@
 /*
-* uploader module for dialog plugin
-*
-* Grails Dialog plug-in
-* Copyright 2011 Open-T B.V., and individual contributors as indicated
-* by the @author tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Affero General Public License
-* version 3 published by the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Affero General Public License for more details.
-
-* You should have received a copy of the GNU Affero General Public License
-* along with this program.  If not, see http://www.gnu.org/licenses
-*/
-dialog.uploader = {};
-
+ * Dialog - Upload JavaScript.
+ *
+ * Copyright 2009-2017, Open-T B.V., and individual contributors as indicated
+ * by the @author tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * version 3 published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses
+ */
+dialog.uploader = { };
 
 dialog.uploader.upload=function(file,options) {
     var xhr  = new XMLHttpRequest();
@@ -40,13 +38,19 @@ dialog.uploader.upload=function(file,options) {
 
     xhr.onreadystatechange = function(){
         if (xhr.readyState == 4){
-            var response=$.parseJSON(this.response);
-            if (!response.success|| response.success=="false") {
-                $(".dialog-message-events").trigger("dialog-message",{message:response.message,alertType:"danger"});
+            var response = $.parseJSON(this.response);
+            if (!response.success || response.success == "false") {
+                $(".dialog-message-events").trigger("dialog-message", {
+                    message: response.message,
+                    alertType: "danger"
+                });
             } else {
                 if (options.params.direct === "false") {
-                    var upload= file.name + "|" + response.path + "|" + response.mimetype + "|" + file.size;
-                    $(wrapper).append('<input type=\"hidden\" name=\"fileupload\" value=\"' + upload + '\" />');
+                    var name = file.name;
+                    var size = file.size;
+
+                    var uuid = response.data.uuid;
+                    $(wrapper).append('<input type=\"hidden\" name=\"fileupload\" value=\"' + uuid + '\" />');
                 }
 
                 $(wrapper).find(".upload-progress-text").html(dialog.messages.uploadcompleted.replace("[0]",file.name));
@@ -86,9 +90,6 @@ dialog.uploader.upload=function(file,options) {
     xhr.setRequestHeader("Content-Type", mimetype);
     xhr.send(file);
 };
-
-
-
 
 dialog.uploader.addDropHandler=function(catcher, options) {
     //var catcher=document.getElementById(id);
@@ -173,6 +174,24 @@ dialog.uploader.open =function open (e,params) {
     return true;
 };
 
+/**
+ *
+ */
+dialog.uploader.dropZoneDragOver = function() {
+    $(this).addClass("drop");
+    return false;
+};
+
+/**
+ *
+ */
+dialog.uploader.dropZoneDragLeave = function() {
+    $(this).removeClass("drop");
+    return false;
+};
+
 $(function() {
-	$(document).on("dialog-open",".upload-button-wrapper",dialog.uploader.open);
+	$(document).on("dialog-open", ".upload-button-wrapper", dialog.uploader.open);
+    $(document).on("dragover", ".upload-drop-zone", dialog.uploader.dropZoneDragOver);
+    $(document).on("dragleave", ".upload-drop-zone", dialog.uploader.dropZoneDragLeave);
 });

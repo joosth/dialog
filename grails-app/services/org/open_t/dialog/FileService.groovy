@@ -19,6 +19,7 @@
  */
 package org.open_t.dialog
 
+import java.net.URLDecoder
 import java.text.SimpleDateFormat
 
 import org.apache.commons.io.FileUtils
@@ -28,6 +29,9 @@ import org.apache.commons.io.IOUtils
 /**
  * 11/13/2017 - Improved the path calculation methods to now handle longer file
  * paths.
+ * 11/30/2017 - Cleanup. Adjusted several methods (submitFile(...), submitFiles(...),
+ * fetchFileStream(...), uploadFile(...) and getBasePath(...)) to now retrieve the
+ * fileupload information from the session object provided by the controller.
  */
 class FileService {
 
@@ -46,6 +50,12 @@ class FileService {
     static final String COMMON_CATEGORY_NAME = "common"
 
     /**
+     * java.lang.String to define the file category 'images'.
+     * @since 11/30/2017
+     */
+    static final String IMAGES_CATEGORY_NAME = "images"
+
+    /**
      * java.lang.String to define the method 'getFolderPath'.
      * @since 11/13/2017
      */
@@ -56,6 +66,12 @@ class FileService {
      * @since 11/13/2017
      */
     static final String STR_NULL = "null"
+
+    /**
+     * java.lang.String to define 'fileuploads' for session objects.
+     * @since 11/30/2017
+     */
+    static final String SESSION_FILEUPLOADS = "fileuploads"
 
     /**
      * The FileService is NOT transactional.
@@ -70,43 +86,57 @@ class FileService {
     def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
 
     /**
-     * upload file in response to the dialog:upload tag
+     * Upload a file in response to the dialog:upload tag.
      *
-     * @param request request as provided to from the controller
-     * @param params params as provided to the controller
-     * @fileCategory The file category, default is "images"
-     * @dc The domain class or String representing the domain class
-     * @return Map to be rendered as JSON
+     * @param request The web request as provided by the controller.
+     * @param params The parameter map as provided by the controller.
+     * @param fileCategory (Optional) The category to store the files in; 'images'
+     * by default.
+     * @param dc (Optional) The domain class or String representing the domain class.
+     * Null by default.
+     * @return Map to be rendered as JSON containing the temporary file information.
+     *
+     * 11/30/2017 - Cleanup. Removed obsolete parameters in the return map and changed
+     * some variable names.
      */
-    def uploadFile(request,params,fileCategory="images",dc=null) {
-        def mimetype
-        def is
+    def uploadFile(request, params, fileCategory = IMAGES_CATEGORY_NAME, dc = null) {
+        def filenameHeader = request.getHeader("X-File-Name") ?: "unknown-file-name.bin"
+        def filename = URLDecoder.decode(filenameHeader, "UTF-8");
 
-        def filename=java.net.URLDecoder.decode(request.getHeader("X-File-Name")?:"unknown-file-name.bin", "UTF-8");
+        def inputStream = request.getInputStream()
+        def mimetype = request.getHeader("Content-Type")
 
-        is =request.getInputStream()
-        mimetype=request.getHeader("Content-Type")
+        log.debug("Mimetype for ${filename} is ${mimetype}.")
 
-        log.debug "MIMETYPE: ${mimetype}"
+        def temporaryFile = File.createTempFile("upload", "bin");
+        def outputStream = new FileOutputStream(temporaryFile)
+        IOUtils.copy(inputStream, outputStream)
 
-        def tempFile=File.createTempFile("upload", "bin");
-        OutputStream os=new FileOutputStream(tempFile)
-        IOUtils.copy(is,os)
-        os.flush()
+        outputStream.flush()
+        inputStream.close()
+        outputStream.close()
 
-		is.close()
-		os.close()
+        def direct = params.direct
+        def identifier = params.identifier
+        def isDirect = (direct == true || direct == "true")
+        def hasIdentifier = (identifier != null && identifier != "null" && identifier != "undefined")
 
-        def isDirect=(params.direct==true || params.direct=="true")
-        if (isDirect && dc!=null && (params.identifier!=null && params.identifier!="null" && params.identifier!="undefined")) {
-            def diPath=filePath(dc,params.identifier,fileCategory)
-            def destFile= new File("${diPath}/${filename}")
-            FileUtils.copyFile(tempFile,destFile)
-            tempFile.delete()
+        if (isDirect && hasIdentifier && dc != null) {
+            def directPath = filePath(dc, identifier, fileCategory)
+            def destinationFile = new File("${directPath}/${filename}")
+            FileUtils.copyFile(temporaryFile, destinationFile)
+            temporaryFile.delete()
         }
 
-        def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName,message:"Upload completed"]
-        return res
+        return [
+            temporaryPath: temporaryFile.absolutePath,
+            temporaryName: temporaryFile.name,
+            originalName: filename,
+            originalMimetype: mimetype,
+            identifier: identifier,
+            message: "dialog.messages.uploadcompleted",
+            success: true
+        ]
     }
 
     /**
@@ -267,51 +297,60 @@ class FileService {
 	}
 
     /**
-     * Move uploaded file to domain object folder
+     * Move the uploaded file to domain object folder directly.
      *
-     * @param dc The domain class
-     * @param id the id of the domain object
-     * @param fileupload Information on the uploaded file separated by |
-     * @param fileCategory The file category, default is "images"
+     * @param dc The domain class.
+     * @param session The session object received from the controller.
+     * @param id The document ID retrieved from the controllers' params.
+     * @param fileuploadUUID The UUID with which we should retrieve the file from
+     * the session object.
+     * @param params The params object received from the controller.
+     * @param fileCategory (Optional) The file category, default is "images".
+     *
+     * 11/30/2017 - Cleanup. Changed the fileupload handling. The fileupload information
+     * is now retrieved from the session.
      */
+    def submitFile(dc, session, id, fileuploadUUID, fileCategory = IMAGES_CATEGORY_NAME) {
+        def fileupload = session[SESSION_FILEUPLOADS][fileuploadUUID]
 
-	def submitFile(dc,id,fileupload,fileCategory="images") {
-
-		def fileInfo=fileupload.split("\\|")
-
-		// create folder structure
-		def diPath=filePath(dc,id,fileCategory)
-		new File(diPath).mkdirs()
-		// upload the file
-		File file=new File(fileInfo[1])
-		if (file.exists()) {
-			def destFile= new File("${diPath}/${fileInfo[0]}")
-			FileUtils.copyFile(file,destFile)
-			file.delete()
-		}
-	}
+        def path = fileupload.path
+        def filename = fileupload.name
+        /* Create the direct path. */
+        def directPath = filePath(dc, id, fileCategory)
+        new File(directPath).mkdirs()
+        /* Upload the file. */
+        def file = new File(path)
+        if (file.exists()) {
+            def destinationFile = new File("${directPath}/${filename}")
+            FileUtils.copyFile(file, destinationFile)
+            file.delete()
+        }
+    }
 
     /**
-     * Move uploaded files to domain object folder
-     * This allows files to be attached to the original submission of a form after the domain object is created
+     * Move uploaded files to domain object folder. This allows files to be attached
+     * to the original submission of a form after the domain object is created.
      *
-     * @param dc The domain class
-     * @param params the controller params
-     * @param fileupload Information on the uploaded file separated by |
-     * @param fileCategory The file category, default is "images"
+     * @param dc The domain class.
+     * @param session The session object received from the controller.
+     * @param params The params object received from the controller.
+     * @param fileCategory (Optional) The file category, default is "images".
+     *
+     * 11/30/2017 - Cleanup. Added the 'session' parameter.
      */
-	def submitFiles(dc,params,fileCategory="images") {
-		if (params.fileupload) {
-
-			if (params.fileupload.class.name=="java.lang.String") {
-				submitFile(dc,params.id,params.fileupload,fileCategory)
-			} else {
-				params.fileupload.each { fileupload ->
-					submitFile(dc,params.id,fileupload,fileCategory)
-				}
-			}
-		}
-	}
+    def submitFiles(dc, session, params, fileCategory = IMAGES_CATEGORY_NAME) {
+        def fileuploadUUIDs = params.fileupload
+        if (fileuploadUUIDs) {
+            def id = params.id
+            if (fileuploadUUIDs instanceof java.lang.String) {
+                submitFile(dc, session, id, fileuploadUUIDs, fileCategory)
+            } else {
+                fileuploadUUIDs.each { fileuploadUUID ->
+                    submitFile(dc, session, id, fileuploadUUID, fileCategory)
+                }
+            }
+        }
+    }
 
     /**
      * Delete a file form a domain object's folder
@@ -394,24 +433,24 @@ class FileService {
         }
     }
 
-	/**
-	 * Fetch a file input stream from a fileupload that was generated by JS.
-	 *
-	 * @param dc The domain class type.
-	 * @param fileupload The information that was given by the JS.
-	 * @return A FileInputStream instance if there was a file found at the fileupload
-	 * location. Null if otherwise.
-	 * @since 08/30/2016
-	 */
-	def fetchFileStream(def dc, def fileupload) {
-		def info = fileupload.split("\\|")
-		def file = new File(info[1])
-		if (file.exists()) {
-			return new FileInputStream(file)
-		}
+    /**
+     * Fetch a file input stream from a fileupload that was generated by JS.
+     *
+     * @param path The path where the file can be found.
+     * @return A FileInputStream instance if there was a file found at the fileupload
+     * location. Null if otherwise.
+     * @since 08/30/2016
+     *
+     * 11/30/2017 - Cleanup. Removed all parameters and only set one parameter: path.
+     */
+    def fetchFileStream(path) {
+        def file = new File(path)
+        if (file.exists()) {
+            return new FileInputStream(file)
+        }
 
-		return null
-	}
+        return null
+    }
 
 
     /* NON-VOID METHODS ON PACKING FILE PATHS */
@@ -421,9 +460,12 @@ class FileService {
      *
      * @since 03/09/2017
      * @return A string representing the base path.
+     *
+     * 11/30/2017 - This method wasn't generic. Therefore the base path has been
+     * relocated to config.dialog.files.basePath
      */
     def getBasePath() {
-        return grailsApplication.config.wfp.path.files
+        return grailsApplication.config.dialog.files.basePath
     }
 
     /**
