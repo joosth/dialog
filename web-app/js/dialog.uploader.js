@@ -46,7 +46,9 @@ dialog.uploader.handleReadyStateDone = function(file, options, response, wrapper
             $(wrapper).append("<input type=\"hidden\" name=\"fileupload\" value=\"" + uuid + "\" />");
 
             var dataTable = $(wrapper).find("#fileupload").dataTable();
-            var deleteButton = "<a href=\"#\" class=\"btn btn-default btn-danger upload-delete-button\" row-id=\"" + uuid + "\"><i class=\"fa fa-trash-o\"></i></a>";
+            var deleteButton = "<a href=\"#\" class=\"btn btn-default btn-danger upload-delete-button\" row-id=\"" +
+                uuid + "\" controller=\"" + options.controller + "\"><i class=\"fa fa-trash-o\"></i></a>";
+
             var rowId = dataTable.fnAddData([ name, mimetype, size, deleteButton ]);
             var row = dataTable.fnGetNodes(rowId);
             $(row).attr("id", uuid);
@@ -132,9 +134,12 @@ dialog.uploader.upload = function(file, options) {
 /**
  * Initialize the DataTable for the fileuploads right away.
  * @since 12/04/2017
+ *
+ * 12/05/2017 - Added the lengthChange and searching parameters to the initialization
+ * of the data table to make it smaller.
  */
 dialog.uploader.initializeFileuploadTable = function(event, data) {
-    $(document).find("#fileupload").dataTable();
+    $(document).find("#fileupload").dataTable({ lengthChange: false, searching: false });
 };
 
 /**
@@ -144,9 +149,10 @@ dialog.uploader.initializeFileuploadTable = function(event, data) {
 dialog.uploader.removeUpload = function(event, data) {
     /* Find the UUID for the row and fileupload. */
     var uuid = $(this).attr("row-id");
+    var controller = $(this).attr("controller");
 
     /* Post the remove action to the backend. */
-    var url = dialog.baseUrl + "/form/removefile";
+    var url = dialog.baseUrl + "/" + controller + "/removefile";
     $.post(url, { uuid: uuid })
         .done(function(data) {
             if (!data.success) {

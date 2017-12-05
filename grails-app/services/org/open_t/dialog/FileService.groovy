@@ -32,6 +32,8 @@ import org.apache.commons.io.IOUtils
  * 11/30/2017 - Cleanup. Adjusted several methods (submitFile(...), submitFiles(...),
  * fetchFileStream(...), uploadFile(...) and getBasePath(...)) to now retrieve the
  * fileupload information from the session object provided by the controller.
+ * 12/05/2017 - Added the uploadFileLocally(...) and removeFileLocally(...) methods
+ * which are generic and can be used for both the front- and backend.
  */
 class FileService {
 
@@ -136,6 +138,76 @@ class FileService {
             identifier: identifier,
             message: "dialog.messages.uploadcompleted",
             success: true
+        ]
+    }
+
+    /**
+     * Upload a file to the local server. This will temporarily save the file and
+     * store information on its whereabouts in the session for later processing.
+     * This information is lateron retrieved when a Document is submitted and the
+     * files are to be uploaded to the backend.
+     *
+     * @param session The session object from the controller.
+     * @param request The request object from the controller.
+     * @param params The parameters map form the controller.
+     * @return A java.util.Map containing at least:
+     * - success : java.lang.Boolean
+     * - message : java.lang.String
+     * - data : java.util.Map
+     *      - uuid : java.lang.String
+     *      - filename : java.lang.String
+     *
+     * @since 12/05/2017
+     */
+    def uploadFileLocally(session, request, params) {
+        def result = uploadFile(request, params, COMMON_CATEGORY_NAME)
+        if (!session[SESSION_FILEUPLOADS]) {
+            /* Ensure that the session always has a valid Map for storing our fileuploads. */
+            session[SESSION_FILEUPLOADS] = [ : ]
+        }
+
+        def uuid = UUID.randomUUID().toString()
+        def filename = result.originalName
+        def mimetype = result.originalMimetype
+        def file = [
+            path: result.temporaryPath,
+            mimetype: mimetype,
+            name: filename
+        ]
+
+        session[SESSION_FILEUPLOADS].put(uuid, file)
+
+        return [
+            success: result.success,
+            message: result.message,
+            data: [
+                uuid: uuid,
+                filename: filename,
+                mimetype: mimetype
+            ]
+        ]
+    }
+
+    /**
+     * Remove a fileupload from the local session.
+     * @param session The session object from the controller.
+     * @param params The parameters map form the controller.
+     *
+     * @since 12/05/2017
+     */
+    def removeFileLocally(session, params) {
+        def uuid = params.uuid
+        def fileupload = session[SESSION_FILEUPLOADS]?.remove(uuid)
+        def file = new File(fileupload.path)
+        file.delete()
+
+        def success = false
+        if (!file.exists()) {
+            success = true
+        }
+
+        return [
+            success: success
         ]
     }
 
