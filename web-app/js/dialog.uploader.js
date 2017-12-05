@@ -54,7 +54,7 @@ dialog.uploader.handleReadyStateDone = function(file, options, response, wrapper
             $(row).attr("id", uuid);
         }
 
-        $(wrapper).find(".upload-progress-text").html(dialog.messages.uploadcompleted.replace("[0]", file.name));
+        $(wrapper).find(".upload-progress-text").html(dialog.messages.uploadcompleted.replace("{0}", file.name));
         $(".dialog-message-events").trigger("dialog-message", { message: response.message, alertType: "success" });
         $(".dialog-refresh-events").trigger("dialog-refresh", { dc: "ALL" });
     }
@@ -68,6 +68,8 @@ dialog.uploader.handleReadyStateDone = function(file, options, response, wrapper
 /**
  * 12/04/2017 - Cleanup. Moved the XHR OnReadyStateChange event to the dialog.uploader.handleReadyStateDone
  * method for better overview.
+ * 12/05/2017 - Enforce the user to only upload 1 file when the form can only have
+ * a single file. This is done by uploading async.
  */
 dialog.uploader.upload = function(file, options) {
     var xhr = new XMLHttpRequest();
@@ -75,7 +77,7 @@ dialog.uploader.upload = function(file, options) {
 
     $(wrapper).find(".upload-progress").css("width", "0%");
     $(wrapper).find(".upload-progress-percentage").html("0%");
-    $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("[0]", file.name));
+    $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("{0}", file.name));
 
     xhr.upload.onprogress = function(e) {
         if (e.lengthComputable) {
@@ -107,7 +109,7 @@ dialog.uploader.upload = function(file, options) {
         }
     };
 
-    $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("[0]", file.name));
+    $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("{0}", file.name));
 
     var url = dialog.baseUrl + "/" + options.controller + "/" + options.action;
     $.each(options.params, function(k, v) {
@@ -170,7 +172,6 @@ dialog.uploader.removeUpload = function(event, data) {
 };
 
 dialog.uploader.addDropHandler=function(catcher, options) {
-    //var catcher=document.getElementById(id);
     if(catcher) {
         catcher.addEventListener("drop", function (e) {
             if (e.preventDefault) e.preventDefault();
@@ -213,6 +214,7 @@ dialog.uploader.addDropHandler=function(catcher, options) {
  * 12/04/2017 - Cleanup. Added logic to clear the file input after uploading. This
  * prevented the user from uploading the file, deleting it and then trying to upload
  * it again.
+ * 12/05/2017 - Added a check for single-attachment uploading.
  */
 dialog.uploader.open = function open(e, params) {
     var upload = function(event, eventData) {
@@ -222,10 +224,18 @@ dialog.uploader.open = function open(e, params) {
         $(wrapper).find(".upload-progress-row").show();
 
         var input = $(this).find("input[type=file]")[0];
+
         var files = input.files;
-        for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-            var file = files[i];
-            dialog.uploader.upload(file, event.data);
+        var options = event.data;
+        /* 12/05/2017 - Ensure that only the first file is uploaded when multiple
+        are selected, but only one is allowed. */
+        if (options.params.single == "true") {
+            dialog.uploader.upload(files[0], options);
+        } else {
+            for (var i = 0, numFiles = files.length; i < numFiles; i++) {
+                var file = files[i];
+                dialog.uploader.upload(file, options);
+            }
         }
 
         /* 12/04/2017 - Clear the input files list. */
