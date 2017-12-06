@@ -52,10 +52,10 @@ dialog.uploader.handleReadyStateDone = function(file, options, response, wrapper
             var rowId = dataTable.fnAddData([ name, mimetype, size, deleteButton ]);
             var row = dataTable.fnGetNodes(rowId);
             $(row).attr("id", uuid);
+        } else {
+            $(".dialog-message-events").trigger("dialog-message", { message: response.message, alertType: "success" });
         }
-
         $(wrapper).find(".upload-progress-text").html(dialog.messages.uploadcompleted.replace("{0}", file.name));
-        $(".dialog-message-events").trigger("dialog-message", { message: response.message, alertType: "success" });
         $(".dialog-refresh-events").trigger("dialog-refresh", { dc: "ALL" });
     }
 
@@ -81,7 +81,7 @@ dialog.uploader.upload = function(file, options) {
 
     xhr.upload.onprogress = function(e) {
         if (e.lengthComputable) {
-            var completed = e.loaded * 100 / e.total;
+            var completed = Math.round(e.loaded * 100 / e.total);
             var s = completed + "%";
             $(wrapper).find(".upload-progress").css("width", s);
             $(wrapper).find(".upload-progress-percentage").html(s);
