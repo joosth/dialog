@@ -29,15 +29,54 @@ import org.apache.commons.io.IOUtils
 /**
  * 11/13/2017 - Improved the path calculation methods to now handle longer file
  * paths.
+<<<<<<< HEAD
+=======
  * 11/30/2017 - Cleanup. Adjusted several methods (submitFile(...), submitFiles(...),
  * fetchFileStream(...), uploadFile(...) and getBasePath(...)) to now retrieve the
  * fileupload information from the session object provided by the controller.
  * 12/05/2017 - Added the uploadFileLocally(...) and removeFileLocally(...) methods
  * which are generic and can be used for both the front- and backend.
+>>>>>>> develop
  */
 class FileService {
 
     /* STATIC VARIABLES */
+<<<<<<< HEAD
+
+    /**
+     * java.lang.Integer to define the default depth for a content element path.
+     * @since 11/13/2017
+     */
+    static final int CONTENT_PATH_DEPTH = 14
+
+    /**
+     * java.lang.String to define the file category 'common'.
+     * @since 11/13/2017
+     */
+    static final String COMMON_CATEGORY_NAME = "common"
+
+    /**
+     * java.lang.String to define the method 'getFolderPath'.
+     * @since 11/13/2017
+     */
+    static final String GET_FOLDER_PATH = "getFolderPath"
+
+    /**
+     * java.lang.String to define 'null'.
+     * @since 11/13/2017
+     */
+    static final String STR_NULL = "null"
+
+    /**
+     * The FileService is NOT transactional.
+     * @since 11/13/2017
+     */
+    static transactional = false
+
+
+    /* GLOBAL VARIABLES */
+=======
+>>>>>>> develop
 
     /**
      * java.lang.Integer to define the default depth for a content element path.
@@ -84,6 +123,8 @@ class FileService {
 
     /* GLOBAL VARIABLES */
 
+<<<<<<< HEAD
+=======
 	def grailsApplication
     def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
 
@@ -211,6 +252,7 @@ class FileService {
         ]
     }
 
+>>>>>>> develop
     /**
      * This calculates the full URL for the files of a domain object
      *
@@ -521,8 +563,13 @@ class FileService {
             return new FileInputStream(file)
         }
 
+<<<<<<< HEAD
+		return null
+	}
+=======
         return null
     }
+>>>>>>> develop
 
 
     /* NON-VOID METHODS ON PACKING FILE PATHS */
@@ -532,12 +579,18 @@ class FileService {
      *
      * @since 03/09/2017
      * @return A string representing the base path.
+<<<<<<< HEAD
+     */
+    def getBasePath() {
+        return grailsApplication.config.wfp.path.files
+=======
      *
      * 11/30/2017 - This method wasn't generic. Therefore the base path has been
      * relocated to config.dialog.files.basePath
      */
     def getBasePath() {
         return grailsApplication.config.dialog.files.basePath
+>>>>>>> develop
     }
 
     /**

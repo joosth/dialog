@@ -27,6 +27,7 @@ import org.springframework.web.servlet.support.RequestContextUtils as RCU
  * Tag library for Dialog plugin.
  *
  * 10/10/2017 - Added the notOptional flag to the select tag.
+ * 12/04/2017 - Added the fileuploadTable tag.
  *
  * @author Joost Horward
  */
@@ -1044,11 +1045,28 @@ class DialogTagLib {
     }
 
     /**
-     * Displays an upload control in the dialog
+     * A tag for adding a simple table that will contain fileuploads.
+     * @since 11/30/2017
      */
+    def fileuploadTable = { attrs ->
+        out <<
+            """
+            <table id="fileupload" class="table table-striped table-bordered table-hover dialog-open-events fileuploadTable" newButton="false">
+                <thead>
+                    <tr>
+                        <th>${g.message(code: "fileuploadtable.name.label")}</th>
+                        <th>${g.message(code: "fileuploadtable.mimetype.label")}</th>
+                        <th>${g.message(code: "fileuploadtable.size.label")}</th>
+                        <th class="actions">${g.message(code: "fileuploadtable.actions.label")}</th>
+                    </tr>
+                </thead>
+            </table>
+            """
+    }
 
-
-    // Upload area wrapper. Takes controller and action attributes
+    /**
+     * Displays an upload control in the dialog.
+     */
     def upload = { attrs, body ->
         def copiedAttrs = ""
         def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
@@ -1101,9 +1119,12 @@ class DialogTagLib {
 
     // Upload button
     def uploadButton = { attrs, body ->
-            out << """<span href="#" class="btn btn-default btn-file upload-button">
+        out <<
+            """
+            <span href="#" class="btn btn-default btn-file upload-button">
                 <span class="fa fa-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
-            </span>"""
+            </span>
+            """
     }
 
     /**
@@ -1205,13 +1226,21 @@ class DialogTagLib {
             link = """<a href="#" title="${help}">${icon}${label}</a>"""
         } else {
             def linkParams = [controller: attrs.controller, action: attrs.action, params: attrs.params, title: help]
-            if (attrs.id) {
-                linkParams["id"]=attrs.id
+            if (attrs.param_id) {
+                linkParams["id"]=attrs.param_id
             }
             link = g.link(linkParams) { icon + label }
         }
 
-        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}">${link}</li>"""
+        def copiedAttrs = ""
+        def skipAttrs = ["class", "code","label","nosubmit","params"]
+        attrs.each { attrKey, attrValue ->
+            if (!skipAttrs.contains(attrKey)) {
+                copiedAttrs += """ ${attrKey}="${attrValue}" """
+            }
+        }
+
+        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}"  ${copiedAttrs}>${link}</li>"""
     }
 
     /**
@@ -1310,6 +1339,10 @@ class DialogTagLib {
             linkTagAttrs.mapping = attrs.mapping
         }
 
+        if (attrs.uri) {
+            linkTagAttrs.uri = attrs.uri
+        }
+
         linkTagAttrs.params = linkParams
 
         def cssClasses = "pagination"
@@ -1364,7 +1397,7 @@ class DialogTagLib {
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
                 linkParams.offset = 0
-                writer << '<li>'
+                writer << '<li offset="0">'
                 writer << link(linkTagAttrs.clone()) {firststep.toString()}
                 writer << '</li>'
                 writer << '<li class="disabled"><span>...</span></li>'
@@ -1379,7 +1412,7 @@ class DialogTagLib {
                 }
                 else {
                     linkParams.offset = (i - 1) * max
-                    writer << "<li>";
+                    writer << '<li offset="'+linkParams.offset+'" >';
                     writer << link(linkTagAttrs.clone()) {i.toString()}
                     writer << "</li>";
                 }
@@ -1398,7 +1431,7 @@ class DialogTagLib {
         // display next link when not on laststep
         if (currentstep < laststep) {
             linkParams.offset = offset + max
-            writer << '<li class="next">'
+            writer << '<li class="next" offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
                 (attrs.next ? attrs.next : messageSource.getMessage("paginate.next", null, "&raquo;", locale))
             }
@@ -1406,7 +1439,7 @@ class DialogTagLib {
         }
         else {
             linkParams.offset = offset + max
-            writer << '<li class="disabled">'
+            writer << '<li class="disabled" offset="'+linkParams.offset+'"">'
             writer << '<span>'
             writer << (attrs.next ? attrs.next : messageSource.getMessage("paginate.next", null, "&raquo;", locale))
             writer << '</span>'
