@@ -1206,7 +1206,7 @@ class DialogTagLib {
         } else {
             code = "menu." + attrs.controller + "." + attrs.action
         }
-        def label = attrs.label ?: g.message(code: code + ".label")
+        def label = g.message(code: code + ".label", default: attrs.label)        
         def help = g.message(code: code + ".help", default: "")
 
         def onclick = ""
