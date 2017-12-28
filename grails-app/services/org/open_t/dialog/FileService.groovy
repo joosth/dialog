@@ -447,7 +447,7 @@ class FileService {
 	 * @param response The HTTP response to write the file to.
 	 * @since 09/01/2016
 	 */
-	def stream(def file, def name, def response, def contentType = null,fileName=null) {
+	def stream(def file, def response, def contentType = null,fileName=null) {
         if (fileName) {
 	        response.setHeader("Content-Disposition", "attachment; filename=\"${fileName}\"")
         } else {
@@ -460,18 +460,7 @@ class FileService {
 
         // Check if file is present and readable
         if (file && file.canRead()) {
-    		def inputStream = new FileInputStream(file)
-    		def bufsize = 100000
-    		byte[] bytes = new byte[(int) bufsize]
-
-    		def offset = 0
-    		def len = 1
-    		while (len > 0) {
-    			len = inputStream.read(bytes, 0, bufsize)
-    			if (len > 0)
-    			response.outputStream.write(bytes, 0, len)
-    			offset += bufsize
-    		}
+            FileUtils.copyFile(file,response.outputStream)
 
     		try {
     			response.outputStream.flush()
@@ -493,7 +482,7 @@ class FileService {
 	def streamFile(def dc, def id, def fileCategory, def name, def response) {
         def filePath = filePath(dc, id, fileCategory) + "/${name}"
         def file = new File(filePath)
-		stream(file, file.name, response)
+		stream(file, response,file.name)
 	}
 
     /**
