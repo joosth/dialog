@@ -1206,7 +1206,7 @@ class DialogTagLib {
         } else {
             code = "menu." + attrs.controller + "." + attrs.action
         }
-        def label = g.message(code: code + ".label", default: attrs.label)        
+        def label = g.message(code: code + ".label", default: attrs.label)
         def help = g.message(code: code + ".help", default: "")
 
         def onclick = ""
@@ -1218,7 +1218,7 @@ class DialogTagLib {
                 if (attrs.params) {
                     params = attrs.params.collect { key, value -> "'${key}': '${value}'"}.join(",")
                 }
-                onclick = """onclick="dialog.formDialog('null', '${attrs.controller}', {'dialogname': '${attrs.action}', 'nosubmit': ${nosubmit}}, {${params}}, null)" """
+                onclick = """onclick="dialog.formDialog('null', '${attrs.controller}', {'dialogname': '${attrs.action}', 'nosubmit': ${nosubmit}}, {${params}}, null);return false;" """
             } else {
                 onclick = """onclick="${attrs.onclick}" """
             }
