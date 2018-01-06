@@ -112,7 +112,7 @@ dialog.confirm = function confirm(message, title, callback, data) {
  * @param urlParams
  * @returns {Boolean}
  */
-dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
+dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,callbackFunction) {
 
     var urlId = id + dialog.obj2ParamStr(urlParams);
 
@@ -178,6 +178,10 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
                     theDialog.find(".error").removeClass("error");
 
                     $.post(dialog.baseUrl + "/" + controllerName + "/" + submitName + "/" + urlId, formData, function(data) {
+                        if (typeof callbackFunction === "function") {
+                            callbackFunction.call(this,data);
+                        }
+
                         var jsonResponse = data.result;
 
                         $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id, jsonResponse: jsonResponse } );
@@ -186,7 +190,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams) {
                             $(".dialog-message-events").trigger("dialog-message", { message: jsonResponse.message } );
                             theDialog.modal("hide");
                             if (jsonResponse.nextDialog) {
-                                dialog.formDialog(jsonResponse.nextDialog.id, jsonResponse.nextDialog.controllerName, jsonResponse.nextDialog.options, jsonResponse.nextDialog.urlParams);
+                                dialog.formDialog(jsonResponse.nextDialog.id, jsonResponse.nextDialog.controllerName, jsonResponse.nextDialog.options, jsonResponse.nextDialog.urlParams,callbackFunction);
                             }
                         } else {
                             for (fieldName in jsonResponse.errorFields) {
