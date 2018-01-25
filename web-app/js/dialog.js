@@ -235,7 +235,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,ca
  * @param options
  * @param urlParams
  */
-dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlParams) {
+dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlParams,callbackFunction) {
     var urlId = id + dialog.obj2ParamStr(urlParams);
     var controllerTitle = controllerName.charAt(0).toUpperCase() + controllerName.slice(1);
     var dialogHTML =
@@ -266,6 +266,9 @@ dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlPara
         deleteButton.click( function () {
             var formData = theDialog.find("form").serialize();
             $.post(dialog.baseUrl + "/" + controllerName + "/delete/" + urlId, formData, function(data) {
+                if (typeof callbackFunction === "function") {
+                    callbackFunction.call(this,data);
+                }
                 var result = data.result;
 
                 $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id, jsonResponse: result } );
