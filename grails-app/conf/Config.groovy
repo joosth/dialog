@@ -9,3 +9,9 @@ grails.resources.adhoc.includes = ['/images/**', '/css/**', '/js/**', '/plugins/
 
 //don't rewrite CKEditor CCS files, it breaks links to image resources..
 grails.resources.mappers.csspreprocessor.excludes = ['**/ext/ckeditor/skins/**']
+dialog {
+    files {
+        minimumFreeTempSpace=200000000
+        maxTempFileAge=1800000
+    }
+}
