@@ -87,6 +87,28 @@ class FileService {
 	def grailsApplication
     def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
 
+
+    /*
+    * Remove upload files older than a certain age (default: 30 minutes) from temp location
+    */
+
+    def cleanup()  {
+        def maxTempFileAge = grailsApplication.config?.dialog?.files?.maxTempFileAge
+        if (!maxTempFileAge) {
+            maxTempFileAge=1800000
+        }
+        String tempDir = System.getProperty("java.io.tmpdir");
+        new File(tempDir).eachFile { file ->
+          if (file.name.startsWith("upload") && file.name.endsWith("bin")) {
+            def age=new Date().time - file.lastModified()
+            if (age>maxTempFileAge) {
+              log.debug "Deleting ${file.name} ${age}"
+              file.delete()
+            }
+          }
+        }
+    }
+
     /**
      * Upload a file in response to the dialog:upload tag.
      *
@@ -102,6 +124,26 @@ class FileService {
      * some variable names.
      */
     def uploadFile(request, params, fileCategory = IMAGES_CATEGORY_NAME, dc = null) {
+        cleanup()
+
+        // Refuse upload if this will bring us under the defined miminum free space (default: 100M)
+        String tempDir = System.getProperty("java.io.tmpdir");
+        def freeSpace=new File(tempDir).getFreeSpace()
+        def minimumFreeTempSpace = grailsApplication.config?.dialog?.files?.minimumFreeTempSpace
+        if (!minimumFreeTempSpace) {
+            minimumFreeTempSpace=100000000
+        }
+
+        def contentLengthString=request.getHeader("Content-Length")
+        def contentLength=new Long(contentLengthString)
+
+        if (freeSpace<(minimumFreeTempSpace+contentLength)) {
+            return [
+                message: "dialog.messages.outofdiskspace",
+                success: false
+            ]
+        }
+
         def filenameHeader = request.getHeader("X-File-Name") ?: "unknown-file-name.bin"
         def filename = URLDecoder.decode(filenameHeader, "UTF-8")
 
