@@ -17,7 +17,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see http://www.gnu.org/licenses
  */
-dialog.uploader = { };
+dialog.uploader = { globalProgress:0 };
+
 
 /**
  * Handle the XHR ready state for DONE (i.e. ready state 4). Added functionality
@@ -71,17 +72,22 @@ dialog.uploader.handleReadyStateDone = function(file, options, response, wrapper
  * 12/05/2017 - Enforce the user to only upload 1 file when the form can only have
  * a single file. This is done by uploading async.
  */
-dialog.uploader.upload = function(file, options) {
+dialog.uploader.upload = function(file, options,fileNo,numFiles) {
     var xhr = new XMLHttpRequest();
     var wrapper = options.wrapper;
 
-    $(wrapper).find(".upload-progress").css("width", "0%");
-    $(wrapper).find(".upload-progress-percentage").html("0%");
-    $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("{0}", file.name));
+
+    if (fileNo==0) {
+        dialog.uploader.globalProgress=0;
+
+        $(wrapper).find(".upload-progress").css("width", "0%");
+        $(wrapper).find(".upload-progress-percentage").html("0%");
+        $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("{0}", file.name));
+    }
 
     xhr.upload.onprogress = function(e) {
-        if (e.lengthComputable) {
-            var completed = Math.round(e.loaded * 100 / e.total);
+        if (e.lengthComputable && (numFiles==1)) {
+            var completed = Math.round(e.loaded * 100 / (e.total));
             var s = completed + "%";
             $(wrapper).find(".upload-progress").css("width", s);
             $(wrapper).find(".upload-progress-percentage").html(s);
@@ -105,6 +111,11 @@ dialog.uploader.upload = function(file, options) {
         case 4:
             var response = $.parseJSON(this.response);
             dialog.uploader.handleReadyStateDone(file, options, response, wrapper);
+                var gp = dialog.uploader.globalProgress++;
+                var completed = Math.round((gp+1) * 100 / (numFiles));
+                var s = completed + "%";
+                $(wrapper).find(".upload-progress").css("width", s);
+                $(wrapper).find(".upload-progress-percentage").html(s);
             break;
         }
     };
@@ -183,7 +194,7 @@ dialog.uploader.addDropHandler=function(catcher, options) {
 
             for (var i = 0, numFiles = files.length; i < numFiles; i++) {
                 var file = files[i];
-                dialog.uploader.upload(file,options);
+                dialog.uploader.upload(file,options,i,numFiles);
             }
 
             return false;
@@ -230,11 +241,11 @@ dialog.uploader.open = function open(e, params) {
         /* 12/05/2017 - Ensure that only the first file is uploaded when multiple
         are selected, but only one is allowed. */
         if (options.params.single == "true") {
-            dialog.uploader.upload(files[0], options);
+            dialog.uploader.upload(files[0], options,1,1);
         } else {
             for (var i = 0, numFiles = files.length; i < numFiles; i++) {
                 var file = files[i];
-                dialog.uploader.upload(file, options);
+                dialog.uploader.upload(file, options,i,numFiles);
             }
         }
 
