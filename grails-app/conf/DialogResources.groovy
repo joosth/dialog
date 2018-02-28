@@ -34,6 +34,10 @@ modules = {
 		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/shell/',file:'shell.js']
 		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/clike/',file:'clike.js']
         resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/sql/',file:'sql.js']
+
+        resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/display',file:'fullscreen.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/display',file:'fullscreen.css']
+
 		resource url: [plugin: 'jquery-dialog', dir:'js',file:'dialog.codemirror.js']
 
 	}
