@@ -88,7 +88,6 @@ dialog.codemirror.open =function open (e,params) {
 
         if (mode=='text/x-sql') {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
-                fullScreen:true,
                 mode: 'text/x-sql',
                 lineNumbers: true,
                 extraKeys: {
