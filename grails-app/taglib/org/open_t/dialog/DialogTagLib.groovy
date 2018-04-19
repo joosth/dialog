@@ -1406,13 +1406,13 @@ class DialogTagLib {
             // display paginate steps
             (beginstep..endstep).each { i ->
                 if (currentstep == i) {
-                    writer << "<li class=\"active\">"
+                    writer << "<li class=\"active hidden-xs\">"
                     writer << "<span>${i}</span>"
                     writer << "</li>";
                 }
                 else {
                     linkParams.offset = (i - 1) * max
-                    writer << '<li offset="'+linkParams.offset+'" >';
+                    writer << '<li offset="'+linkParams.offset+'" class=\"hidden-xs\">';
                     writer << link(linkTagAttrs.clone()) {i.toString()}
                     writer << "</li>";
                 }
