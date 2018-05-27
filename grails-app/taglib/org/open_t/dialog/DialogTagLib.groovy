@@ -818,7 +818,7 @@ class DialogTagLib {
         if (attrs.error) {
             out << """<div class="errors text-error alert alert-danger">${attrs.error ? attrs.error : ""}</div>"""
         } else {
-            out << """<div class="errors errors alert alert-danger" style="display: none;"></div>"""
+            out << """<div class="errors alert alert-danger" style="display: none;"></div>"""
         }
 
         def message = g.message(code: "form.${name}.message", default: "")
