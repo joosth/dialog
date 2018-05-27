@@ -205,9 +205,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,ca
 
                         var jsonResponse = data.result;
 
-                        $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id, jsonResponse: jsonResponse } );
-
                         if (jsonResponse.success) {
+                            $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id, jsonResponse: jsonResponse } );
                             $(".dialog-message-events").trigger("dialog-message", { message: jsonResponse.message } );
                             theDialog.modal("hide");
                             if (jsonResponse.nextDialog) {
