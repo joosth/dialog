@@ -762,7 +762,7 @@ class DialogTagLib {
         this.pageScope.dialogTabNames.eachWithIndex { name, i ->
             def defaultTabLabel = g.message(code: "dialog.tab.${name}", default: name)
             def tabLabel = g.message(code: "dialog.tab.${domainPropertyName}.${name}", default: defaultTabLabel)
-            out << """<li role="presentation" class="${i == 0 ? "active" : "" }"><a href="#${prefix}${name}" aria-controls="${prefix}${name}" role="tab" data-toggle="tab">${tabLabel}</a></li>"""
+            out << """<li class="${i == 0 ? "active" : "" }"><a href="#${prefix}${name}" aria-controls="${prefix}${name}" role="tab" data-toggle="tab">${tabLabel}</a></li>"""
         }
 
         out << "</ul>"
