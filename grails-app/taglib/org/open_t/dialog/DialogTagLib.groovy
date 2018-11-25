@@ -65,7 +65,7 @@ class DialogTagLib {
                 dialog.messages.uploading = "${message(code: "dialog.messages.uploading")}";
                 dialog.messages.uploadcompleted = "${message(code: "dialog.messages.uploadcompleted")}";
 
-                dialog.messages.new = "${message(code: "dialog.messages.new")}";
+                dialog.messages['new'] = "${message(code: "dialog.messages.new")}";
                 dialog.messages.confirmdelete = "${message(code: "dialog.messages.confirmdelete")}";
                 dialog.messages.confirmdeleteTitle = "${message(code: "dialog.messages.confirmdeleteTitle")}";
 
