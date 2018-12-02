@@ -55,7 +55,7 @@ dialog.datatables.open =function open (e,params) {
         curMatch.parent().find('div.toolbar').prepend(toolbar);
 
         // Add NEW button
-        var newString = dialog.messages.new;
+        var newString = dialog.messages['new'];
         if (!newString) {
             newString = "new";
         }
