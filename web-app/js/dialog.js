@@ -198,6 +198,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,ca
                     theDialog.find("p.error-message").html("");
                     theDialog.find(".error").removeClass("error");
                     $.ajax(dialog.baseUrl + "/" + controllerName + "/" + submitName + "/" + urlId, {
+                        data:formData,
                         success: function(data) {
                             if (typeof callbackFunction === "function") {
                                 callbackFunction.call(this,data);
@@ -226,7 +227,8 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,ca
                             json: 'application/json"'
                         },
                         type:"POST",
-                        dataType:"json"
+                        dataType:"json",
+
                     });
                 } else {
                     theDialog.modal("hide");
