@@ -33,7 +33,7 @@ class DialogExceptionController {
 		def title="Error handling error"
 		def msg=""
 		def exceptionCode="dialogException.dialog"
-        if(request.exception?.message) {
+        if (request.exception?.message) {
             exceptionCode=request.exception?.message
         }
 		def args=[]

@@ -197,31 +197,37 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,ca
                     theDialog.find("div.errors").html("");
                     theDialog.find("p.error-message").html("");
                     theDialog.find(".error").removeClass("error");
-
-                    $.post(dialog.baseUrl + "/" + controllerName + "/" + submitName + "/" + urlId, formData, function(data) {
-                        if (typeof callbackFunction === "function") {
-                            callbackFunction.call(this,data);
-                        }
-
-                        var jsonResponse = data.result;
-
-                        if (jsonResponse.success) {
-                            $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id, jsonResponse: jsonResponse } );
-                            $(".dialog-message-events").trigger("dialog-message", { message: jsonResponse.message } );
-                            theDialog.modal("hide");
-                            if (jsonResponse.nextDialog) {
-                                dialog.formDialog(jsonResponse.nextDialog.id, jsonResponse.nextDialog.controllerName, jsonResponse.nextDialog.options, jsonResponse.nextDialog.urlParams,callbackFunction);
+                    $.ajax(dialog.baseUrl + "/" + controllerName + "/" + submitName + "/" + urlId, {
+                        success: function(data) {
+                            if (typeof callbackFunction === "function") {
+                                callbackFunction.call(this,data);
                             }
-                        } else {
-                            for (fieldName in jsonResponse.errorFields) {
-                                var errorMessage=jsonResponse.errorFields[fieldName];
-                                $(".property-"+fieldName).addClass("has-error");
-                                $(".property-"+fieldName).find("span.error-message").html(errorMessage);
+
+                            var jsonResponse = data.result;
+
+                            if (jsonResponse.success) {
+                                $(".dialog-refresh-events").trigger("dialog-refresh", { dc: domainClass, id: id, jsonResponse: jsonResponse } );
+                                $(".dialog-message-events").trigger("dialog-message", { message: jsonResponse.message } );
+                                theDialog.modal("hide");
+                                if (jsonResponse.nextDialog) {
+                                    dialog.formDialog(jsonResponse.nextDialog.id, jsonResponse.nextDialog.controllerName, jsonResponse.nextDialog.options, jsonResponse.nextDialog.urlParams,callbackFunction);
+                                }
+                            } else {
+                                for (fieldName in jsonResponse.errorFields) {
+                                    var errorMessage=jsonResponse.errorFields[fieldName];
+                                    $(".property-"+fieldName).addClass("has-error");
+                                    $(".property-"+fieldName).find("span.error-message").html(errorMessage);
+                                }
+                                theDialog.find("div.errors").html(jsonResponse.message);
+                                theDialog.find("div.errors").show();
                             }
-                            theDialog.find("div.errors").html(jsonResponse.message);
-                            theDialog.find("div.errors").show();
-                        }
-                    },"json");
+                        },
+                        accepts: {
+                            json: 'application/json"'
+                        },
+                        type:"POST",
+                        dataType:"json"
+                    });
                 } else {
                     theDialog.modal("hide");
                 }
