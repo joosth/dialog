@@ -1360,7 +1360,7 @@ class DialogTagLib {
         // display previous link when not on firststep
         if (currentstep > firststep) {
             linkParams.offset = offset - max
-            writer << '<li class="prev">'
+            writer << '<li class="prev" offset="'+linkParams.offset+'">'            
             writer << link(linkTagAttrs.clone()) {
                 (attrs.prev ?: messageSource.getMessage("paginate.prev", null, "&laquo;", locale))
             }
@@ -1422,7 +1422,7 @@ class DialogTagLib {
             if (endstep < laststep) {
                 writer << '<li class="disabled"><span>...</span></li>'
                 linkParams.offset = (laststep -1) * max
-                writer << '<li>'
+                writer << '<li offset="'+linkParams.offset+'">'
                 writer << link(linkTagAttrs.clone()) { laststep.toString() }
                 writer << '</li>'
             }
