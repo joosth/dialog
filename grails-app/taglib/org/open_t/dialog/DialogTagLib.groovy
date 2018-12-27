@@ -717,15 +717,10 @@ class DialogTagLib {
                         }
                     }
 
-                    //def value=attrs.object."${attrs.propertyName}"?:""
                     def value=attrs.object."${attrs.propertyName}" ? attrs.object."${attrs.propertyName}" : "${attrs.value}"
-
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
-                    /* 10/10/2017 - Added an attribute for determining whether the
-                    select is optional, or absolutely not optional. Will leave the
-                    dash (default option) out if notOptional is true. */
                     if (property.isOptional() && !attrs.notOptional) {
                         opts.put("noSelection", ["": "-"])
                     }
@@ -737,6 +732,7 @@ class DialogTagLib {
                             opts.put(attrKey,attrValue)
                         }
                     }
+
                     return g.select(opts)
                     break
             }
@@ -1360,7 +1356,7 @@ class DialogTagLib {
         // display previous link when not on firststep
         if (currentstep > firststep) {
             linkParams.offset = offset - max
-            writer << '<li class="prev" offset="'+linkParams.offset+'">'            
+            writer << '<li class="prev" offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
                 (attrs.prev ?: messageSource.getMessage("paginate.prev", null, "&laquo;", locale))
             }
