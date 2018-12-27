@@ -139,6 +139,7 @@ dialog.datatables.openHtmlDatatable = function (e,params) {
     $(this).find(".dialog-open-events").addClass("datatables-reinit");
 
     $(this).DataTable({
+         stateSave: true,
         "pageLength": pageLength,
         "lengthMenu": [[5, 10, 25], [5, 10, 25]],
         "dom": "<'row toolbar'<'col-sm-6'l><'col-sm-6'f>>" +
@@ -156,6 +157,8 @@ dialog.datatables.openHtmlDatatable = function (e,params) {
 
 dialog.datatables.htmlDraw= function (e) {
     var curTable = $(e.currentTarget).dataTable().api();
+    // Adjust column width so table fits in allocated width
+    curTable.columns.adjust();
     var page=curTable.page.info().page;
 
     if (page!=0) {
