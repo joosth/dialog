@@ -23,13 +23,13 @@ import java.util.List;
 /**
  * Dialog exceptions provide a way to throw an exception that will be handled with a dialog
  */
-class DialogException extends RuntimeException {
+public class DialogException extends RuntimeException {
 
 	/**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
-    List<String> args;
+    public List<String> args;
 
 	DialogException (String message) {
 		super(message);

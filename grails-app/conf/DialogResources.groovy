@@ -1,14 +1,18 @@
 modules = {
 
-    dialog {
-        dependsOn 'dialog-jquery'
-
+    'dialog' {
+        dependsOn 'dialog-jquery,dialog-loglevel'
         resource url: [plugin: 'jquery-dialog', dir:'js', file:'dialog.js']
         resource url: [plugin: 'jquery-dialog', dir:'css', file:'dialog.css']
     }
 
     'dialog-jquery' {
-        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.4.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/jquery', file: 'jquery-1.12.4.min.js']
+
+    }
+
+    'dialog-loglevel' {
+        resource url: [plugin: 'jquery-dialog', dir:'ext/loglevel', file: 'loglevel.min.js']
     }
 
 	'dialog-ckeditor' {
@@ -34,6 +38,10 @@ modules = {
 		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/shell/',file:'shell.js']
 		resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/clike/',file:'clike.js']
         resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/mode/sql/',file:'sql.js']
+
+        resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/display',file:'fullscreen.js']
+        resource url: [plugin: 'jquery-dialog', dir:'ext/codemirror/addon/display',file:'fullscreen.css']
+
 		resource url: [plugin: 'jquery-dialog', dir:'js',file:'dialog.codemirror.js']
 
 	}

@@ -1,145 +1,257 @@
 /*
-* Grails Dialog plug-in
-* Copyright 2013 Open-T B.V., and individual contributors as indicated
-* by the @author tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Affero General Public License
-* version 3 published by the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Affero General Public License for more details.
+ * Dialog
+ *
+ * Copyright 2009-2017, Open-T B.V., and individual contributors as indicated
+ * by the @author tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * version 3 published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
 
-* You should have received a copy of the GNU Affero General Public License
-* along with this program.  If not, see http://www.gnu.org/licenses
-*/
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses
+ */
 package org.open_t.dialog
 
+import java.net.URLDecoder
 import java.text.SimpleDateFormat
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FileFileFilter
 import org.apache.commons.io.IOUtils
 
+/**
+ * 11/13/2017 - Improved the path calculation methods to now handle longer file
+ * paths.
+ * 11/30/2017 - Cleanup. Adjusted several methods (submitFile(...), submitFiles(...),
+ * fetchFileStream(...), uploadFile(...) and getBasePath(...)) to now retrieve the
+ * fileupload information from the session object provided by the controller.
+ * 12/05/2017 - Added the uploadFileLocally(...) and removeFileLocally(...) methods
+ * which are generic and can be used for both the front- and backend.
+ */
 class FileService {
 
-	static transactional = false
+    /* STATIC VARIABLES */
+
+    /**
+     * java.lang.Integer to define the default depth for a content element path.
+     * @since 11/13/2017
+     */
+    static final int CONTENT_PATH_DEPTH = 14
+
+    /**
+     * java.lang.String to define the file category 'common'.
+     * @since 11/13/2017
+     */
+    static final String COMMON_CATEGORY_NAME = "common"
+
+    /**
+     * java.lang.String to define the file category 'images'.
+     * @since 11/30/2017
+     */
+    static final String IMAGES_CATEGORY_NAME = "images"
+
+    /**
+     * java.lang.String to define the method 'getFolderPath'.
+     * @since 11/13/2017
+     */
+    static final String GET_FOLDER_PATH = "getFolderPath"
+
+    /**
+     * java.lang.String to define 'null'.
+     * @since 11/13/2017
+     */
+    static final String STR_NULL = "null"
+
+    /**
+     * java.lang.String to define 'fileuploads' for session objects.
+     * @since 11/30/2017
+     */
+    static final String SESSION_FILEUPLOADS = "fileuploads"
+
+    /**
+     * The FileService is NOT transactional.
+     * @since 11/13/2017
+     */
+    static transactional = false
+
+
+    /* GLOBAL VARIABLES */
 
 	def grailsApplication
     def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
 
-    /**
-     * upload file in response to the dialog:upload tag
-     *
-     * @param request request as provided to from the controller
-     * @param params params as provided to the controller
-     * @fileCategory The file category, default is "images"
-     * @dc The domain class or String representing the domain class
-     * @return Map to be rendered as JSON
-     */
-    def uploadFile(request,params,fileCategory="images",dc=null) {
-        def mimetype
-        def is
-
-        def filename=java.net.URLDecoder.decode(request.getHeader("X-File-Name")?:"unknown-file-name.bin", "UTF-8");
-
-        is =request.getInputStream()
-        mimetype=request.getHeader("Content-Type")
-
-        log.debug "MIMETYPE: ${mimetype}"
-
-        def tempFile=File.createTempFile("upload", "bin");
-        OutputStream os=new FileOutputStream(tempFile)
-        IOUtils.copy(is,os)
-        os.flush()
-
-		is.close()
-		os.close()
-
-        def isDirect=(params.direct==true || params.direct=="true")
-        if (isDirect && dc!=null && (params.identifier!=null && params.identifier!="null" && params.identifier!="undefined")) {
-            def diPath=filePath(dc,params.identifier,fileCategory)
-            def destFile= new File("${diPath}/${filename}")
-            FileUtils.copyFile(tempFile,destFile)
-            tempFile.delete()
-        }
-
-        def res=[path:tempFile.absolutePath,name:tempFile.name,success:true,mimetype:mimetype,identifier:params.identifier,sFileName:params.sFileName,message:"Upload completed"]
-        return res
-    }
 
     /*
-     * Pack a value and convert it to a 8-byte 36-based formatted number
-     * @param n The value
-     * @return The formatted String
-     */
-	def pack(n) {
-        if (!n || n=="null") {
-            n=0
+    * Remove upload files older than a certain age (default: 30 minutes) from temp location
+    */
+
+    def cleanup()  {
+        def maxTempFileAge = grailsApplication.config?.dialog?.files?.maxTempFileAge
+        if (!maxTempFileAge) {
+            maxTempFileAge=1800000
         }
-		String s= Long.toString(new Long(n),36)
-		return String.format("%1\$8s", s).replace(' ', '0')
-	}
+        String tempDir = System.getProperty("java.io.tmpdir");
+        new File(tempDir).eachFile { file ->
+          if (file.name.startsWith("upload") && file.name.endsWith("bin")) {
+            def age=new Date().time - file.lastModified()
+            if (age>maxTempFileAge) {
+              log.debug "Deleting ${file.name} ${age}"
+              file.delete()
+            }
+          }
+        }
+    }
 
     /**
-     * Create a Packed path from a value
-     * This is a short path that is used to create a balanced folder structure to store files that are attached to domain objects
-     * The path has the form xx/xx/xx/xx
-     * This is sufficient for 2.8T objects
+     * Upload a file in response to the dialog:upload tag.
      *
-     * @param n The Value
-     * @return the Packed path
-     */
-	def packedPath(n) {
-		String s=pack(n)
-		return s.substring(0,2)+"/"+s.substring(2,4)+"/"+s.substring(4,6)+"/"+s.substring(6,8)
-	}
-
-	// TODO offer possibility to provide alternate location per category.
-
-    /**
-     * This calculates the relative path on the filesystem for the files of a domain object
+     * @param request The web request as provided by the controller.
+     * @param params The parameter map as provided by the controller.
+     * @param fileCategory (Optional) The category to store the files in; 'images'
+     * by default.
+     * @param dc (Optional) The domain class or String representing the domain class.
+     * Null by default.
+     * @return Map to be rendered as JSON containing the temporary file information.
      *
-     * @param dc The domain class or a String representing the domain class. A string is allowed so there is no need to have access to the actual domain class
-     * @param id The id of the domain object
-     * @param fileCategory The file category. This is a string allowing a top-level tree split which is helpful if permissions of categories are different
-     * @return The path
+     * 11/30/2017 - Cleanup. Removed obsolete parameters in the return map and changed
+     * some variable names.
      */
-	def relativePath(dc,id,fileCategory) {
-        def name
-        def hasFolderPathMethod=false
-        if (dc.class==java.lang.String) {
-            name=dc
-        } else {
-            name=dc.getName()
-            hasFolderPathMethod = dc.methods.collect { method -> method.name }.contains("getFolderPath")
+    def uploadFile(request, params, fileCategory = IMAGES_CATEGORY_NAME, dc = null) {
+        cleanup()
+
+        // Refuse upload if this will bring us under the defined miminum free space (default: 100M)
+        String tempDir = System.getProperty("java.io.tmpdir");
+        def freeSpace=new File(tempDir).getFreeSpace()
+        def minimumFreeTempSpace = grailsApplication.config?.dialog?.files?.minimumFreeTempSpace
+        if (!minimumFreeTempSpace) {
+            minimumFreeTempSpace=100000000
         }
 
-		name=name.replaceAll (".*\\.", "")
+        def contentLengthString=request.getHeader("Content-Length")
+        def contentLength=new Long(contentLengthString)
 
-		if (hasFolderPathMethod) {
-			def dcInstance=dc.get(id)
-			return dcInstance.getFolderPath(fileCategory)
-		} else {
-			return "${fileCategory}/${name}/${packedPath(id)}"
-		}
-	}
+        if (freeSpace<(minimumFreeTempSpace+contentLength)) {
+            return [
+                message: "dialog.messages.outofdiskspace",
+                success: false
+            ]
+        }
+
+        def filenameHeader = request.getHeader("X-File-Name") ?: "unknown-file-name.bin"
+        def filename = URLDecoder.decode(filenameHeader, "UTF-8")
+
+        def inputStream = request.getInputStream()
+        def mimetype = request.getHeader("Content-Type")
+
+        log.debug("Mimetype for ${filename} is ${mimetype}.")
+
+        def temporaryFile = File.createTempFile("upload", "bin")
+        def outputStream = new FileOutputStream(temporaryFile)
+        IOUtils.copy(inputStream, outputStream)
+
+        outputStream.flush()
+        inputStream.close()
+        outputStream.close()
+
+        def direct = params.direct
+        def identifier = params.identifier
+        def isDirect = (direct == true || direct == "true")
+        def hasIdentifier = (identifier != null && identifier != "null" && identifier != "undefined")
+
+        if (isDirect && hasIdentifier && dc != null) {
+            def directPath = filePath(dc, identifier, fileCategory)
+            def destinationFile = new File("${directPath}/${filename}")
+            FileUtils.copyFile(temporaryFile, destinationFile)
+            temporaryFile.delete()
+        }
+
+        return [
+            temporaryPath: temporaryFile.absolutePath,
+            temporaryName: temporaryFile.name,
+            originalName: filename,
+            originalMimetype: mimetype,
+            identifier: identifier,
+            message: "dialog.messages.uploadcompleted",
+            success: true
+        ]
+    }
 
     /**
-     * This calculates the full path on the filesystem for the files of a domain object
+     * Upload a file to the local server. This will temporarily save the file and
+     * store information on its whereabouts in the session for later processing.
+     * This information is lateron retrieved when a Document is submitted and the
+     * files are to be uploaded to the backend.
      *
-     * @param dc The domain class or a String representing the domain class. A string is allowed so there is no need to have access to the actual domain class
-     * @param id The id of the domain object
-     * @param fileCategory The file category. This is a string allowing a top-level tree split which is helpful if permissions of categories are different
-     * @return The path
+     * @param session The session object from the controller.
+     * @param request The request object from the controller.
+     * @param params The parameters map form the controller.
+     * @return A java.util.Map containing at least:
+     * - success : java.lang.Boolean
+     * - message : java.lang.String
+     * - data : java.util.Map
+     *      - uuid : java.lang.String
+     *      - filename : java.lang.String
+     *
+     * @since 12/05/2017
      */
-	def filePath(dc,id,fileCategory) {
-		def basePath=grailsApplication.config.dialog.files.basePath
-		return "${basePath}/${relativePath(dc,id,fileCategory)}"
-	}
+    def uploadFileLocally(session, request, params) {
+        def result = uploadFile(request, params, COMMON_CATEGORY_NAME)
+        if (!session[SESSION_FILEUPLOADS]) {
+            /* Ensure that the session always has a valid Map for storing our fileuploads. */
+            session[SESSION_FILEUPLOADS] = [ : ]
+        }
+
+        def uuid = UUID.randomUUID().toString()
+        def filename = result.originalName
+        def mimetype = result.originalMimetype
+        def file = [
+            path: result.temporaryPath,
+            mimetype: mimetype,
+            name: filename
+        ]
+
+        session[SESSION_FILEUPLOADS].put(uuid, file)
+
+        return [
+            success: result.success,
+            message: result.message,
+            data: [
+                uuid: uuid,
+                filename: filename,
+                mimetype: mimetype
+            ]
+        ]
+    }
+
+    /**
+     * Remove a fileupload from the local session.
+     * @param session The session object from the controller.
+     * @param params The parameters map form the controller.
+     *
+     * @since 12/05/2017
+     */
+    def removeFileLocally(session, params) {
+        def uuid = params.uuid
+        def fileupload = session[SESSION_FILEUPLOADS]?.remove(uuid)
+        def file = new File(fileupload.path)
+        file.delete()
+
+        def success = false
+        if (!file.exists()) {
+            success = true
+        }
+
+        return [
+            success: success
+        ]
+    }
 
     /**
      * This calculates the full URL for the files of a domain object
@@ -299,51 +411,60 @@ class FileService {
 	}
 
     /**
-     * Move uploaded file to domain object folder
+     * Move the uploaded file to domain object folder directly.
      *
-     * @param dc The domain class
-     * @param id the id of the domain object
-     * @param fileupload Information on the uploaded file separated by |
-     * @param fileCategory The file category, default is "images"
+     * @param dc The domain class.
+     * @param session The session object received from the controller.
+     * @param id The document ID retrieved from the controllers' params.
+     * @param fileuploadUUID The UUID with which we should retrieve the file from
+     * the session object.
+     * @param params The params object received from the controller.
+     * @param fileCategory (Optional) The file category, default is "images".
+     *
+     * 11/30/2017 - Cleanup. Changed the fileupload handling. The fileupload information
+     * is now retrieved from the session.
      */
+    def submitFile(dc, session, id, fileuploadUUID, fileCategory = IMAGES_CATEGORY_NAME) {
+        def fileupload = session[SESSION_FILEUPLOADS][fileuploadUUID]
 
-	def submitFile(dc,id,fileupload,fileCategory="images") {
-
-		def fileInfo=fileupload.split("\\|")
-
-		// create folder structure
-		def diPath=filePath(dc,id,fileCategory)
-		new File(diPath).mkdirs()
-		// upload the file
-		File file=new File(fileInfo[1])
-		if (file.exists()) {
-			def destFile= new File("${diPath}/${fileInfo[0]}")
-			FileUtils.copyFile(file,destFile)
-			file.delete()
-		}
-	}
+        def path = fileupload.path
+        def filename = fileupload.name
+        /* Create the direct path. */
+        def directPath = filePath(dc, id, fileCategory)
+        new File(directPath).mkdirs()
+        /* Upload the file. */
+        def file = new File(path)
+        if (file.exists()) {
+            def destinationFile = new File("${directPath}/${filename}")
+            FileUtils.copyFile(file, destinationFile)
+            file.delete()
+        }
+    }
 
     /**
-     * Move uploaded files to domain object folder
-     * This allows files to be attached to the original submission of a form after the domain object is created
+     * Move uploaded files to domain object folder. This allows files to be attached
+     * to the original submission of a form after the domain object is created.
      *
-     * @param dc The domain class
-     * @param params the controller params
-     * @param fileupload Information on the uploaded file separated by |
-     * @param fileCategory The file category, default is "images"
+     * @param dc The domain class.
+     * @param session The session object received from the controller.
+     * @param params The params object received from the controller.
+     * @param fileCategory (Optional) The file category, default is "images".
+     *
+     * 11/30/2017 - Cleanup. Added the 'session' parameter.
      */
-	def submitFiles(dc,params,fileCategory="images") {
-		if (params.fileupload) {
-
-			if (params.fileupload.class.name=="java.lang.String") {
-				submitFile(dc,params.id,params.fileupload,fileCategory)
-			} else {
-				params.fileupload.each { fileupload ->
-					submitFile(dc,params.id,fileupload,fileCategory)
-				}
-			}
-		}
-	}
+    def submitFiles(dc, session, params, fileCategory = IMAGES_CATEGORY_NAME) {
+        def fileuploadUUIDs = params.fileupload
+        if (fileuploadUUIDs) {
+            def id = params.id
+            if (fileuploadUUIDs instanceof java.lang.String) {
+                submitFile(dc, session, id, fileuploadUUIDs, fileCategory)
+            } else {
+                fileuploadUUIDs.each { fileuploadUUID ->
+                    submitFile(dc, session, id, fileuploadUUID, fileCategory)
+                }
+            }
+        }
+    }
 
     /**
      * Delete a file form a domain object's folder
@@ -368,24 +489,20 @@ class FileService {
 	 * @param response The HTTP response to write the file to.
 	 * @since 09/01/2016
 	 */
-	def stream(def file, def name, def response, def contentType = "application/pdf") {
-		response.setHeader("Content-Disposition", "inline; filename=\"${name}\"")
-		response.setHeader("Content-Type", contentType)
+	def stream(def file, def response, def contentType = null,fileName=null) {
+        if (fileName) {
+	        response.setHeader("Content-Disposition", "attachment; filename=\"${fileName}\"")
+        } else {
+            response.setHeader("Content-Disposition", "inline")
+        }
+
+        if (contentType) {
+	          response.setHeader("Content-Type", contentType)
+        }
 
         // Check if file is present and readable
         if (file && file.canRead()) {
-    		def inputStream = new FileInputStream(file)
-    		def bufsize = 100000
-    		byte[] bytes = new byte[(int) bufsize]
-
-    		def offset = 0
-    		def len = 1
-    		while (len > 0) {
-    			len = inputStream.read(bytes, 0, bufsize)
-    			if (len > 0)
-    			response.outputStream.write(bytes, 0, len)
-    			offset += bufsize
-    		}
+            FileUtils.copyFile(file,response.outputStream)
 
     		try {
     			response.outputStream.flush()
@@ -407,7 +524,7 @@ class FileService {
 	def streamFile(def dc, def id, def fileCategory, def name, def response) {
         def filePath = filePath(dc, id, fileCategory) + "/${name}"
         def file = new File(filePath)
-		stream(file, file.name, response)
+		stream(file, response,file.name)
 	}
 
     /**
@@ -426,22 +543,141 @@ class FileService {
         }
     }
 
-	/**
-	 * Fetch a file input stream from a fileupload that was generated by JS.
-	 *
-	 * @param dc The domain class type.
-	 * @param fileupload The information that was given by the JS.
-	 * @return A FileInputStream instance if there was a file found at the fileupload
-	 * location. Null if otherwise.
-	 * @since 08/30/2016
-	 */
-	def fetchFileStream(def dc, def fileupload) {
-		def info = fileupload.split("\\|")
-		def file = new File(info[1])
-		if (file.exists()) {
-			return new FileInputStream(file)
-		}
+    /**
+     * Fetch a file input stream from a fileupload that was generated by JS.
+     *
+     * @param path The path where the file can be found.
+     * @return A FileInputStream instance if there was a file found at the fileupload
+     * location. Null if otherwise.
+     * @since 08/30/2016
+     *
+     * 11/30/2017 - Cleanup. Removed all parameters and only set one parameter: path.
+     */
+    def fetchFileStream(path) {
+        def file = new File(path)
+        if (file.exists()) {
+            return new FileInputStream(file)
+        }
 
-		return null
-	}
+        return null
+    }
+
+
+    /* NON-VOID METHODS ON PACKING FILE PATHS */
+
+    /**
+     * Retrieve the base path from the grails applications' config.
+     *
+     * @since 03/09/2017
+     * @return A string representing the base path.
+     *
+     * 11/30/2017 - This method wasn't generic. Therefore the base path has been
+     * relocated to config.dialog.files.basePath
+     */
+    def getBasePath() {
+        return grailsApplication.config.dialog.files.basePath
+    }
+
+    /**
+     * Calculate the file path for the given parameters. Looks something like:
+     * /var/opt/wfp/files/common/Document/00/00/00/ff
+     * or:
+     * /var/opt/wfp/files/common/Document/00/00/00/00/00/00/ff
+     * depending on the number of layers.
+     *
+     * @param domainClass java.lang.String or java.lang.Object to define the domain
+     * class we'd like to store files for.
+     * @param id The document ID.
+     * @param category (Optional) The file category. 'common' by default.
+     * @return A string with the path for the file to be saved.
+     *
+     * 08/01/2017 - Removed the dependency to Dialog's File Service. Set the calculation
+     * of the path to the calculation methods in this class.
+     */
+    def filePath(domainClass, id, category = COMMON_CATEGORY_NAME) {
+        def basePath = getBasePath()
+        def path = "${basePath}/${relativePath(domainClass, id, category)}"
+        def file = new File(path)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+
+        return path
+    }
+
+    /**
+     * Calculate a string from a Long. This will provide a hexadecimal approach
+     * for path calculation later on.
+     *
+     * @param no An arbitrary number. Could be an ID from a domain class.
+     * @param depth (Optional) The depth of the string formatting (CONTENT_PATH_DEPTH
+     * by default).
+     * @return A java.lang.String that is formatted to hexadecimally represent a
+     * long. For example: 00000000ff
+     *
+     * @since 08/01/2017
+     */
+    def pack(no, depth = CONTENT_PATH_DEPTH) {
+        if (null == no || STR_NULL == no) {
+            no = 0
+        }
+
+        def balance = Long.toString(new Long(no), 36)
+        return String.format("%1\$${depth}s", balance).replace(" ", "0")
+    }
+
+    /**
+     * Calculate the actual path from a pack. Will first create a pack like this:
+     * 00000000ff
+     * and convert it to a path like this:
+     * 00/00/00/00/ff
+     *
+     * @param no An arbitrary number. Could be an ID from a domain class.
+     * @return The calculated packed path.
+     *
+     * @since 08/01/2017
+     */
+    def packedPath(no) {
+        def balance = pack(no)
+        def balancedPath = ""
+        def length = balance.length() / 2 - 1
+        (0..(length)).each { i ->
+            def subBalance = balance.substring(i * 2, i * 2 + 2)
+            balancedPath += "/${subBalance}"
+        }
+
+        /* Finally, remove the first slash and return. */
+        return balancedPath.substring(1)
+    }
+
+    /**
+     * Calculate a relative path (relative to the domain class).
+     *
+     * @param domainClass java.lang.String or java.lang.Object to define the domain
+     * class we'd like to store files for.
+     * @param id The document ID.
+     * @param category (Optional) The file category. 'common' by default.
+     * @return Either the folder path of the domain class if it has a folder path,
+     * or a calculated relative path like 'common/Document/00/00/00/00/ff'.
+     *
+     * @since 08/01/2017
+     */
+    def relativePath(domainClass, id, category = COMMON_CATEGORY_NAME) {
+        def name = null
+        def hasFolderPathMethod = false
+        if (domainClass.getClass() == java.lang.String) {
+            name = domainClass
+        } else {
+            name = domainClass.getName()
+            hasFolderPathMethod = domainClass.methods.collect { method -> method.getName() }.contains(GET_FOLDER_PATH)
+        }
+
+        name = name.replaceAll(".*\\.", "")
+        if (hasFolderPathMethod) {
+            def domainClassInstance = domainClass.get(id)
+            return domainClassInstance.getFolderPath(category)
+        } else {
+            return "${category}/${name}/${packedPath(id)}"
+        }
+    }
 }

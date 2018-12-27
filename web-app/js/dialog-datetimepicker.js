@@ -41,8 +41,8 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
     var widgetType = $("#" + timeEntryElementId).length > 0 ? "DATETIME" : "DATE"
 
     //Check browser support for HTML5 date widget..
-    if (Modernizr.inputtypes.date) {
-
+    if (Modernizr.inputtypes.date && Modernizr.touch) {
+        
         //HTML5 date widget
         $(this).on("change", function() {
             var dateValue = $(this).val();
@@ -53,6 +53,7 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
     }
     else {
 
+        $(this).attr("type","text");
         //bootstrap datepicker widget
         var dateValue = moment($(this).val(), "YYYY-MM-DD");
         if (dateValue) {
@@ -111,7 +112,7 @@ dialog.datetimepicker.openTime = function openTime (e, params) {
     var widgetType = $("#" + dateEntryElementId).length > 0 ? "DATETIME" : "TIME"
 
     //Check browser support for HTML5 date widget..
-    if (Modernizr.inputtypes.time) {
+    if (Modernizr.inputtypes.time && Modernizr.touch) {
 
         //HTML5 date widget
         $(this).on("change", function() {
@@ -124,6 +125,7 @@ dialog.datetimepicker.openTime = function openTime (e, params) {
     else {
 
         //bootstrap timepicker widget
+        $(this).attr("type","text");
         var dateValue = moment($(this).val(), "HH:mm:ss");
         if (dateValue) {
             $(this).val(dateValue.format(window.dialog.messages.moment.inputTimeFormat));

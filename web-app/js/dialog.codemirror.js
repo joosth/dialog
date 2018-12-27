@@ -43,7 +43,21 @@ dialog.codemirror.open =function open (e,params) {
                 lineNumbers: true,
                 extraKeys: {
                     "'>'": function(cm) { cm.closeTag(cm, '>'); },
-                    "'/'": function(cm) { cm.closeTag(cm, '/'); }
+                    "'/'": function(cm) { cm.closeTag(cm, '/'); },
+
+                    "F11": function(cm) {
+                        if (cm.getOption("fullScreen")) {
+                            $(".navbar-fixed-top").removeClass("hidden");
+                            cm.setOption("fullScreen", false);
+                        } else {
+                            $(".navbar-fixed-top").addClass("hidden");
+                            cm.setOption("fullScreen", true);
+                        }
+                    },
+                    "Esc": function(cm) {
+                      $(".navbar-fixed-top").removeClass("hidden");
+                      if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    }
                 }
           });
 
@@ -53,7 +67,21 @@ dialog.codemirror.open =function open (e,params) {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/x-groovy',
                 lineNumbers: true,
-                matchBrachets:true
+                matchBrachets:true,
+                extraKeys: {
+                    "F11": function(cm) {
+                        if (cm.getOption("fullScreen")) {
+                            $(".navbar-fixed-top").removeClass("hidden");
+                            cm.setOption("fullScreen", false);
+                        } else {
+                            $(".navbar-fixed-top").addClass("hidden");
+                            cm.setOption("fullScreen", true);
+                        }
+                    },
+                    "Esc": function(cm) {
+                      if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    }
+                }
 
           });
         }
@@ -61,7 +89,21 @@ dialog.codemirror.open =function open (e,params) {
         if (mode=='text/x-sql') {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/x-sql',
-                lineNumbers: true
+                lineNumbers: true,
+                extraKeys: {
+                    "F11": function(cm) {
+                        if (cm.getOption("fullScreen")) {
+                            $(".navbar-fixed-top").removeClass("hidden");
+                            cm.setOption("fullScreen", false);
+                        } else {
+                            $(".navbar-fixed-top").addClass("hidden");
+                            cm.setOption("fullScreen", true);
+                        }
+                    },
+                    "Esc": function(cm) {
+                      if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    }
+                }
           });
         }
 

@@ -1,6 +1,7 @@
 /*
- * Grails Dialog plug-in
- * Copyright 2011 Open-T B.V., and individual contributors as indicated
+ * Dialog
+ *
+ * Copyright 2009-2017, Open-T B.V., and individual contributors as indicated
  * by the @author tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -10,13 +11,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
 
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses
+ * along with this program. If not, see http://www.gnu.org/licenses
  */
-
 package org.open_t.dialog
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
@@ -24,7 +24,10 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
 
 /**
- * Tag library for Dialog plugin
+ * Tag library for Dialog plugin.
+ *
+ * 10/10/2017 - Added the notOptional flag to the select tag.
+ * 12/04/2017 - Added the fileuploadTable tag.
  *
  * @author Joost Horward
  */
@@ -62,7 +65,7 @@ class DialogTagLib {
                 dialog.messages.uploading = "${message(code: "dialog.messages.uploading")}";
                 dialog.messages.uploadcompleted = "${message(code: "dialog.messages.uploadcompleted")}";
 
-                dialog.messages.new = "${message(code: "dialog.messages.new")}";
+                dialog.messages['new'] = "${message(code: "dialog.messages.new")}";
                 dialog.messages.confirmdelete = "${message(code: "dialog.messages.confirmdelete")}";
                 dialog.messages.confirmdeleteTitle = "${message(code: "dialog.messages.confirmdeleteTitle")}";
 
@@ -676,6 +679,8 @@ class DialogTagLib {
      * @param optionKey attribute to be supplied to the &lt;select&gt; element
      * @param optionValue attribute to be supplied to the &lt;select&gt; element
      * @param multiple attribute to be supplied to the &lt;select&gt; element
+     * @param notOptional attribute to determine whether a dash is added as default
+     * option or not.
      * @param style attribute to be supplied to the &lt;select&gt; element
      */
     def select = { attrs ->
@@ -718,7 +723,10 @@ class DialogTagLib {
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
-                    if (property.isOptional()) {
+                    /* 10/10/2017 - Added an attribute for determining whether the
+                    select is optional, or absolutely not optional. Will leave the
+                    dash (default option) out if notOptional is true. */
+                    if (property.isOptional() && !attrs.notOptional) {
                         opts.put("noSelection", ["": "-"])
                     }
 
@@ -754,7 +762,7 @@ class DialogTagLib {
         this.pageScope.dialogTabNames.eachWithIndex { name, i ->
             def defaultTabLabel = g.message(code: "dialog.tab.${name}", default: name)
             def tabLabel = g.message(code: "dialog.tab.${domainPropertyName}.${name}", default: defaultTabLabel)
-            out << """<li role="presentation" class="${i == 0 ? "active" : "" }"><a href="#${prefix}${name}" aria-controls="${prefix}${name}" role="tab" data-toggle="tab">${tabLabel}</a></li>"""
+            out << """<li class="${i == 0 ? "active" : "" }"><a href="#${prefix}${name}" aria-controls="${prefix}${name}" role="tab" data-toggle="tab">${tabLabel}</a></li>"""
         }
 
         out << "</ul>"
@@ -796,7 +804,7 @@ class DialogTagLib {
         out <<
             """
             <div class="modal" id="${name}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-lg" role="document" style="min-width:${attrs.width?:0};" > 
+                <div class="modal-dialog modal-lg" role="document" style="min-width:${attrs.width?:0};" >
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
@@ -810,7 +818,7 @@ class DialogTagLib {
         if (attrs.error) {
             out << """<div class="errors text-error alert alert-danger">${attrs.error ? attrs.error : ""}</div>"""
         } else {
-            out << """<div class="errors errors alert alert-danger" style="display: none;"></div>"""
+            out << """<div class="errors alert alert-danger" style="display: none;"></div>"""
         }
 
         def message = g.message(code: "form.${name}.message", default: "")
@@ -1037,11 +1045,28 @@ class DialogTagLib {
     }
 
     /**
-     * Displays an upload control in the dialog
+     * A tag for adding a simple table that will contain fileuploads.
+     * @since 11/30/2017
      */
+    def fileuploadTable = { attrs ->
+        out <<
+            """
+            <table id="fileupload" class="table table-striped table-bordered table-hover dialog-open-events fileuploadTable" newButton="false">
+                <thead>
+                    <tr>
+                        <th>${g.message(code: "fileuploadtable.name.label")}</th>
+                        <th>${g.message(code: "fileuploadtable.mimetype.label")}</th>
+                        <th>${g.message(code: "fileuploadtable.size.label")}</th>
+                        <th class="actions">${g.message(code: "fileuploadtable.actions.label")}</th>
+                    </tr>
+                </thead>
+            </table>
+            """
+    }
 
-
-    // Upload area wrapper. Takes controller and action attributes
+    /**
+     * Displays an upload control in the dialog.
+     */
     def upload = { attrs, body ->
         def copiedAttrs = ""
         def skipAttrs = ["object", "propertyName", "mode", "class", "type", "value"]
@@ -1094,9 +1119,12 @@ class DialogTagLib {
 
     // Upload button
     def uploadButton = { attrs, body ->
-            out << """<span href="#" class="btn btn-default btn-file upload-button">
+        out <<
+            """
+            <span href="#" class="btn btn-default btn-file upload-button">
                 <span class="fa fa-upload" aria-hidden="true"></span> ${dialogService.getMessage('dialog.uploadButton.label')} <input type="file" multiple>
-            </span>"""
+            </span>
+            """
     }
 
     /**
@@ -1178,7 +1206,7 @@ class DialogTagLib {
         } else {
             code = "menu." + attrs.controller + "." + attrs.action
         }
-        def label = attrs.label ?: g.message(code: code + ".label")
+        def label = g.message(code: code + ".label", default: attrs.label)
         def help = g.message(code: code + ".help", default: "")
 
         def onclick = ""
@@ -1190,7 +1218,7 @@ class DialogTagLib {
                 if (attrs.params) {
                     params = attrs.params.collect { key, value -> "'${key}': '${value}'"}.join(",")
                 }
-                onclick = """onclick="dialog.formDialog('null', '${attrs.controller}', {'dialogname': '${attrs.action}', 'nosubmit': ${nosubmit}}, {${params}}, null)" """
+                onclick = """onclick="dialog.formDialog('null', '${attrs.controller}', {'dialogname': '${attrs.action}', 'nosubmit': ${nosubmit}}, {${params}}, null);return false;" """
             } else {
                 onclick = """onclick="${attrs.onclick}" """
             }
@@ -1198,13 +1226,21 @@ class DialogTagLib {
             link = """<a href="#" title="${help}">${icon}${label}</a>"""
         } else {
             def linkParams = [controller: attrs.controller, action: attrs.action, params: attrs.params, title: help]
-            if (attrs.id) {
-                linkParams["id"]=attrs.id
+            if (attrs.param_id) {
+                linkParams["id"]=attrs.param_id
             }
             link = g.link(linkParams) { icon + label }
         }
 
-        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}">${link}</li>"""
+        def copiedAttrs = ""
+        def skipAttrs = ["class", "code","label","nosubmit","params"]
+        attrs.each { attrKey, attrValue ->
+            if (!skipAttrs.contains(attrKey)) {
+                copiedAttrs += """ ${attrKey}="${attrValue}" """
+            }
+        }
+
+        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}"  ${copiedAttrs}>${link}</li>"""
     }
 
     /**
@@ -1303,6 +1339,10 @@ class DialogTagLib {
             linkTagAttrs.mapping = attrs.mapping
         }
 
+        if (attrs.uri) {
+            linkTagAttrs.uri = attrs.uri
+        }
+
         linkTagAttrs.params = linkParams
 
         def cssClasses = "pagination"
@@ -1320,7 +1360,7 @@ class DialogTagLib {
         // display previous link when not on firststep
         if (currentstep > firststep) {
             linkParams.offset = offset - max
-            writer << '<li class="prev">'
+            writer << '<li class="prev" offset="'+linkParams.offset+'">'            
             writer << link(linkTagAttrs.clone()) {
                 (attrs.prev ?: messageSource.getMessage("paginate.prev", null, "&laquo;", locale))
             }
@@ -1357,7 +1397,7 @@ class DialogTagLib {
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
                 linkParams.offset = 0
-                writer << '<li>'
+                writer << '<li offset="0">'
                 writer << link(linkTagAttrs.clone()) {firststep.toString()}
                 writer << '</li>'
                 writer << '<li class="disabled"><span>...</span></li>'
@@ -1366,13 +1406,13 @@ class DialogTagLib {
             // display paginate steps
             (beginstep..endstep).each { i ->
                 if (currentstep == i) {
-                    writer << "<li class=\"active\">"
+                    writer << "<li class=\"active hidden-xs\">"
                     writer << "<span>${i}</span>"
                     writer << "</li>";
                 }
                 else {
                     linkParams.offset = (i - 1) * max
-                    writer << "<li>";
+                    writer << '<li offset="'+linkParams.offset+'" class=\"hidden-xs\">';
                     writer << link(linkTagAttrs.clone()) {i.toString()}
                     writer << "</li>";
                 }
@@ -1382,7 +1422,7 @@ class DialogTagLib {
             if (endstep < laststep) {
                 writer << '<li class="disabled"><span>...</span></li>'
                 linkParams.offset = (laststep -1) * max
-                writer << '<li>'
+                writer << '<li offset="'+linkParams.offset+'">'
                 writer << link(linkTagAttrs.clone()) { laststep.toString() }
                 writer << '</li>'
             }
@@ -1391,7 +1431,7 @@ class DialogTagLib {
         // display next link when not on laststep
         if (currentstep < laststep) {
             linkParams.offset = offset + max
-            writer << '<li class="next">'
+            writer << '<li class="next" offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
                 (attrs.next ? attrs.next : messageSource.getMessage("paginate.next", null, "&raquo;", locale))
             }
@@ -1399,7 +1439,7 @@ class DialogTagLib {
         }
         else {
             linkParams.offset = offset + max
-            writer << '<li class="disabled">'
+            writer << '<li class="disabled" offset="'+linkParams.offset+'"">'
             writer << '<span>'
             writer << (attrs.next ? attrs.next : messageSource.getMessage("paginate.next", null, "&raquo;", locale))
             writer << '</span>'
