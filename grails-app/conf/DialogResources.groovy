@@ -67,7 +67,7 @@ modules = {
     'dialog-tree' {
         dependsOn 'dialog-jquery'
         resource url: [plugin: 'jquery-dialog', dir: 'ext/jstree/themes/default', file: 'style.css']
-        resource url: [plugin: 'jquery-dialog', dir: 'ext/jstree', file: 'jstree.js']
+        resource url: [plugin: 'jquery-dialog', dir: 'ext/jstree', file: 'jstree.min.js']
         resource url: [plugin: 'jquery-dialog', dir: 'js', file: 'dialog.tree.js']
     }
 

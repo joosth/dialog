@@ -58,6 +58,7 @@ CKEDITOR.config.protectedSource.push( /<c:[.\s\S]*\/>/gi );	 // Catviz Tags (Sel
 CKEDITOR.config.format_pre = { element : 'div', attributes: {'class':'well'}};
 CKEDITOR.config.contentsCss=dialog.baseUrl+'/static/bundle-bundle_dialog-bootstrap_head.css'
 
+};
 
 dialog.ckeditor.open =function open (e,params) {
     CKEDITOR.config.filebrowserImageBrowseUrl = dialog.baseUrl+"/"+params.controllerName+"/filemap/"+params.id;
@@ -76,13 +77,13 @@ dialog.ckeditor.open =function open (e,params) {
 dialog.ckeditor.submit =function submit (e,params) {
 	for ( instance in CKEDITOR.instances )
         CKEDITOR.instances[instance].updateElement();
-	return false
+	return false;
 
-}
+};
 
 dialog.ckeditor.close =function close (e,params) {
     CKEDITOR.instances[this.id].destroy(true);
-	return false
+	return false;
 };
 
 

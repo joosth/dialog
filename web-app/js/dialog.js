@@ -279,7 +279,7 @@ dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlPara
                     "</div>" +
                     "<div class='modal-footer'>" +
                         "<button id='cancel' type='button' class='btn btn-default' data-dismiss='modal'>" + window.dialog.messages.cancel + "</button>" +
-                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages.delete + "</button>" +
+                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages['delete'] + "</button>" +
                     "</div>" +
                 "</div>" +
             "</div>" +
@@ -366,7 +366,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
                     "</div>" +
                     "<div class='modal-footer'>" +
                         "<button id='cancel' type='button' class='btn btn-default' data-dismiss='modal'>" + window.dialog.messages.cancel + "</button>" +
-                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages.delete + "</button>" +
+                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages['delete'] + "</button>" +
                     "</div>" +
                 "</div>" +
             "</div>" +
