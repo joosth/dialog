@@ -55,7 +55,7 @@ dialog.obj2ParamStr = function obj2ParamStr(params) {
 	 if (params) {
 		 var sep = "?";
 		 for (key in params) {
-			 paramStr=paramStr+sep+key+"="+params[key];
+			 paramStr=paramStr+sep+encodeURIComponent(key)+"="+encodeURIComponent(params[key]);
 			 sep="&";
 		 }
 	 }
