@@ -1340,7 +1340,8 @@ class DialogTagLib {
         }
 
         linkTagAttrs.params = linkParams
-
+        linkTagAttrs.class = "step"
+        
         def cssClasses = "pagination"
         if (attrs.class) {
             cssClasses = "pagination " + attrs.class
@@ -1353,6 +1354,7 @@ class DialogTagLib {
         int laststep = Math.round(Math.ceil(total / max))
 
         writer << "<ul class=\"${cssClasses}\">"
+
         // display previous link when not on firststep
         if (currentstep > firststep) {
             linkParams.offset = offset - max
@@ -1372,7 +1374,7 @@ class DialogTagLib {
 
         // display steps when steps are enabled and laststep is not firststep
         if (steps && laststep > firststep) {
-            linkTagAttrs.class = "step"
+
 
             // determine begin and endstep paging variables
             int beginstep = currentstep - Math.round(maxsteps / 2) + (maxsteps % 2)
