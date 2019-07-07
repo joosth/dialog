@@ -510,5 +510,18 @@ $(function() {
         }
         return false;
     });
-
+    // Prevent form submit on enter in ajax dialog
+    $(document).on("submit",".ajaxdialogform",function(e){
+        console.log("SUBMIT!");
+        e.preventDefault();
+        return false;
+    });
+    // Auto submit on enter in normal input field only
+    $(document).on("keydown",".ajaxdialogform input,select",function (e) {
+         var inputValue = $(this).val(); 
+           if(e.keyCode == 13) {
+               $(e.currentTarget).closest("div.modal").find("button#save").click();
+           }
+    });
 });
+
