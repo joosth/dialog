@@ -1129,7 +1129,7 @@ class DialogTagLib {
     def dropdown = { attrs, body ->
         out <<
             """
-            <li class="dropdown ${attrs.class ?: ""}">
+            <li id="${attrs.id?:''}" class="dropdown ${attrs.class ?: ""}">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">${g.message(code: "dropdown." + attrs.code + ".label")}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
         """
@@ -1229,7 +1229,7 @@ class DialogTagLib {
         }
 
         def copiedAttrs = ""
-        def skipAttrs = ["class", "code","label","nosubmit","params"]
+        def skipAttrs = ["class", "code","label","nosubmit","params","onclick"]
         attrs.each { attrKey, attrValue ->
             if (!skipAttrs.contains(attrKey)) {
                 copiedAttrs += """ ${attrKey}="${attrValue}" """
@@ -1341,7 +1341,7 @@ class DialogTagLib {
 
         linkTagAttrs.params = linkParams
         linkTagAttrs.class = "step"
-        
+
         def cssClasses = "pagination"
         if (attrs.class) {
             cssClasses = "pagination " + attrs.class
