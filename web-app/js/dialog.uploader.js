@@ -163,10 +163,11 @@ dialog.uploader.removeUpload = function(event, data) {
     /* Find the UUID for the row and fileupload. */
     var uuid = $(this).attr("row-id");
     var controller = $(this).attr("controller");
+    var id=$(this).closest(".upload-button-wrapper").attr("param_id");
 
     /* Post the remove action to the backend. */
     var url = dialog.baseUrl + "/" + controller + "/removefile";
-    $.post(url, { uuid: uuid })
+    $.post(url, { uuid: uuid ,id:id })
         .done(function(data) {
             if (!data.success) {
                 return;
