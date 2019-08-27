@@ -236,6 +236,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,ca
             });
         }).on("shown.bs.modal", function(event) {
             if ($(this).find(".tab-pane").length>0) {
+                $(this).find("form.dialog-open-events").not(".dialog-opened").trigger("dialog-open", {'this':this,page:true}).addClass("dialog-opened");
                 $(this).find(".tab-pane").filter(".active").find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName }).addClass("dialog-opened");
             } else {
                 $(this).find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName }).addClass("dialog-opened");
@@ -512,10 +513,9 @@ $(function() {
     });
     // Auto submit on enter in normal input field only
     $(document).on("keydown",".ajaxdialogform input,select",function (e) {
-         var inputValue = $(this).val(); 
+         var inputValue = $(this).val();
            if(e.keyCode == 13) {
                $(e.currentTarget).closest("div.modal").find("button#save").click();
            }
     });
 });
-
