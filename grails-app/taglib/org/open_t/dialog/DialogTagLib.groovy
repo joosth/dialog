@@ -138,7 +138,7 @@ class DialogTagLib {
                 \$(function() {
                     \$(document).trigger("dialog-init", {});
                     \$(".dialog-open-events").filter(".dialog-open-first").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true});
-                    \$(".dialog-open-events").filter(":not(.dialog-open-first)").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true});
+                    \$(".dialog-open-events").filter(":not(.dialog-open-first)").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true}).addClass("dialog-opened");
                 });
             </script>
             """
@@ -656,11 +656,11 @@ class DialogTagLib {
                         def valueId = value ? value.id : null
 
                         attrs.from = [[key:valueId, value:value]]
+                        attrs.value = valueId
 
                         attrs.optionKey = "key"
                         attrs.optionValue = "value"
                     }
-
                     return select(attrs)
                     break
 
@@ -717,7 +717,7 @@ class DialogTagLib {
                         }
                     }
 
-                    def value=attrs.object."${attrs.propertyName}" ? attrs.object."${attrs.propertyName}" : "${attrs.value}"
+                    def value=attrs.value?:attrs.object."${attrs.propertyName}"
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
