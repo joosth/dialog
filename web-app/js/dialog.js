@@ -55,7 +55,7 @@ dialog.obj2ParamStr = function obj2ParamStr(params) {
 	 if (params) {
 		 var sep = "?";
 		 for (key in params) {
-			 paramStr=paramStr+sep+key+"="+params[key];
+			 paramStr=paramStr+sep+encodeURIComponent(key)+"="+encodeURIComponent(params[key]);
 			 sep="&";
 		 }
 	 }
@@ -236,6 +236,7 @@ dialog.formDialog = function formDialog(id,controllerName, options ,urlParams,ca
             });
         }).on("shown.bs.modal", function(event) {
             if ($(this).find(".tab-pane").length>0) {
+                $(this).find("form.dialog-open-events").not(".dialog-opened").trigger("dialog-open", {'this':this,page:true}).addClass("dialog-opened");
                 $(this).find(".tab-pane").filter(".active").find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName }).addClass("dialog-opened");
             } else {
                 $(this).find(".dialog-open-events").not(".dialog-opened").trigger("dialog-open", { "this": this, id: id, controllerName: controllerName }).addClass("dialog-opened");
@@ -279,7 +280,7 @@ dialog.deleteDialog = function deleteDialog(id, controllerName, options, urlPara
                     "</div>" +
                     "<div class='modal-footer'>" +
                         "<button id='cancel' type='button' class='btn btn-default' data-dismiss='modal'>" + window.dialog.messages.cancel + "</button>" +
-                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages.delete + "</button>" +
+                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages['delete'] + "</button>" +
                     "</div>" +
                 "</div>" +
             "</div>" +
@@ -366,7 +367,7 @@ dialog.deleteFile = function deleteFile(id,controllerName, filename,options) {
                     "</div>" +
                     "<div class='modal-footer'>" +
                         "<button id='cancel' type='button' class='btn btn-default' data-dismiss='modal'>" + window.dialog.messages.cancel + "</button>" +
-                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages.delete + "</button>" +
+                        "<button id='delete' type='button' class='btn btn-danger'>" + window.dialog.messages['delete'] + "</button>" +
                     "</div>" +
                 "</div>" +
             "</div>" +
@@ -510,5 +511,11 @@ $(function() {
         }
         return false;
     });
-
+    // Auto submit on enter in normal input field only
+    $(document).on("keydown",".ajaxdialogform input,select",function (e) {
+         var inputValue = $(this).val();
+           if(e.keyCode == 13) {
+               $(e.currentTarget).closest("div.modal").find("button#save").click();
+           }
+    });
 });

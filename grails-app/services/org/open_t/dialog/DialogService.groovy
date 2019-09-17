@@ -169,6 +169,16 @@ class DialogService {
 	    			domainClassInstance = domainClass.newInstance()
 					action = 'created'
 	    		}
+                // Clear out any hasmany if it is in the parameters
+                if (defaultDomainClass.hasProperty("hasMany")) {
+                    domainClassInstance.hasMany.each {key,value ->
+						if (domainClassInstance."${key}"){
+		                    if (params.containsKey(key)) {
+                                domainClassInstance."${key}"=null
+                            }
+						}
+					}
+                }
 	    		domainClassInstance.properties = params
     		}
 			// check for position and update if necessary

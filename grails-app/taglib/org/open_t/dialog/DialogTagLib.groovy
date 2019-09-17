@@ -138,7 +138,7 @@ class DialogTagLib {
                 \$(function() {
                     \$(document).trigger("dialog-init", {});
                     \$(".dialog-open-events").filter(".dialog-open-first").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true});
-                    \$(".dialog-open-events").filter(":not(.dialog-open-first)").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true});
+                    \$(".dialog-open-events").filter(":not(.dialog-open-first)").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true}).addClass("dialog-opened");
                 });
             </script>
             """
@@ -656,11 +656,11 @@ class DialogTagLib {
                         def valueId = value ? value.id : null
 
                         attrs.from = [[key:valueId, value:value]]
+                        attrs.value = valueId
 
                         attrs.optionKey = "key"
                         attrs.optionValue = "value"
                     }
-
                     return select(attrs)
                     break
 
@@ -717,15 +717,10 @@ class DialogTagLib {
                         }
                     }
 
-                    //def value=attrs.object."${attrs.propertyName}"?:""
-                    def value=attrs.object."${attrs.propertyName}" ? attrs.object."${attrs.propertyName}" : "${attrs.value}"
-
+                    def value=attrs.value?:attrs.object."${attrs.propertyName}"
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
-                    /* 10/10/2017 - Added an attribute for determining whether the
-                    select is optional, or absolutely not optional. Will leave the
-                    dash (default option) out if notOptional is true. */
                     if (property.isOptional() && !attrs.notOptional) {
                         opts.put("noSelection", ["": "-"])
                     }
@@ -737,6 +732,7 @@ class DialogTagLib {
                             opts.put(attrKey,attrValue)
                         }
                     }
+
                     return g.select(opts)
                     break
             }
@@ -1133,7 +1129,7 @@ class DialogTagLib {
     def dropdown = { attrs, body ->
         out <<
             """
-            <li class="dropdown ${attrs.class ?: ""}">
+            <li id="${attrs.id?:''}" class="dropdown ${attrs.class ?: ""}">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">${g.message(code: "dropdown." + attrs.code + ".label")}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
         """
@@ -1233,7 +1229,7 @@ class DialogTagLib {
         }
 
         def copiedAttrs = ""
-        def skipAttrs = ["class", "code","label","nosubmit","params"]
+        def skipAttrs = ["class", "code","label","nosubmit","params","onclick"]
         attrs.each { attrKey, attrValue ->
             if (!skipAttrs.contains(attrKey)) {
                 copiedAttrs += """ ${attrKey}="${attrValue}" """
@@ -1344,6 +1340,7 @@ class DialogTagLib {
         }
 
         linkTagAttrs.params = linkParams
+        linkTagAttrs.class = "step"
 
         def cssClasses = "pagination"
         if (attrs.class) {
@@ -1357,10 +1354,11 @@ class DialogTagLib {
         int laststep = Math.round(Math.ceil(total / max))
 
         writer << "<ul class=\"${cssClasses}\">"
+
         // display previous link when not on firststep
         if (currentstep > firststep) {
             linkParams.offset = offset - max
-            writer << '<li class="prev" offset="'+linkParams.offset+'">'            
+            writer << '<li class="prev" offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
                 (attrs.prev ?: messageSource.getMessage("paginate.prev", null, "&laquo;", locale))
             }
@@ -1376,7 +1374,7 @@ class DialogTagLib {
 
         // display steps when steps are enabled and laststep is not firststep
         if (steps && laststep > firststep) {
-            linkTagAttrs.class = "step"
+
 
             // determine begin and endstep paging variables
             int beginstep = currentstep - Math.round(maxsteps / 2) + (maxsteps % 2)
