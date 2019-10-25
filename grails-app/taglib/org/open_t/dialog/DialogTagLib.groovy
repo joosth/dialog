@@ -555,7 +555,7 @@ class DialogTagLib {
             switch (attrs.mode) {
                 case "show":
                     String s = prettyXmlText
-                    return """${g.textArea(newAttrs) {s.encodeAsHTML()}}"""
+                    return """${g.textArea(newAttrs) {s?.encodeAsHTML()}}"""
                     break
 
                 case "edit":
