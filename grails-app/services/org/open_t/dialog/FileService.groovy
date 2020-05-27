@@ -146,6 +146,13 @@ class FileService {
 
         def filenameHeader = request.getHeader("X-File-Name") ?: "unknown-file-name.bin"
         def filename = URLDecoder.decode(filenameHeader, "UTF-8")
+        if (filename.contains(File.separator) || filename.contains(File.pathSeparator)) {
+            log.error("Found path or file separator for filename: ${filename}.")
+            return [
+                message: "exception.default.title",
+                success: false
+            ]
+        }
 
         def inputStream = request.getInputStream()
         def mimetype = request.getHeader("Content-Type")
