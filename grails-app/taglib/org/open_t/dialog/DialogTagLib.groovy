@@ -1229,7 +1229,7 @@ class DialogTagLib {
         }
 
         def copiedAttrs = ""
-        def skipAttrs = ["class", "code","label","nosubmit","params","onclick"]
+        def skipAttrs = ["class", "code","label","nosubmit","params","onclick","icon"]
         attrs.each { attrKey, attrValue ->
             if (!skipAttrs.contains(attrKey)) {
                 copiedAttrs += """ ${attrKey}="${attrValue}" """
