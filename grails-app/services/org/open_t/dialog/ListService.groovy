@@ -53,7 +53,7 @@ class ListService {
 			def type=value.getClass().getName()
 
 			if (type== "java.lang.String") {
-				return value
+				return value.encodeAsHTML()
 			}
 
 			def webUtils = WebUtils.retrieveGrailsWebRequest()
