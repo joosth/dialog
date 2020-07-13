@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FileFileFilter
 import org.apache.commons.io.IOUtils
+import grails.rest.Link
 
 /**
  * 11/13/2017 - Improved the path calculation methods to now handle longer file
@@ -85,7 +86,8 @@ class FileService {
     /* GLOBAL VARIABLES */
 
 	def grailsApplication
-    def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
+// TODO was replaced by Link -> TEST
+//    def g = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
 
 
     /*
@@ -299,7 +301,7 @@ class FileService {
                     downloadLink="${diUrl}/${file.name}"
                 } else {
                     log.debug "params: ${params}"
-                    downloadLink=g.createLink(action:"streamfile",id:params.id,params:[filename:file.name])
+                    downloadLink=Link.createLink(action:"streamfile",id:params.id,params:[filename:file.name])
                 }
 
                 if(!actions) {
@@ -363,7 +365,7 @@ class FileService {
             if (linkType=="external") {
     			[file:file,url:"${diUrl}/${file.name}"]
             } else {
-                    [file:file,url:g.createLink(action:"streamfile",id:params.id,params:[filename:file.name])]
+                    [file:file,url:Link.createLink(action:"streamfile",id:params.id,params:[filename:file.name])]
             }
 		}
 		return map

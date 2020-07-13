@@ -1,4 +1,4 @@
-<g:if test="${listConfig==null && new org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass(dc).hasProperty("listConfig")}">
+<g:if test="${listConfig==null && new org.grails.core.DefaultGrailsDomainClass(dc).hasProperty("listConfig")}">
 	<g:set var="listConfig" value="${dc.listConfig}" />
 </g:if>
 

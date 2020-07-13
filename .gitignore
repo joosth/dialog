@@ -2,9 +2,19 @@
 *.class
 *.iws
 .classpath
+Thumbs.db
 .DS_Store
+.gradle
+build/
+out/
+.idea
+*.iml
+*.ipr
+*.iws
 .project
 .settings
+.classpath
+
 /*.launch
 /*.tmproj
 /out
@@ -18,3 +28,4 @@ jetty-env.xml
 ._*
 plugin.xml
 *.zip
+/nbproject/private/

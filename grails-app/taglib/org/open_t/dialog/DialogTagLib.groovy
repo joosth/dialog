@@ -19,15 +19,12 @@
  */
 package org.open_t.dialog
 
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
-
+import grails.util.GrailsNameUtils
+import java.text.SimpleDateFormat
 /**
  * Tag library for Dialog plugin.
  *
- * 10/10/2017 - Added the notOptional flag to the select tag.
- * 12/04/2017 - Added the fileuploadTable tag.
  *
  * @author Joost Horward
  */
@@ -35,7 +32,6 @@ class DialogTagLib {
 
     def dialogService
     def listService
-    def grailsApplication
 
     static namespace = "dialog"
 
@@ -122,7 +118,7 @@ class DialogTagLib {
                 dialog.messages.validation = {};
                 dialog.messages.validation.invalidTime="${message(code: "dialog.validation.invalidTime")}";
                 dialog.messages.validation.invalidDateTime="${message(code: "dialog.validation.invalidDateTime")}";
-                var CKEDITOR_BASEPATH = "${g.resource(plugin: "jquery-dialog", dir: "ext/ckeditor/")}";
+                var CKEDITOR_BASEPATH = dialog.baseUrl+"/assets/ext/ckeditor/";
             </script>
             """
     }
@@ -157,12 +153,16 @@ class DialogTagLib {
             out << body()
         } else {
             def object = attrs.object
-            def domainPropertyName = object.getClass().getName()
-            def domainClass = new DefaultGrailsDomainClass(object.class)
-            domainPropertyName = domainClass.propertyName
             def propertyName = attrs.propertyName
-            def property = domainClass.getPropertyByName(propertyName)
-            def naturalName = property.naturalName
+            def persistentEntity=grailsApplication.mappingContext.getPersistentEntity(attrs.object.getClass().name)
+            def property
+            if (persistentEntity) {
+                property=persistentEntity.getPropertyByName(attrs.propertyName)
+            } else {
+                property=attrs.object?.getMetaClass()?.properties?.find { it.name == attrs.propertyName }
+            }
+            def domainPropertyName=persistentEntity?.getDecapitalizedName()
+            def naturalName = GrailsNameUtils.getNaturalName(propertyName)
             def cssClass = attrs.class ? attrs.class : ""
             def errors = ""
             if (attrs.object.hasErrors()) {
@@ -320,8 +320,8 @@ class DialogTagLib {
                     break
 
                 case "edit":
-                    def entryValue = value ? value.format("yyyy-MM-dd") : ""
-                    def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
+                    def entryValue = value ? new SimpleDateFormat("yyyy-MM-dd").format(value) : ""
+                    def updateValue = value ? new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(value) : ""
 
                     // min & max
                     def minDate = DateTimeUtil.determineDate(attrs.minDate)
@@ -338,11 +338,11 @@ class DialogTagLib {
                         log.info "Value '${value.clearTime()}' is after maximum date '${maxDate}', value will be used as maximum date."
                         maxDate = value.clearTime()
                     }
-
+                    def uuid=UUID.randomUUID().toString()
                     def html =
                         """
-                        <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValue}" ${minDate ? """ min="${minDate.format("yyyy-MM-dd")}" """ : ""} ${maxDate ? """ max="${maxDate.format("yyyy-MM-dd")}" """ : ""} />
-                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
+                        <input id="entry-${uuid}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValue}" ${minDate ? """ min="${minDate.format("yyyy-MM-dd")}" """ : ""} ${maxDate ? """ max="${maxDate.format("yyyy-MM-dd")}" """ : ""} />
+                        <input id="update-${uuid}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
                         """
                     return html
                     break
@@ -373,8 +373,8 @@ class DialogTagLib {
                     break
 
                 case "edit":
-                    def entryValue = value ? value.format("HH:mm:ss") : ""
-                    def updateValue = value ? value.format("yyyy-MM-dd'T00:00:00Z'") : ""
+                    def entryValue = value ? new SimpleDateFormat("HH:mm:ss").format(value) : ""
+                    def updateValue = value ? new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(value) : ""
 
                     // min & max
                     def minTime = DateTimeUtil.determineTime(attrs.minTime)
@@ -391,11 +391,11 @@ class DialogTagLib {
                         log.info "Value '${value}' is after maximum time '${maxTime}', value will be used as maximum time."
                         maxTime = value
                     }
-
+                    def uuid=UUID.randomUUID().toString()
                     def html =
                         """
-                        <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValue}" ${minTime ? """ min="${minTime.format("HH:mm")}" """ : ""} ${maxTime ? """ max="${maxTime.format("HH:mm")}" """ : ""} />
-                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
+                        <input id="entry-${uuid}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValue}" ${minTime ? """ min="${minTime.format("HH:mm")}" """ : ""} ${maxTime ? """ max="${maxTime.format("HH:mm")}" """ : ""} />
+                        <input id="update-${uuid}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
                         """
                     return html
                     break
@@ -428,10 +428,11 @@ class DialogTagLib {
                     break
 
                 case "edit":
-                    def timeValue = value ? Date.parse("HH:mm:ss", value.format("HH:mm:ss")) : null
-                    def entryValueDate = value ? value.format("yyyy-MM-dd") : ""
-                    def entryValueTime = value ? value.format("HH:mm:ss") : ""
-                    def updateValue = value ? value.format("yyyy-MM-dd'T'HH:mm:ss'Z'") : ""
+                    def timeValue = value ?  new SimpleDateFormat("HH:mm:ss").format(value) : null
+                    def entryValueDate = value ? new SimpleDateFormat("yyyy-MM-dd").format(value) : ""
+
+                    def entryValueTime = value ? new SimpleDateFormat("HH:mm:ss").format(value) : ""
+                    def updateValue = value ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(value)  : ""
 
                     // min & max date
                     def minDate = DateTimeUtil.determineDate(attrs.minDate)
@@ -463,18 +464,18 @@ class DialogTagLib {
                         log.info "Value '${timeValue}' is after maximum time '${maxTime}', value will be used as maximum time."
                         maxTime = timeValue
                     }
-
+                    def uuid=UUID.randomUUID().toString()
                     def html =
                         """
                         <div class="row row-no-margin-top">
                             <div class="col-md-7">
-                                <input id="entry-${attrs.propertyName}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValueDate}" ${minDate ? """ min="${minDate.format("yyyy-MM-dd")}" """ : ""} ${maxDate ? """ max="${maxDate.format("yyyy-MM-dd")}" """ : ""} />
+                                <input id="entry-${uuid}-date" name="entry-${attrs.propertyName}-date" type="date" class="form-control datepicker dialog-open-events" value="${entryValueDate}" ${minDate ? """ min="${minDate.format("yyyy-MM-dd")}" """ : ""} ${maxDate ? """ max="${maxDate.format("yyyy-MM-dd")}" """ : ""} />
                             </div>
                             <div class="col-md-5">
-                                <input id="entry-${attrs.propertyName}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValueTime}" ${minTime ? """ min="${minTime.format("HH:mm")}" """ : ""} ${maxTime ? """ max="${maxTime.format("HH:mm")}" """ : ""} />
+                                <input id="entry-${uuid}-time" name="entry-${attrs.propertyName}-time" type="time" class="form-control timepicker dialog-open-events" value="${entryValueTime}" ${minTime ? """ min="${minTime.format("HH:mm")}" """ : ""} ${maxTime ? """ max="${maxTime.format("HH:mm")}" """ : ""} />
                             </div>
                         </div>
-                        <input id="update-${attrs.propertyName}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
+                        <input id="update-${uuid}" name="${attrs.propertyName}" type="hidden" value="${updateValue}" useTimeZone="true" />
                         """
                     return html
                     break
@@ -512,7 +513,8 @@ class DialogTagLib {
 
                 case "edit":
                     // Hack to assign unique ID's and keep tinyMCE happy
-                    newAttrs += [name: attrs.propertyName, value: attrs.object."${attrs.propertyName}", cols: cols, rows: rows , id: "id${new Random().nextInt(10000000)}"]
+                    def uuid=UUID.randomUUID().toString()
+                    newAttrs += [name: attrs.propertyName, value: attrs.object."${attrs.propertyName}", cols: cols, rows: rows , id: uuid]
 
                     return g.textArea(newAttrs)
                     break
@@ -549,6 +551,8 @@ class DialogTagLib {
         } else {
             newAttrs["class"] = "dialog-open-events"
         }
+        def uuid=UUID.randomUUID().toString()
+        newAttrs['id']=uuid
 
         out << row (attrs) {
 
@@ -610,10 +614,21 @@ class DialogTagLib {
      * @param sort The property to sort the domain class items in the list by (default: name)
      */
     def domainObject = { attrs ->
-        def optionValues = []
-        def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
-        def property = domainClass.getPropertyByName(attrs.propertyName)
+        def nullable=false
+        def constrainedProperty
 
+        if (attrs.object.metaClass.hasProperty("constraintsMap")) {
+            constrainedProperty=attrs.object.getClass().constraintsMap[attrs.propertyName]
+            nullable=constrainedProperty.isNullable()
+        }
+
+        def propertyClass=dialogService.getAssociationClass(attrs.object,attrs.propertyName)
+
+        def optionValues = []
+
+        if (attrs.containsKey('optional')) {
+            nullable=(attrs.optional=="true")
+        }
         out << row (attrs) {
 
             switch (attrs.mode) {
@@ -625,16 +640,16 @@ class DialogTagLib {
                     if (attrs.from) {
                         optionValues = attrs.from
                     } else if (attrs.sort) {
-                        optionValues = property.getType().findAll([sort: attrs.sort, order: "asc"]) {}
+                        optionValues = propertyClass.findAll([sort: attrs.sort, order: "asc"]) {}
                     }
                     else {
-                        optionValues = property.getType().findAll([sort: "name", order: "asc"]) {}
+                        optionValues = propertyClass.findAll([sort: "name", order: "asc"]) {}
                     }
 
                     def value = attrs.object."${attrs.propertyName}"
                     def valueId = value ? value.id : null
 
-                    if (property.isOptional()) {
+                    if (nullable) {
                         return g.select(name: attrs.propertyName + ".id", value: valueId, from: optionValues, optionKey: "id", class: "form-control", noSelection:["null": "-"])
                     }
                     else {
@@ -643,8 +658,8 @@ class DialogTagLib {
                     break
 
                 case "autocomplete":
-                    def dc = new DefaultGrailsDomainClass(property.getType())
-                    def domainPropertyName = dc.getPropertyName()
+                    def domainPropertyName=GrailsNameUtils.getPropertyName(propertyClass.simpleName)
+
                     def acAction = attrs.acAction ? attrs.acAction : "autocomplete"
                     def jsonUrl = "${request.contextPath}/${domainPropertyName}/${acAction}"
                     attrs.jsonUrl=jsonUrl
@@ -696,9 +711,8 @@ class DialogTagLib {
                     break
 
                 case "edit":
-                    def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
-                    def property=domainClass.getPropertyByName(attrs.propertyName)
-                    def cp = domainClass.constrainedProperties[attrs.propertyName]
+                    def constrainedProperty=dialogService.getConstrainedProperty(attrs.object,attrs.propertyName)
+                    def nullable=constrainedProperty?constrainedProperty.isNullable():false
 
                     def optionValues = []
 
@@ -711,8 +725,11 @@ class DialogTagLib {
                                     optionValues=[currentValue]
                                 }
                         } else {
-                            if (attrs.object.constraints."${attrs.propertyName}".inList) {
-                                optionValues = attrs.object.constraints."${attrs.propertyName}".inList
+                            if (constrainedProperty){
+                                def inList=constrainedProperty.getInList()
+                                if (inList) {
+                                    optionValues=inList
+                                }
                             }
                         }
                     }
@@ -721,7 +738,7 @@ class DialogTagLib {
                     def opts = [name: attrs.propertyName, value: value, from: optionValues, class: "form-control dialog-open-events select2"]
                     if (attrs["class"]) opts.class += " " + attrs["class"]
 
-                    if (property.isOptional() && !attrs.notOptional) {
+                    if (nullable && !attrs.notOptional) {
                         opts.put("noSelection", ["": "-"])
                     }
 
@@ -750,15 +767,15 @@ class DialogTagLib {
 
         def prefix = "dialog_" + attrs.object.getClass().getName() + "_" + attrs.object.id + "_"
         prefix = prefix.replace(".", "\\.").replace(":", "\\:")
-        def defaultDomainClass = new DefaultGrailsDomainClass(attrs.object.class)
-        def domainPropertyName = defaultDomainClass.propertyName
+        def domainPropertyName=GrailsNameUtils.getPropertyName(attrs.object.class.simpleName)
 
         out << """<div><ul class="nav nav-tabs" role="tablist">"""
 
         this.pageScope.dialogTabNames.eachWithIndex { name, i ->
             def defaultTabLabel = g.message(code: "dialog.tab.${name}", default: name)
-            def tabLabel = g.message(code: "dialog.tab.${domainPropertyName}.${name}", default: defaultTabLabel)
-            out << """<li class="${i == 0 ? "active" : "" }"><a href="#${prefix}${name}" aria-controls="${prefix}${name}" role="tab" data-toggle="tab">${tabLabel}</a></li>"""
+            def eName=name.replace(" ","_")
+            def tabLabel = g.message(code: "dialog.tab.${domainPropertyName}.${eName}", default: defaultTabLabel)
+            out << """<li class="${i == 0 ? "active" : "" }"><a href="#${prefix}${eName}" aria-controls="${prefix}${eName}" role="tab" data-toggle="tab">${tabLabel}</a></li>"""
         }
 
         out << "</ul>"
@@ -775,8 +792,9 @@ class DialogTagLib {
      */
     def tab = { attrs, body ->
         this.pageScope.dialogTabNames += attrs.name
+        def name=attrs.name.replace(" ","_")
         def prefix = "dialog_" + attrs.object.getClass().getName() + "_" + attrs.object.id + "_"
-        out << """<div role="tabpanel" class="tab-pane ${this.pageScope.dialogTabNames.size() == 1 ? "active" : "" }" id="${prefix}${attrs.name}">"""
+        out << """<div role="tabpanel" class="tab-pane ${this.pageScope.dialogTabNames.size() == 1 ? "active" : "" }" id="${prefix}${name}">"""
         out << body()
         out << "</div>"
     }
@@ -791,7 +809,7 @@ class DialogTagLib {
     def form = { attrs, body ->
         def defaultName = "form"
         if (attrs.object) {
-            defaultName = new DefaultGrailsDomainClass(attrs.object.class).getPropertyName()
+            defaultName = GrailsNameUtils.getPropertyName(attrs.object.getClass().getSimpleName())
         }
 
         def name = attrs.name ? attrs.name : defaultName
@@ -826,8 +844,7 @@ class DialogTagLib {
         // REMARK: Currently it will only work if belongto has only 1 relation
         if (!(attrs.noBelongsTo && (attrs.noBelongsTo == true || attrs.noBelongsTo == "true"))) {
             if (attrs.object) {
-                def defaultDomainClass = new DefaultGrailsDomainClass(attrs.object.class)
-                Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
+                Map belongToMap = dialogService.getBelongsToMap(attrs.object)
                 if (belongToMap?.size() == 1) {
                     belongToMap.each { key, value ->
                         out << g.hiddenField([name: key + ".id", value: attrs.object."${key}"?.id])
@@ -882,8 +899,7 @@ class DialogTagLib {
         // Add Hidden field with the id of the parent DomainObject (belongsTo)
         // REMARK: Currently it will only work if belongto has only 1 relation
         if (attrs.object) {
-            def defaultDomainClass = new DefaultGrailsDomainClass(attrs.object.class)
-            Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
+            Map belongToMap = dialogService.getBelongsToMap(attrs.object)
             if (belongToMap?.size() == 1) {
                 belongToMap.each { key, value ->
                     out << '<input id="${key}.id" type="hidden" name="${key}.id" value="' + attrs.object."${key}"?.id + '" />'
@@ -950,9 +966,12 @@ class DialogTagLib {
         def prefix
         def listConfig
         if (attrs.domainClass) {
-            def domainClass = new DefaultGrailsDomainClass(attrs.domainClass)
-            if (domainClass.hasProperty("listConfig")) {
-                listConfig = attrs.listConfig?:attrs.domainClass?.listConfig
+            if (attrs.listConfig) {
+                listConfig = attrs.listConfig
+            } else {
+                if (dialogService.hasProperty(attrs.domainClass,"listConfig")) {
+                    listConfig=attrs.domainClass.listConfig
+                }
             }
         }
         if (listConfig) {
@@ -960,10 +979,7 @@ class DialogTagLib {
             listProperties = listConfig.columns.collect { it.name }
             prefix = "detailTable_"+listConfig.name
         } else {
-
-            def domainClass = new DefaultGrailsDomainClass(attrs.domainClass)
-
-            controllerName = attrs.controllerName ?: domainClass.getPropertyName()
+            controllerName = attrs.controllerName ?: GrailsNameUtils.getPropertyName(attrs.domainClass?.getSimpleName())
             listProperties = attrs.domainClass.listProperties
             prefix = "detailTable_" + attrs.domainClass
             prefix = prefix.replace(".", "_")
@@ -1013,8 +1029,7 @@ class DialogTagLib {
             controller = attrs.controller
             prefix = controller
         } else {
-            def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
-            controller = domainClass.getPropertyName()
+            controller = GrailsNameUtils.getPropertyName(attrs.object.class.getSimpleName())
             prefix = "filesTable_" + domainClass.name
         }
         def id = attrs.id ?: attrs.object.id
@@ -1254,10 +1269,9 @@ class DialogTagLib {
     def treeselect = { attrs, body ->
         out << row (attrs) {
             def action = attrs.action ?: "treeJSON"
-            def domainClass = new DefaultGrailsDomainClass(attrs.object.class)
-            def property = domainClass.getPropertyByName(attrs.propertyName)
-            def dc = new DefaultGrailsDomainClass(property.getType())
-            def domainPropertyName = dc.getPropertyName()
+
+            def domainPropertyName = GrailsNameUtils.getPropertyName(attrs.object.getClass().getSimpleName())
+
             def url = attrs.url ?: "${request.contextPath}/${domainPropertyName}/${action}"
             def attributes = ""
             if (attrs.width) { attributes += """ treeDialogWidth="${attrs.width}" """ }

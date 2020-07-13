@@ -32,26 +32,47 @@ class DialogExceptionController {
         }
 		def title="Error handling error"
 		def msg=""
-		def exceptionCode="dialogException.dialog"
-        if (request.exception?.message) {
-            exceptionCode=request.exception?.message
-        }
-		def args=[]
 
-		if (request.exception.cause.class==org.open_t.dialog.DialogException || request.exception.cause.class==AssertionError) {
-			args=request.exception.cause.args
-			exceptionCode=request.exception.cause.message
-		}
+        def exceptionName=null
+        def exceptionMessage=null
+        def args=[]
+        if (request.exception.message) {
+            exceptionName=request?.exception.getClass().getName()
+            exceptionMessage=request.exception?.message
+            if (request?.exception?.metaClass?.hasProperty("args")) {
+                args=request.exception?.args
+            }
+        }
+        if (!exceptionMessage && request.exception.cause?.message) {
+            exceptionName=request?.exception?.cause?.getClass().getName()
+            exceptionMessage=request?.exception?.cause?.message
+            if (request?.exception?.cause?.metaClass?.hasProperty("args")) {
+                args=request.exception?.cause?.args
+            }
+        }
+
+        if (!exceptionMessage && request.exception.cause?.cause?.message) {
+            exceptionName=request?.exception?.cause?.cause?.getClass().getName()
+            exceptionMessage=request?.exception?.cause?.cause?.message
+            if (request?.exception?.cause?.cause?.metaClass?.hasProperty("args")) {
+                args=request.exception?.cause?.cause?.args
+            }
+        }
 
 		try {
-			def defaultTitle=message(code:'exception.default.title',args:args,default:"Error")
-            if (!exceptionCode) {
-                exceptionCode="empty"
-                args=[request?.exception?.toString()]
+            // If the exception code resolves, show that. If not, show generic message with exception message as parameter
+            title = message(code:'exception'+exceptionMessage+'.title',args:args,default:"UNRESOLVED")
+            if (title=="UNRESOLVED") {
+                title=message(code:'exception.default.title',args:[exceptionName,exceptionMessage,args],default:"An exception occurred: {0}:{1} with arguments: {2}")
             }
-			title=message(code:'exception.'+exceptionCode+'.title',args:args,default:defaultTitle)
 
-			msg=message(code:'exception.'+exceptionCode+'.message',args:args,default:exceptionCode)
+            // If the exception code resolves, show that. If not, show generic message with exception message as parameter
+            msg = message(code:'exception'+exceptionMessage+'.message',args:args,default:"UNRESOLVED")
+            if (msg=="UNRESOLVED") {
+                msg=message(code:'exception.default.message',args:[exceptionName,exceptionMessage,args],default:"An exception occcurred: {0}:{1} with arguments: {2}")
+            }
+
+
 		} catch (Exception e) {
 			msg=e.message
 		}
@@ -59,17 +80,18 @@ class DialogExceptionController {
                 success:false,
                 message:msg,
                 title:title,
-                code:exceptionCode,
+                code:exceptionMessage,
                 args:args
         ]
         def res=[result:result]
+        def headerMsg=msg.replaceAll("\\n"," ")
         if (request && request.getHeader("Accept") && request.getHeader("Accept").contains("application/json")) {
             // Because $.getJSON doesn't have a failure handler...
 			response.status=200
-            response.addHeader("X-Dialog-Error-Message",msg);
+            response.addHeader("X-Dialog-Error-Message",headerMsg);
             render res as JSON
         } else {
-            response.addHeader("X-Dialog-Error-Message",msg);
+            response.addHeader("X-Dialog-Error-Message",headerMsg);
             return res
         }
 	}

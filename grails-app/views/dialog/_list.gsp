@@ -1,4 +1,4 @@
-<%@page import="org.codehaus.groovy.grails.commons.*" %>
+<%@page import="org.grails.core.*" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -25,7 +25,7 @@
                                 <th class="${dc.sortableProperties?.contains(property)?'sortable':'nonsortable'} ${controllerName}-${property}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
                             </g:if>
                             <g:else>
-                                <th class="${(property=='id' || new DefaultGrailsDomainClass(dc).hasPersistentProperty(property))?'sortable':'nonsortable'} ${controllerName}-${property}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
+                                <th class="${(property=='id' || new DefaultGrailsDomainClass(dc).hasProperty(property))?'sortable':'nonsortable'} ${controllerName}-${property}"><g:message code="${controllerName}.${property}.label" default="${controllerName}.${property}.label" /></th>
                             </g:else>
 						</g:each>
 						<th><g:message code="dialog.list.actions.label" default="Actions" /></th>

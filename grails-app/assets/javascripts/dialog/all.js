@@ -1,0 +1,17 @@
+//= require /dialog/jquery
+//= require /dialog/loglevel
+//= require /dialog/ckeditor
+//= require /dialog/codemirror
+//= require /dialog/fileuploader
+//= require /dialog/datatables
+//= require /dialog/tree
+//= require /dialog/bootstrap
+//= require /dialog/last
+//= require /dialog/flot
+//= require /dialog/x2js
+//= require /dialog/select2
+//= require /dialog/maskedinput
+//= require /dialog/momentjs
+//= require /dialog/datetimepicker
+//= require /dialog/modernizr
+//= require /dialog

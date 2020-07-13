@@ -26,12 +26,12 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.web.util.WebUtils
+import org.grails.web.util.WebUtils
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
-import org.springframework.transaction.annotation.Transactional
+import grails.gorm.transactions.Transactional
+
 import org.springframework.context.MessageSourceResolvable
+import grails.util.GrailsNameUtils
 /*
  * Provide generic edit,submit,delete operations for dialog handling
  */
@@ -60,10 +60,6 @@ class DialogService {
 	*/
 	@Transactional(readOnly=true)
     def edit(domainClass,params) {
-		def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
-
-		Map belongToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
-
 		def domainClassInstance
 		if (params.id && params.id !='null') {
 		    if (params.id.contains("_")){
@@ -72,6 +68,7 @@ class DialogService {
 			domainClassInstance = domainClass.get(params.id)
 		} else {
 			domainClassInstance = domainClass.newInstance()
+            Map belongToMap = getBelongsToMap(domainClassInstance)
 			// Some views (dialogs) shows fields that belong to the parent DomainObject
 			// If there is a parentId it will load the parent DomainObject (belongsTo)
 			// REMARK: Currently it will only work if belongto has only 1 relation
@@ -80,10 +77,10 @@ class DialogService {
 			}
 		}
 
-		def domainPropertyName=defaultDomainClass.propertyName
-        def domainClassName=defaultDomainClass.getName()
+		def domainPropertyName=GrailsNameUtils.getPropertyName(domainClass.getSimpleName())
+
         if (!domainClassInstance) {
-            throw new DialogException("dialogService.notfound",[domainClassName,params.id]);
+            throw new DialogException("dialogService.notfound",[domainClass.getSimpleName(),params.id]);
         }
         else {
         	def returnMap=[:]
@@ -101,7 +98,7 @@ class DialogService {
      * @param args The optional argument list.
 	 * @since 06/19/2017
      */
-	def getMessage(String code, List args = null) {
+	def getMessage(String code, List args = null,String defaultMessage=null) {
 		def useDefault = false
 		def webUtils = null
 		try {
@@ -119,7 +116,7 @@ class DialogService {
 		}
 
         def nextArgs = args == null ? null : args.toArray()
-		return messageSource.getMessage(code, nextArgs, code, locale)
+		return messageSource.getMessage(code, nextArgs, defaultMessage?:code, locale)
 	}
 
     /**
@@ -147,10 +144,10 @@ class DialogService {
 	def submit(domainClass,params,instance=null,Closure after={}) {
 		def res=[:]
 		try {
-			def g=grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
-			def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
-			def domainPropertyName=defaultDomainClass.propertyName
-			def domainClassName=defaultDomainClass.getName()
+			def g=grailsApplication.mainContext.getBean('org.grails.plugins.web.taglib.ApplicationTagLib')
+
+            def domainPropertyName=GrailsNameUtils.getPropertyName(domainClass.getSimpleName())
+
 
 			def action
     		def domainClassInstance
@@ -170,7 +167,7 @@ class DialogService {
 					action = 'created'
 	    		}
                 // Clear out any hasmany if it is in the parameters
-                if (defaultDomainClass.hasProperty("hasMany")) {
+                if (hasProperty(domainClass,"hasMany")) {
                     domainClassInstance.hasMany.each {key,value ->
 						if (domainClassInstance."${key}"){
 		                    if (params.containsKey(key)) {
@@ -182,21 +179,20 @@ class DialogService {
 	    		domainClassInstance.properties = params
     		}
 			// check for position and update if necessary
-            if ((defaultDomainClass.hasProperty("position")) && (domainClassInstance.position==0)) {
+            if (hasProperty(domainClass,"position") && (domainClassInstance.position==0)) {
 				def maxPosition=0
-				if (defaultDomainClass.hasProperty("belongsTo") && domainClassInstance.belongsTo?.size() == 1) {
+				if (hasProperty(domainClass,"belongsTo") && (domainClassInstance.belongsTo?.size() == 1)) {
 					domainClassInstance.belongsTo.each {key,value ->
 						if (domainClassInstance."${key}"){
-							maxPosition=domainClass.executeQuery("select max(position) from ${domainClass.getName()} where ${key}=:parent",[parent:domainClassInstance."${key}"])[0];
+							maxPosition=domainClass.executeQuery("select max(position) from ${domainClass.getName()} where ${key}=:parent".toString(),[parent:domainClassInstance."${key}"])[0];
 						}
 					}
 				} else {
-					maxPosition=domainClass.executeQuery("select max(position) from ${domainClass.getName()}")[0];
+					maxPosition=domainClass.executeQuery("select max(position) from ${domainClass.getName()}".toString())[0];
 				}
 				maxPosition=maxPosition?maxPosition:0
 				domainClassInstance.position=maxPosition+1
 			}
-
             def successFlag=!domainClassInstance.hasErrors() && domainClassInstance.save(flush: true)
 
             def resultMessage=""
@@ -206,7 +202,7 @@ class DialogService {
             	 def session = sessionFactory.getCurrentSession()
             	session.flush()
 
-				def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
+				def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label",[],domainClass.getSimpleName())
 				def actionLabel=getMessage("dialog.submit.${action}.label")
 
             	resultMessage="${domainClassLabel} ${domainClassInstance.id} ${actionLabel}."
@@ -260,12 +256,9 @@ class DialogService {
 	*/
 	@Transactional
 	def delete(domainClass,params,instance=null) {
-		def g=grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
-		def defaultDomainClass = new DefaultGrailsDomainClass( domainClass )
+		def g=grailsApplication.mainContext.getBean('org.grails.plugins.web.taglib.ApplicationTagLib')
 
-
-		def domainPropertyName=defaultDomainClass.propertyName
-		def domainClassName=defaultDomainClass.getName()
+        def domainPropertyName=GrailsNameUtils.getPropertyName(domainClass.getSimpleName())
 
 		def id=params.id
 
@@ -284,13 +277,13 @@ class DialogService {
         try {
         	domainClassInstance.delete(failOnError:true,flush:true)
 
-			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
+			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label",[],domainClass.getSimpleName())
 			def actionLabel=getMessage("dialog.submit.deleted.label")
 
         	resultMessage="${domainClassLabel} #${params.id} ${actionLabel}"
 
         } catch (Exception e ){
-			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label")
+			def domainClassLabel=getMessage("dialog.submit.${domainPropertyName}.label",[],domainClass.getSimpleName())
 			def actionLabel=getMessage("dialog.submit.notdeleted.label")
 
         	successFlag=false
@@ -409,7 +402,7 @@ class DialogService {
 				def fields=query
 				def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 				def order=fields.collect {"dc.${it}"}.join(",")
-				documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params.term+'%'],[max:maxResults])
+				documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}".toString(),[term:'%'+params.term+'%'],[max:maxResults])
 			}
 
 			// Custom HQL query with like-ready 'term' parameter
@@ -477,4 +470,58 @@ class DialogService {
         t?.printStackTrace(printWriter);
         return result.toString();
     }
+
+    // Get association class, wether it is from a property or belongsTo does not matter
+    def getAssociationClass(domainObject,propertyName) {
+        def associationClass=null
+        def belongsTo=getBelongsToMap(domainObject)
+
+        if (belongsTo){
+            associationClass=belongsTo[propertyName]
+        }
+
+        if (!associationClass) {
+            associationClass=domainObject.getMetaClass().getMetaProperty(propertyName).getType()
+        }
+
+        def className=associationClass?.getName()
+
+        className=className.replaceAll('\\$.*','')
+        return Class.forName(className)
+    }
+
+    def getBelongsToMap(domainObject) {
+        if (hasProperty(domainObject.getClass(),"belongsTo")) {
+            return domainObject.belongsTo
+        } else {
+            return [:]
+        }
+    }
+
+    def getConstrainedProperty(domainObject,propertyName){
+        def constrainedProperty=null
+
+        // Real domain objects have getConstrainedProperties()
+        if (hasMethod(domainObject.getClass(),"getConstrainedProperties")) {
+            constrainedProperty=domainObject.getClass().constrainedProperties[propertyName]
+        }
+
+        // Command objects have getConstraintsMap()
+        if (!constrainedProperty) {
+            if (hasMethod(domainObject.getClass(),"getConstraintsMap")) {
+                constrainedProperty=domainObject.getClass().constraintsMap[propertyName]
+
+            }
+        }
+        return constrainedProperty
+    }
+
+    def hasProperty(domainClass,propertyName) {
+        return null!= domainClass.getDeclaredFields().find { it.name == propertyName}
+    }
+
+    def hasMethod(domainClass,methodName) {
+        return null!= domainClass.getMethods().find { it.name == methodName}
+    }
+
 }

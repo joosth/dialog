@@ -1,0 +1,13 @@
+//= require /ext/codemirror/lib/codemirror.js
+//= require /ext/codemirror/addon/runmode/runmode.js
+//= require /ext/codemirror/addon/runmode/colorize.js
+//= require /ext/codemirror/mode/xml/xml.js
+//= require /ext/codemirror/mode/javascript/javascript.js
+//= require /ext/codemirror/mode/css/css.js
+//= require /ext/codemirror/mode/htmlmixed/htmlmixed.js
+//= require /ext/codemirror/mode/groovy/groovy.js
+//= require /ext/codemirror/mode/shell/shell.js
+//= require /ext/codemirror/mode/clike/clike.js
+//= require /ext/codemirror/mode/sql/sql.js
+//= require /ext/codemirror/addon/display/fullscreen.js
+//= require /dialog.codemirror.js

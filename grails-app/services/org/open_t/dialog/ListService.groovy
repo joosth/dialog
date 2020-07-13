@@ -22,12 +22,9 @@ package org.open_t.dialog
 import java.text.SimpleDateFormat
 
 import org.apache.commons.lang.WordUtils
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import org.codehaus.groovy.grails.web.util.WebUtils
+import org.grails.web.util.WebUtils
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
-import org.springframework.transaction.annotation.Transactional
-
+import grails.gorm.transactions.Transactional
 
 /*
  * Provide list handling service
@@ -38,6 +35,7 @@ class ListService {
 
 	def grailsApplication
 	def messageSource
+    def dialogService
 
 	/**
 	* Converts value to a display string
@@ -53,7 +51,7 @@ class ListService {
 			def type=value.getClass().getName()
 
 			if (type== "java.lang.String") {
-				return value
+				return value.encodeAsHTML()
 			}
 
 			def webUtils = WebUtils.retrieveGrailsWebRequest()
@@ -65,11 +63,17 @@ class ListService {
 			}
 
 			if (type== "java.util.Date" || type=="java.sql.Timestamp") {
+                def timeString=new SimpleDateFormat("HH:mm:ss").format(value)
+                def dateString=new SimpleDateFormat("yyyy-MM-dd").format(value)
 				def dateFormat
-				if (value.format ("HH:mm:ss")=="00:00:00") {
+				if (timeString=="00:00:00") {
 					dateFormat= messageSource.getMessage("dialog.date.format".toString(),null, "yyyy-MM-dd",locale)
 				} else {
-					dateFormat= messageSource.getMessage("dialog.datetime.format".toString(),null, "yyyy-MM-dd HH:mm:ss",locale)
+                    if (dateString=="1970-01-01") {
+                        dateFormat= messageSource.getMessage("dialog.time.format".toString(),null, "HH:mm:ss",locale)
+                    } else {
+                        dateFormat= messageSource.getMessage("dialog.datetime.format".toString(),null, "yyyy-MM-dd HH:mm:ss",locale)
+                    }
 				}
 				def format=new SimpleDateFormat(dateFormat,locale)
 				return format.format(value)
@@ -77,7 +81,7 @@ class ListService {
 
 			return value.toString()
 		} catch (Exception e) {
-			println e.message
+			log.info e.message
 			return "?"
 		}
 	}
@@ -100,13 +104,13 @@ class ListService {
 			def listConfig=null
 			def columns
 
-			if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
+			if (dialogService.hasProperty(dc,"listConfig")) {
 				listConfig=dc.listConfig
 				columns=dc.listConfig.columns.collect { it.name }
 				if (!filterColumnNames) {
 					filterColumnNames=dc.listConfig.filterColumns
 				}
-			} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
+			} else if (dialogService.hasProperty(dc,"listProperties")) {
 				columns=dc.listProperties
 			}
 
@@ -127,7 +131,8 @@ class ListService {
 					def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
 					def masterDomainObj = grailsApplication.getClassForName(params.objectClass).get(params.objectId)
 					documentList=dc."$filterMethod"(masterDomainObj, [max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
-					recordsTotal =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object",[object:masterDomainObj])
+
+					recordsTotal =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object".toString(),['object':masterDomainObj])
 					recordsFiltered=recordsTotal
 
 				} else {
@@ -145,7 +150,7 @@ class ListService {
 					def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 					def order=fields.collect {"dc.${it}"}.join(",")
 					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params."search[value]"+'%'],[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
-					recordsFiltered =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}",[term:'%'+params."search[value]"+'%'])
+					recordsFiltered =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}".toString(),[term:'%'+params."search[value]"+'%'])
 				} else {
 					documentList=dc.list([max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
 					recordsFiltered = recordsTotal
@@ -221,18 +226,18 @@ class ListService {
 		def propName=title[0].toLowerCase()+title.substring(1)
 
 		if(!countQuery) {
-			countQuery="select count(*) ${query}"
+			countQuery="select count(*) ${query}".toString()
 		}
 
 		def columns
 		if (listProperties) {
 			columns=listProperties
-		} else if (new DefaultGrailsDomainClass(dc).hasProperty("listConfig")) {
+		} else if (dialogService.hasProperty(dc,"listConfig")) {
 			columns=dc.listConfig.columns.collect { it.name }
 			if (!filterColumnNames) {
 				filterColumnNames=dc.listConfig.filterColumns
 			}
-		} else if  (new DefaultGrailsDomainClass(dc).hasProperty("listProperties")) {
+		} else if  (dialogService.hasProperty(dc,"listProperties")) {
 			columns=dc.listProperties
 		}
 
@@ -248,7 +253,7 @@ class ListService {
 
 		if (params['objectId'] != null) {
 			query = "${query} and (${params.property}.id=${params.objectId})"
-			countQuery= "${countQuery} and (${params.property}.id=${params.objectId})"
+			countQuery= "${countQuery} and (${params.property}.id=${params.objectId})".toString()
 		}
 		def recordsTotal=dc.executeQuery(countQuery,queryParams)[0]
 		def recordsFiltered=recordsTotal
@@ -270,7 +275,7 @@ class ListService {
 			recordsFiltered=dc.executeQuery(countQuery,queryParams)[0]
 		}
 
-		query="${query} order by ${sortName} ${params."order[0][dir]"}"
+		query="${query} order by ${sortName} ${params."order[0][dir]"}".toString()
 
 		documentList=dc.executeQuery(query,queryParams,[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
 
@@ -392,8 +397,7 @@ class ListService {
 	 */
 	@Transactional
 	def position(dc,params) {
-		def defaultDomainClass = new DefaultGrailsDomainClass( dc )
-		Map belongsToMap = defaultDomainClass.getStaticPropertyValue(GrailsDomainClassProperty.BELONGS_TO, Map.class)
+        Map belongsToMap = dialogService.getBelongsToMap(dc)
 
 		def movedItem=dc.get(params.id)
 		Integer toPosition=new Integer(params.toPosition)
