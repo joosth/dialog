@@ -150,7 +150,6 @@ class ListService {
 
 					def where=fields.collect {"dc.${it.toString()} like :term"}.join(" or ")
 					def order=fields.collect {"dc.${it.toString()}"}.join(",")
-					print "where = ${where?:'-'}"
 					def searchTerm = "%"+(params."search[value]")+"%"
 					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}".toString(),
 					                        [term:searchTerm],
