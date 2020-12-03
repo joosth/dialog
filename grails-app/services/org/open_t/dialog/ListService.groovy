@@ -62,7 +62,7 @@ class ListService {
 				return messageSource.getMessage("dialog.checkBox.${value}.label".toString(),null, value.toString(),locale)
 			}
 
-			if (type== "java.util.Date" || type=="java.sql.Timestamp") {
+            if (type== "java.util.Date" || type=="java.sql.Timestamp") {
                 def timeString=new SimpleDateFormat("HH:mm:ss").format(value)
                 def dateString=new SimpleDateFormat("yyyy-MM-dd").format(value)
 				def dateFormat
@@ -130,11 +130,11 @@ class ListService {
 				if (params.objectId !='null') {
 					def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
 					def masterDomainObj = grailsApplication.getClassForName(params.objectClass).get(params.objectId)
-					documentList=dc."$filterMethod"(masterDomainObj, [max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
-
-					recordsTotal =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object".toString(),['object':masterDomainObj])
+					documentList = dc."$filterMethod"(masterDomainObj,
+					                                  [max:params.length, offset:params.start, order:params."order[0][dir]", sort:sortName])
+					recordsTotal = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object".toString(),
+					                               ['object':masterDomainObj])
 					recordsFiltered=recordsTotal
-
 				} else {
 					recordsTotal=0
 					recordsFiltered=0
@@ -147,12 +147,17 @@ class ListService {
 					} else {
 						fields=filterColumnNames
 					}
-					def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
-					def order=fields.collect {"dc.${it}"}.join(",")
-					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}",[term:'%'+params."search[value]"+'%'],[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
-					recordsFiltered =dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}".toString(),[term:'%'+params."search[value]"+'%'])
+
+					def where=fields.collect {"dc.${it.toString()} like :term"}.join(" or ")
+					def order=fields.collect {"dc.${it.toString()}"}.join(",")
+					def searchTerm = "%"+(params."search[value]")+"%"
+					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}".toString(),
+					                        [term:searchTerm],
+					                        [max: params.length, offset: params.start, order: params."order[0][dir]", sort: sortName])
+					recordsFiltered = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}".toString(),
+                                                      [term:searchTerm])
 				} else {
-					documentList=dc.list([max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
+					documentList=dc.list([max:params.length, offset:params.start, order:params."order[0][dir]", sort:sortName])
 					recordsFiltered = recordsTotal
 				}
 			}
@@ -255,7 +260,8 @@ class ListService {
 			query = "${query} and (${params.property}.id=${params.objectId})"
 			countQuery= "${countQuery} and (${params.property}.id=${params.objectId})".toString()
 		}
-		def recordsTotal=dc.executeQuery(countQuery,queryParams)[0]
+
+		def recordsTotal=dc.executeQuery(countQuery.toString(), queryParams)[0]
 		def recordsFiltered=recordsTotal
 		if (filterColumnNames && params."search[value]") {
 			def fields
@@ -264,6 +270,7 @@ class ListService {
 			} else {
 				fields=filterColumnNames
 			}
+
 			def where=fields.collect {"str(dc.${it}) like :term"}.join(" or ")
 			def order=fields.collect {"dc.${it}"}.join(",")
 
@@ -271,19 +278,17 @@ class ListService {
 			countQuery= "${countQuery} and (${where})"
 			queryParams.put('term','%'+params."search[value]"+'%')
 
-
-			recordsFiltered=dc.executeQuery(countQuery,queryParams)[0]
+			recordsFiltered=dc.executeQuery(countQuery.toString(), queryParams)[0]
 		}
 
 		query="${query} order by ${sortName} ${params."order[0][dir]"}".toString()
-
-		documentList=dc.executeQuery(query,queryParams,[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
-
+		documentList=dc.executeQuery(query.toString(), 
+		                             queryParams,
+		                             [max:params.length, offset:params.start, order:params."order[0][dir]", sort:sortName])
 		def data=[]
-            documentList.each { doc ->
+		documentList.each { doc ->
         		def inLine=[DT_RowId:doc.id]
 				def i=0
-
 				columns.each {
 					// If the prop name contains a '.' it needs to be evaluated through a groovy shell
 					// Doing so is considerably slower than the construct in the else
@@ -299,6 +304,7 @@ class ListService {
 						}
 						inLine +=["${i}": getDisplayString(val)]
 					}
+
 					i++
 				}
 
@@ -311,6 +317,7 @@ class ListService {
                         """</div>"""
                     }
         		}
+
         		inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				data+=inLine
     		}
@@ -351,17 +358,15 @@ class ListService {
 		detailTableId=detailTableId.replace(".","_")
 		detailTableId=detailTableId.replace("class ","")
 
-
 		if (params."search[value]") {
 			query = params."search[value]"
 		}
-		def res=dc.search(query,[max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
+
+		def res=dc.search(query.toString(), [max:params.length,offset:params.start,order:params."order[0][dir]",sort:sortName])
 		documentList=res.results
 
 		def recordsTotal=res.total
 		def recordsFiltered=recordsTotal
-
-
 
 		def data=[]
 			documentList.each { doc ->
@@ -371,6 +376,7 @@ class ListService {
 					inLine +=["${i}":doc."${it}".toString()]
 					i++
 				}
+
 				def baseUrl=request.contextPath
 				if(!actions) {
 					actions = { dok, env ->
@@ -380,6 +386,7 @@ class ListService {
                         """</div>"""
                     }
 				}
+
 				inLine+=["${i}":actions(doc,['detailTableId':detailTableId])]
 				data+=inLine
 			}
@@ -412,13 +419,15 @@ class ListService {
 			def parent=movedItem."${parentname}"
 			// Hibernate doesn't like =null, so we need to make an exception for that case.
 			if (parent) {
-				items=dc.findAll("from ${dc.getName()} where ${parentname}=:parent order by position asc",[parent:parent])
+				items=dc.findAll("from ${dc.getName()} where ${parentname}=:parent order by position asc".toString(),
+				                 [parent:parent])
 			} else {
-				items=dc.findAll("from ${dc.getName()} where ${parentname} is null order by position asc")
+				items=dc.findAll("from ${dc.getName()} where ${parentname} is null order by position asc".toString())
 			}
 		} else {
 			items=dc.findAll([sort:'position',order:'asc']) {}
 		}
+
 		int idx=1
 		items.each { item ->
 			if (item.id!=movedItem.id){
@@ -430,6 +439,7 @@ class ListService {
 				idx++
 			}
 		}
+
 		return ['succes':true]
 	}
 }
