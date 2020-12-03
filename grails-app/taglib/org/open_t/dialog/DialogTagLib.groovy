@@ -1270,7 +1270,8 @@ class DialogTagLib {
         out << row (attrs) {
             def action = attrs.action ?: "treeJSON"
 
-            def domainPropertyName = GrailsNameUtils.getPropertyName(attrs.object.getClass().getSimpleName())
+            def domainPropertyName = GrailsNameUtils.getPropertyName(attrs.object."${attrs.propertyName}".getClass().getSimpleName())
+            domainPropertyName=domainPropertyName.replaceAll('\\$.*','')
 
             def url = attrs.url ?: "${request.contextPath}/${domainPropertyName}/${action}"
             def attributes = ""
