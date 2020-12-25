@@ -26,56 +26,63 @@ class DialogExceptionController {
     def dialogService
 
 	def dialog() {
-        // If we have loglevel debug, output the stacktrace to the log.
-        if (request.exception) {
-            log.debug dialogService.exceptionMessage(request.exception)
-        }
-		def title="Error handling error"
-		def msg=""
-
-        def exceptionName=null
+        def msg="Exception while handling exception"
+        def title="Exception while handling exception"
         def exceptionMessage=null
         def args=[]
-        if (request.exception.message) {
-            exceptionName=request?.exception.getClass().getName()
-            exceptionMessage=request.exception?.message
-            if (request?.exception?.metaClass?.hasProperty("args")) {
-                args=request.exception?.args
+        try {
+            // If we have loglevel debug, output the stacktrace to the log.
+            if (request.exception) {
+                log.debug dialogService.exceptionMessage(request.exception)
             }
-        }
-        if (!exceptionMessage && request.exception.cause?.message) {
-            exceptionName=request?.exception?.cause?.getClass().getName()
-            exceptionMessage=request?.exception?.cause?.message
-            if (request?.exception?.cause?.metaClass?.hasProperty("args")) {
-                args=request.exception?.cause?.args
-            }
-        }
 
-        if (!exceptionMessage && request.exception.cause?.cause?.message) {
-            exceptionName=request?.exception?.cause?.cause?.getClass().getName()
-            exceptionMessage=request?.exception?.cause?.cause?.message
-            if (request?.exception?.cause?.cause?.metaClass?.hasProperty("args")) {
-                args=request.exception?.cause?.cause?.args
-            }
-        }
+            def exceptionName=null
 
-		try {
+
+            if (request.exception.message) {
+                exceptionName=request?.exception.getClass().getName()
+                exceptionMessage=request.exception?.message
+                try {
+                    args=request.exception?.args
+                } catch (Exception ee) {}
+            }
+            if (!exceptionMessage && request.exception.cause?.message) {
+                exceptionName=request?.exception?.cause?.getClass().getName()
+                exceptionMessage=request?.exception?.cause?.message
+                try {
+                    args=request.exception?.cause?.args
+                } catch (Exception ee) {}
+            }
+
+            if (!exceptionMessage && request.exception.cause?.cause?.message) {
+                exceptionName=request?.exception?.cause?.cause?.getClass().getName()
+                exceptionMessage=request?.exception?.cause?.cause?.message
+                try {
+                    args=request.exception?.cause?.cause?.args
+                } catch (Exception ee) {}
+            }
+
             // If the exception code resolves, show that. If not, show generic message with exception message as parameter
-            title = message(code:'exception'+exceptionMessage+'.title',args:args,default:"UNRESOLVED")
+            title = message(code:'exception.'+exceptionMessage+'.title',args:args,default:"UNRESOLVED")
             if (title=="UNRESOLVED") {
                 title=message(code:'exception.default.title',args:[exceptionName,exceptionMessage,args],default:"An exception occurred: {0}:{1} with arguments: {2}")
             }
 
             // If the exception code resolves, show that. If not, show generic message with exception message as parameter
-            msg = message(code:'exception'+exceptionMessage+'.message',args:args,default:"UNRESOLVED")
+            msg = message(code:'exception.'+exceptionMessage+'.message',args:args,default:"UNRESOLVED")
             if (msg=="UNRESOLVED") {
                 msg=message(code:'exception.default.message',args:[exceptionName,exceptionMessage,args],default:"An exception occcurred: {0}:{1} with arguments: {2}")
             }
 
-
 		} catch (Exception e) {
 			msg=e.message
+            e.printStackTrace()
 		}
+
+        if (!exceptionMessage) {
+            exceptionMessage="Exception"
+        }
+
         def result = [
                 success:false,
                 message:msg,
