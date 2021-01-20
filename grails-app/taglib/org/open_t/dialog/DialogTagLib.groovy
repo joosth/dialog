@@ -1467,8 +1467,11 @@ class DialogTagLib {
      *  The type can be info (default), warning, danger, success
      */
     def alert = { attrs, body ->
+        def messageSource = grailsAttributes.messageSource
+        def locale = RCU.getLocale(request)
         def alertType=attrs.type?:"info"
-        out <<"""<div class="alert alert-${alertType} alert-dismissible" role="alert" ><button type="button" class="close" data-dismiss="alert" ><span aria-hidden="true">&times;</span></button>"""
+        out << """<div class="alert alert-${alertType} alert-dismissible" role="alert">"""
+        out << '<button type="button" class="close" data-dismiss="alert" aria-label="' + messageSource.getMessage("dialog.alert.close", null, "close", locale) + '"><span aria-hidden="true">&times;</span></button>'
         out << body()
         out << "</div>"
    }

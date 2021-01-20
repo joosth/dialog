@@ -335,7 +335,7 @@ dialog.statusMessage = function statusMessage(event,eventData) {
         }
         var msg="";
         if (alertType!="clear") {
-		    msg='<div id="alertmessage" class="alert alert-'+alertType+' fade"><button type="button" class="close" data-dismiss="alert">×</button><div>'+eventData.message+'</div></div>';
+		    msg='<div id="alertmessage" class="alert alert-'+alertType+' fade"><button type="button" class="close" data-dismiss="alert" aria-label="Close">×</button><div>'+eventData.message+'</div></div>';
         }
 		$("#statusmessage").html(msg);
 		$("#alertmessage").addClass("in");
