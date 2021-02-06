@@ -1,5 +1,5 @@
 /*
  *= require /ext/codemirror/lib/codemirror
  *= require /ext/codemirror/addon/display/fullscreen
- *= require /dialog.codemirror
+ *= require /dialog-local/dialog.codemirror
 */

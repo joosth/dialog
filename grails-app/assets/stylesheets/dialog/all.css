@@ -1,10 +1,10 @@
-/* 
- *= require /dialog/codemirror
- *= require /dialog/datatables
- *= require /dialog/tree
- *= require /dialog/bootstrap
- *= require /dialog/fontawesome
- *= require /dialog/select2
- *= require /dialog/datetimepicker
- *= require /dialog
+/*
+ *= require /dialog-local/codemirror
+ *= require /dialog-local/datatables
+ *= require /dialog-local/tree
+ *= require /dialog-local/bootstrap
+ *= require /dialog-local/fontawesome
+ *= require /dialog-local/select2
+ *= require /dialog-local/datetimepicker
+ *= require /dialog-local/dialog
 */

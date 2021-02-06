@@ -3,4 +3,4 @@
 //= require /ext/DataTables/js/dataTables.rowReorder.js
 //= require /ext/DataTables/js/dataTables.responsive.js
 //= require /ext/DataTables/js/responsive.bootstrap.js
-//= require /dialog.datatables.js
+//= require /dialog-local/dialog.datatables.js
