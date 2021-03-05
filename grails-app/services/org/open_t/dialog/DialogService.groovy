@@ -516,7 +516,11 @@ class DialogService {
         return constrainedProperty
     }
 
-    def hasProperty(domainClass,propertyName) {
+    /**
+     * Is there a field in the domainClass
+     * @return The field of the domain class.
+     */
+    def hasProperty(domainClass, propertyName) {
         return null!= domainClass.getDeclaredFields().find { it.name == propertyName}
     }
 
