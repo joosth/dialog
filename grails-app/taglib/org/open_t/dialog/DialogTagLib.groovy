@@ -615,13 +615,10 @@ class DialogTagLib {
      */
     def domainObject = { attrs ->
         def nullable=false
-        def constrainedProperty
-
-        if (attrs.object.metaClass.hasProperty("constraintsMap")) {
-            constrainedProperty=attrs.object.getClass().constraintsMap[attrs.propertyName]
+        def constrainedProperty=dialogService.getConstrainedProperty(attrs.object,attrs.propertyName)
+        if (constrainedProperty) {
             nullable=constrainedProperty.isNullable()
         }
-
         def propertyClass=dialogService.getAssociationClass(attrs.object,attrs.propertyName)
 
         def optionValues = []
