@@ -148,13 +148,13 @@ class ListService {
 						fields=filterColumnNames
 					}
 
-					def where=fields.collect {"dc.${it.toString()} like :term"}.join(" or ")
-					def order=fields.collect {"dc.${it.toString()}"}.join(",")
+					def whereLike=fields.collect { "str(dc.${it?.toString()?:''}) like :term"}.join(" or ")
+					def order=fields.collect {"dc.${it?.toString()?:''}"}.join(", ")
 					def searchTerm = "%"+(params."search[value]")+"%"
-					documentList=dc.findAll("from ${dc.getName()} as dc where ${where} order by ${order}".toString(),
+					documentList=dc.findAll("from ${dc.getName()} as dc where ${whereLike} order by ${order}".toString(),
 					                        [term:searchTerm],
 					                        [max: params.length, offset: params.start, order: params."order[0][dir]", sort: sortName])
-					recordsFiltered = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${where}".toString(),
+					recordsFiltered = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${whereLike}".toString(),
                                                       [term:searchTerm])
 				} else {
 					documentList=dc.list([max:params.length, offset:params.start, order:params."order[0][dir]", sort:sortName])
