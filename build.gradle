@@ -103,7 +103,6 @@ assets {
 //    excludes = ["ext/**/*.js","ext/**/*.map","ext/**/*.html"]
     excludes = ["ext/**","*-local/**"]
 //    includes = ["*.jpg","*.jpeg","*.png","*.ttf","*.svg","*.woff","*.eot","*.svg"]
-    includes = ["ext/**/*.jpg","ext/**/*.jpeg","ext/**/*.png","ext/**/*.ttf","ext/**/*.svg","ext/**/*.woff","ext/**/*.eot","ext/**/*.svg"]
-
+    includes = ["ext/**/*.jpg","ext/**/*.jpeg","ext/**/*.png","ext/**/*.ttf","ext/**/*.svg","ext/**/*.woff","ext/**/*.eot","ext/**/*.svg","ext/ckeditor/**/*.*"]
 
 }
