@@ -136,10 +136,26 @@ class FileService {
             minimumFreeTempSpace=100000000
         }
 
-        def contentLengthString=request.getHeader("Content-Length")
-        def contentLength=new Long(contentLengthString)
+        long contentLength = 0
+        try {
+            contentLength = Long.parseLong(request.getHeader("Content-Length")?:'')
+        } catch (NumberFormatException numFormEx) {
+            log.error("Invalid content-length header.")
+            return [
+                message: "exception.default.title",
+                success: false
+            ]
+        }
 
-        if (freeSpace<(minimumFreeTempSpace+contentLength)) {
+        if (contentLength < 0) {
+            log.error("Negative content-length header refused.")
+            return [
+                message: "exception.default.title",
+                success: false
+            ]
+        }
+
+        if (freeSpace < (minimumFreeTempSpace + contentLength)) {
             return [
                 message: "dialog.messages.outofdiskspace",
                 success: false
