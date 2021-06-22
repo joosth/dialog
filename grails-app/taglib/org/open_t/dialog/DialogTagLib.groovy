@@ -107,7 +107,13 @@ class DialogTagLib {
                             "first":      "${message(code: "dialog.datatables.paginate.first")}",
                             "last":       "${message(code: "dialog.datatables.paginate.last")}",
                             "next":       "${message(code: "dialog.datatables.paginate.next")}",
-                            "previous":   "${message(code: "dialog.datatables.paginate.previous")}"
+                            "previous":   "${message(code: "dialog.datatables.paginate.previous")}",
+                            "aria": {
+                                "first":    "${message(code: "dialog.datatables.paginate.aria.first")}",
+                                "previous": "${message(code: "dialog.datatables.paginate.aria.previous")}",
+                                "next":     "${message(code: "dialog.datatables.paginate.aria.next")}",
+                                "last":     "${message(code: "dialog.datatables.paginate.aria.last")}"
+                            }
                         },
                         "aria": {
                             "sortAscending":  "${message(code: "dialog.datatables.aria.sortAscending")}",
