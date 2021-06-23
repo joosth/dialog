@@ -1380,6 +1380,8 @@ class DialogTagLib {
 
         // display previous link when not on firststep
         if (currentstep > firststep) {
+            linkTagAttrs.put('aria-label', 
+                             messageSource.getMessage('dialog.datatables.paginate.aria.previous', null, "Vorige pagina", locale))
             linkParams.offset = offset - max
             writer << '<li class="prev" data-offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
@@ -1417,6 +1419,8 @@ class DialogTagLib {
 
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
+                linkTagAttrs.put('aria-label',
+                                 messageSource.getMessage('dialog.datatables.paginate.aria.first', null, "Eerste pagina", locale))
                 linkParams.offset = 0
                 writer << '<li data-offset="0">'
                 writer << link(linkTagAttrs.clone()) {firststep.toString()}
@@ -1441,6 +1445,8 @@ class DialogTagLib {
 
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
+                linkTagAttrs.put('aria-label',
+                                 messageSource.getMessage('dialog.datatables.paginate.aria.last', null, "Laatste pagina", locale))
                 writer << '<li class="disabled"><span>...</span></li>'
                 linkParams.offset = (laststep -1) * max
                 writer << '<li data-offset="'+linkParams.offset+'">'
@@ -1451,6 +1457,8 @@ class DialogTagLib {
 
         // display next link when not on laststep
         if (currentstep < laststep) {
+            linkTagAttrs.put('aria-label',
+                             messageSource.getMessage('dialog.datatables.paginate.aria.next', null, "Volgende pagina", locale))
             linkParams.offset = offset + max
             writer << '<li class="next" data-offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
