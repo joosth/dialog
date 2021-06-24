@@ -1304,17 +1304,18 @@ class DialogTagLib {
     /**
      * Creates next/previous links to support pagination for the current controller.<br/>
      *
-     * @attr total REQUIRED The total number of results to paginate
-     * @attr action the name of the action to use in the link, if not specified the default action will be linked
-     * @attr controller the name of the controller to use in the link, if not specified the current controller will be linked
-     * @attr id The id to use in the link
-     * @attr params A map containing request parameters
-     * @attr prev The text to display for the previous link (defaults to "Previous" as defined by default.paginate.prev property in I18n messages.properties)
-     * @attr next The text to display for the next link (defaults to "Next" as defined by default.paginate.next property in I18n messages.properties)
-     * @attr max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
-     * @attr maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
-     * @attr offset Used only if params.offset is empty
-     * @attr fragment The link fragment (often called anchor tag) to use
+     * @param attrs map with attributes this for this taglib is includes:
+     *        attrs.total REQUIRED The total number of results to paginate
+     *        attrs.action the name of the action to use in the link, if not specified the default action will be linked
+     *        attrs.controller the name of the controller to use in the link, if not specified the current controller will be linked
+     *        attrs.id The id to use in the link
+     *        attrs.params A map containing request parameters
+     *        attrs.prev The text to display for the previous link (defaults to "Previous" as defined by default.paginate.prev property in I18n messages.properties)
+     *        attrs.next The text to display for the next link (defaults to "Next" as defined by default.paginate.next property in I18n messages.properties)
+     *        attrs.max The number of records displayed per page (defaults to 10). Used ONLY if params.max is empty
+     *        attrs.maxsteps The number of steps displayed for pagination (defaults to 10). Used ONLY if params.maxsteps is empty
+     *        attrs.offset Used only if params.offset is empty
+     *        attrs.fragment The link fragment (often called anchor tag) to use
      */
     def paginate = { attrs ->
         def writer = out
@@ -1377,19 +1378,17 @@ class DialogTagLib {
         int laststep = Math.round(Math.ceil(total / max))
 
         writer << "<ul class=\"${cssClasses}\">"
-
+        linkTagAttrs.put('aria-label', 
+                         messageSource.getMessage('dialog.datatables.paginate.aria.previous', null, "previous page", locale))
         // display previous link when not on firststep
         if (currentstep > firststep) {
-            linkTagAttrs.put('aria-label', 
-                             messageSource.getMessage('dialog.datatables.paginate.aria.previous', null, "Vorige pagina", locale))
             linkParams.offset = offset - max
             writer << '<li class="prev" data-offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
                 (attrs.prev ?: messageSource.getMessage("paginate.prev", null, "&laquo;", locale))
             }
             writer << '</li>'
-        }
-        else {
+        } else {
             writer << '<li class="prev disabled">'
             writer << '<span>'
             writer << (attrs.prev ?: messageSource.getMessage("paginate.prev", null, "&laquo;", locale))
@@ -1420,7 +1419,7 @@ class DialogTagLib {
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
                 linkTagAttrs.put('aria-label',
-                                 messageSource.getMessage('dialog.datatables.paginate.aria.first', null, "Eerste pagina", locale))
+                                 messageSource.getMessage('dialog.datatables.paginate.aria.first', null, "first page", locale))
                 linkParams.offset = 0
                 writer << '<li data-offset="0">'
                 writer << link(linkTagAttrs.clone()) {firststep.toString()}
@@ -1446,7 +1445,7 @@ class DialogTagLib {
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
                 linkTagAttrs.put('aria-label',
-                                 messageSource.getMessage('dialog.datatables.paginate.aria.last', null, "Laatste pagina", locale))
+                                 messageSource.getMessage('dialog.datatables.paginate.aria.last', null, "last page", locale))
                 writer << '<li class="disabled"><span>...</span></li>'
                 linkParams.offset = (laststep -1) * max
                 writer << '<li data-offset="'+linkParams.offset+'">'
@@ -1455,18 +1454,17 @@ class DialogTagLib {
             }
         }
 
+        linkTagAttrs.put('aria-label',
+                         messageSource.getMessage('dialog.datatables.paginate.aria.next', null, "next page", locale))
         // display next link when not on laststep
         if (currentstep < laststep) {
-            linkTagAttrs.put('aria-label',
-                             messageSource.getMessage('dialog.datatables.paginate.aria.next', null, "Volgende pagina", locale))
             linkParams.offset = offset + max
             writer << '<li class="next" data-offset="'+linkParams.offset+'">'
             writer << link(linkTagAttrs.clone()) {
                 (attrs.next ? attrs.next : messageSource.getMessage("paginate.next", null, "&raquo;", locale))
             }
             writer << '</li>'
-        }
-        else {
+        } else {
             linkParams.offset = offset + max
             writer << '<li class="disabled" data-offset="'+linkParams.offset+'"">'
             writer << '<span>'
