@@ -9,10 +9,10 @@
         </title>
     </head>
     <body>
-        <h3>
+        <h1 class="dialoglist-title">
             <g:if test="${title}">${title}</g:if>
             <g:else><g:message code="${name?name:controllerName}.list.title" default="${name?name:controllerName}.list.title" /></g:else>
-        </h3>
+        </h1>
         <div class="datatable dialog-open-events" id="tableWrapper_${dc.getName().replace('.','_').replace('class ','')}">
             <table pageLength="10" datatable-type="master" filter="${filter ? true : false}"
                     jsonUrl="${createLink(base:'/',controller:controllerName,action: jsonlist ? jsonlist :'jsonlist',params:jsonlistparams?jsonlistparams:[:]).substring(1)}"

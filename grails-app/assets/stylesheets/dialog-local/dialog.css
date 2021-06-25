@@ -106,3 +106,6 @@ div.tab-pane {
 .navbar.btn-group {
     margin-bottom:20px;
 }
+h1.dialoglist-title {
+    font-size: 24px; /* h3 font-size */
+}
