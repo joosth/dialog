@@ -40,7 +40,7 @@ dialog.datetimepicker.openDate = function openDate (e, params) {
     var widgetType = $("#" + timeEntryElementId).length > 0 ? "DATETIME" : "DATE"
 
     //Check browser support for HTML5 date widget..
-    if (Modernizr.inputtypes.date && Modernizr.touch) {
+    if (Modernizr.inputtypes.date) {
 
         //HTML5 date widget
         $(this).on("change", function() {
