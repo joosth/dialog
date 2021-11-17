@@ -6,7 +6,7 @@
 		<title><g:message code="list.${listConfig.name}.title" /></title>
 	</head>
 	<body>
-		<h1 class="dialoglist-title"><g:message code="list.${listConfig.name}.title" /></h2>
+		<h1 class="dialoglist-title"><g:message code="list.${listConfig.name}.title" /></h1>
 		<div class="row-fluid">
     		<div class="span12">
            		<div class="datatable dialog-open-events" id="tableWrapper_${listConfig.name}">
