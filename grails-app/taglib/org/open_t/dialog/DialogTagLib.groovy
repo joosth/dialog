@@ -538,40 +538,45 @@ class DialogTagLib {
      */
     def xml = { attrs ->
         def skipAttrs = ["object", "propertyName", "mode", "type", "value"]
-        def newAttrs = attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey) }
-        newAttrs.cols = attrs.cols ?: 80
-        newAttrs.rows = attrs.rows ?: 20
-        def xmltext = attrs.object."${attrs.propertyName}"
-        def prettyXmlText = xmltext
-        if (xmltext) {
+        def textareaAttrs= attrs.findAll { attrKey, attrValue -> !skipAttrs.contains(attrKey) }
+
+        if (!textareaAttrs.cols) {
+            textareaAttrs["cols"]=80
+        }
+        if (!textareaAttrs.rows) {
+            textareaAttrs["rows"]=20
+        }
+
+        if (textareaAttrs["class"]) {
+            textareaAttrs["class"] += " dialog-open-events"
+        } else {
+            textareaAttrs["class"] = "dialog-open-events"
+        }
+
+        textareaAttrs["name"]=attrs.propertyName
+
+        def uuid=UUID.randomUUID().toString()
+        textareaAttrs['id']=uuid
+
+        String attrsString=""
+        textareaAttrs.each { attrKey, attrValue ->
+                        if (!skipAttrs.contains(attrKey)) {
+                            attrsString += """ ${attrKey}="${attrValue}" """
+                        }
+                    }
+
+        String xmlText = attrs.object."${attrs.propertyName}"
+        if (xmlText) {
             try {
-                prettyXmlText=dialogService.prettyPrint(xmltext)
+                xmlText=dialogService.prettyPrint(xmlText)
             } catch (Exception e) {
                 // Do nothing if XML parsing fails
             }
         }
-        newAttrs.value = prettyXmlText
-        newAttrs.name = attrs.propertyName
-        if (newAttrs["class"]) {
-            newAttrs["class"] += " dialog-open-events"
-        } else {
-            newAttrs["class"] = "dialog-open-events"
-        }
-        def uuid=UUID.randomUUID().toString()
-        newAttrs['id']=uuid
-
         out << row (attrs) {
-
-            switch (attrs.mode) {
-                case "show":
-                    String s = prettyXmlText
-                    return """${g.textArea(newAttrs) {s?.encodeAsHTML()}}"""
-                    break
-
-                case "edit":
-                    return g.textArea(newAttrs)
-                    break
-            }
+            out <<"""<textarea ${attrsString} >"""
+            out << xmlText
+            out <<"</textarea>"
         }
     }
 
