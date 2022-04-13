@@ -56,7 +56,8 @@ dialog.uploader.handleReadyStateDone = function(file, options, response, wrapper
         } else {
             $(".dialog-message-events").trigger("dialog-message", { message: response.message, alertType: "success" });
         }
-        $(wrapper).find(".upload-progress-text").html(dialog.messages.uploadcompleted.replace("{0}", file.name));
+
+        $(wrapper).find(".upload-progress-text").text(dialog.messages.uploadcompleted.replace("{0}", file.name));
         $(".dialog-refresh-events").trigger("dialog-refresh", { dc: "ALL" });
     }
 
@@ -82,7 +83,7 @@ dialog.uploader.upload = function(file, options,fileNo,numFiles) {
 
         $(wrapper).find(".upload-progress").css("width", "0%");
         $(wrapper).find(".upload-progress-percentage").html("0%");
-        $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("{0}", file.name));
+        $(wrapper).find(".upload-progress-text").text(dialog.messages.uploading.replace("{0}", file.name));
     }
 
     xhr.upload.onprogress = function(e) {
@@ -120,7 +121,7 @@ dialog.uploader.upload = function(file, options,fileNo,numFiles) {
         }
     };
 
-    $(wrapper).find(".upload-progress-text").html(dialog.messages.uploading.replace("{0}", file.name));
+    $(wrapper).find(".upload-progress-text").text(dialog.messages.uploading.replace("{0}", file.name));
 
     var url = dialog.baseUrl + "/" + options.controller + "/" + options.action;
     $.each(options.params, function(k, v) {
