@@ -575,9 +575,10 @@ class DialogTagLib {
         }
         out << row (attrs) {
             out <<"""<textarea ${attrsString} >"""
-            out << xmlText
+            out << xmlText.encodeAsHTML()
             out <<"</textarea>"
         }
+        return null
     }
 
     /**
@@ -1383,7 +1384,7 @@ class DialogTagLib {
         int laststep = Math.round(Math.ceil(total / max))
 
         writer << "<ul class=\"${cssClasses}\">"
-        linkTagAttrs.put('aria-label', 
+        linkTagAttrs.put('aria-label',
                          messageSource.getMessage('dialog.datatables.paginate.aria.previous', null, "previous page", locale))
         // display previous link when not on firststep
         if (currentstep > firststep) {
