@@ -1442,7 +1442,7 @@ class DialogTagLib {
                 }
                 else {
                     linkParams.offset = (i - 1) * max
-                    writer << '<li data-offset="'+linkParams.offset+'" class=\"hidden-xs\">';
+                    writer << '<li data-offset="'+linkParams.offset+'" class=\"hidden-xs\" title="'+messageSource.getMessage("dialog.datatables.paginate.title.number", i.toString(), "pagina ${i}", locale)+'">';
                     writer << link(linkTagAttrs.clone()) {i.toString()}
                     writer << "</li>";
                 }
