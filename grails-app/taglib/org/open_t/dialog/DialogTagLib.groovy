@@ -1406,7 +1406,7 @@ class DialogTagLib {
             (beginstep..endstep).each { i ->
                 def titleAttrVal = messageSource.getMessage("dialog.datatables.paginate.title.number", [i.toString()].toArray(), "pagina ${i}", locale)
                 if (currentstep == i) {
-                    writer << "<li class=\"active hidden-xs\" title=\"' + titleAttrVal + '\">"
+                    writer << "<li class=\"active hidden-xs\" title=\"" + titleAttrVal + "\">"
                     writer << "<span>${i}</span>"
                     writer << "</li>";
                 } else {
