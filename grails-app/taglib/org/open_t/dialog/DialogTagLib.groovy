@@ -1394,8 +1394,9 @@ class DialogTagLib {
 
             // display firststep link when beginstep is not firststep
             if (beginstep > firststep) {
+                def titleAttrFirststep = messageSource.getMessage("dialog.datatables.paginate.title.number", [firststep.toString()].toArray(), "pagina ${firststep}", locale)
                 linkParams.offset = 0
-                writer << '<li data-offset="0">'
+                writer << '<li data-offset="0" title="' + titleAttrFirststep + '">'
                 writer << link(linkTagAttrs.clone()) {firststep.toString()}
                 writer << '</li>'
                 writer << '<li class="disabled"><span>...</span></li>'
@@ -1403,15 +1404,14 @@ class DialogTagLib {
 
             // display paginate steps
             (beginstep..endstep).each { i ->
+                def titleAttrVal = messageSource.getMessage("dialog.datatables.paginate.title.number", [i.toString()].toArray(), "pagina ${i}", locale)
                 if (currentstep == i) {
-                    writer << "<li class=\"active hidden-xs\">"
+                    writer << "<li class=\"active hidden-xs\" title=\"' + titleAttrVal + '\">"
                     writer << "<span>${i}</span>"
                     writer << "</li>";
-                }
-                else {
+                } else {
                     linkParams.offset = (i - 1) * max
-                    def titleAttrVal = messageSource.getMessage("dialog.datatables.paginate.title.number", [i.toString()].toArray(), "pagina ${i}", locale)
-                    writer << '<li data-offset="'+linkParams.offset+'" class=\"hidden-xs\" title="'+titleAttrVal+'">';
+                    writer << '<li data-offset="'+linkParams.offset+'" class=\"hidden-xs\" title="' + titleAttrVal + '">';
                     writer << link(linkTagAttrs.clone()) {i.toString()}
                     writer << "</li>";
                 }
@@ -1420,8 +1420,9 @@ class DialogTagLib {
             // display laststep link when endstep is not laststep
             if (endstep < laststep) {
                 writer << '<li class="disabled"><span>...</span></li>'
+                def titleAttrLaststep = messageSource.getMessage("dialog.datatables.paginate.title.number", [laststep.toString()].toArray(), "pagina ${laststep}", locale)
                 linkParams.offset = (laststep -1) * max
-                writer << '<li data-offset="'+linkParams.offset+'">'
+                writer << '<li data-offset="'+linkParams.offset+'" title="' + titleAttrLaststep + '">'
                 writer << link(linkTagAttrs.clone()) { laststep.toString() }
                 writer << '</li>'
             }
