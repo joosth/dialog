@@ -40,6 +40,7 @@ dialog.codemirror.open =function open (e,params) {
         if (mode=='text/html') {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/html',
+                tabSize:4,
                 lineNumbers: true,
                 extraKeys: {
                     "'>'": function(cm) { cm.closeTag(cm, '>'); },
@@ -68,6 +69,7 @@ dialog.codemirror.open =function open (e,params) {
                 mode: 'text/x-groovy',
                 lineNumbers: true,
                 matchBrachets:true,
+                tabSize:4,
                 extraKeys: {
                     "F11": function(cm) {
                         if (cm.getOption("fullScreen")) {
@@ -89,6 +91,7 @@ dialog.codemirror.open =function open (e,params) {
         if (mode=='text/x-sql') {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/x-sql',
+                tabSize:4,
                 lineNumbers: true,
                 extraKeys: {
                     "F11": function(cm) {
