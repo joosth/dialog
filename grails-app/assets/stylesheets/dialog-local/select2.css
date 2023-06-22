@@ -2,6 +2,6 @@
  *= require /ext/select2/css/select2.min.css
 */
 /* fix width of placeholder */
-.select2-selection--multiple .select2-search--inline .select2-search__field {
-  width: auto !important;
+span.select2-selection li.select2-search input {
+  width: 100% !important;
 }
