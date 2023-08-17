@@ -36,15 +36,15 @@ class DialogExceptionController {
         def args=[]
         try {
             // Strategy: find the first DialogException or ApiException, if that fails get the first that has a message
-            if (request.exception?.getClass().getSimpleName() in ["ApiException","DialogException"]) {
+            if (request.exception?.getClass()?.getSimpleName() in ["ApiException","DialogException"]) {
                 exception=request.exception
             }
 
-            if (!exception && request.exception?.cause && (request.exception?.cause?.getClass().getSimpleName() in ["ApiException","DialogException"])) {
+            if (!exception && request.exception?.cause && (request.exception?.cause?.getClass()?.getSimpleName() in ["ApiException","DialogException"])) {
                 exception=request.exception.cause
             }
 
-            if (!exception && request.exception?.cause?.cause && (request.exception?.cause?.cause?.getClass().getSimpleName() in ["ApiException","DialogException"])) {
+            if (!exception && request.exception?.cause?.cause && (request.exception?.cause?.cause?.getClass()?.getSimpleName() in ["ApiException","DialogException"])) {
                 exception=request.exception.cause.cause
             }
 
