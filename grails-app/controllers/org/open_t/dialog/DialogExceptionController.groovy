@@ -36,15 +36,15 @@ class DialogExceptionController {
         def args=[]
         try {
             // Strategy: find the first DialogException or ApiException, if that fails get the first that has a message
-            if (request.exception?.getClass().getSimpleName() in ["ApiException","DialogException"]) {
+            if (request.exception  && request.exception?.getClass()?.getSimpleName() in ["ApiException","DialogException"]) {
                 exception=request.exception
             }
 
-            if (!exception && request.exception?.cause && (request.exception?.cause?.getClass().getSimpleName() in ["ApiException","DialogException"])) {
+            if (!exception && request.exception?.cause && (request.exception?.cause?.getClass()?.getSimpleName() in ["ApiException","DialogException"])) {
                 exception=request.exception.cause
             }
 
-            if (!exception && request.exception?.cause?.cause && (request.exception?.cause?.cause?.getClass().getSimpleName() in ["ApiException","DialogException"])) {
+            if (!exception && request.exception?.cause?.cause && (request.exception?.cause?.cause?.getClass()?.getSimpleName() in ["ApiException","DialogException"])) {
                 exception=request.exception.cause.cause
             }
 
@@ -64,35 +64,34 @@ class DialogExceptionController {
             }
             // If we have loglevel debug, output the stacktrace to the log.
             log.debug dialogService.exceptionMessage(exception)
+            if (exception) {
+                exceptionName=exception.getClass().getName()
+                exceptionMessage=exception.message
+               try {
+                    args=exception?.args
+                } catch (Exception ee) {}
 
-            exceptionName=exception.getClass().getName()
-            exceptionMessage=exception.message
-            try {
-                args=exception?.args
-            } catch (Exception ee) {}
+                // If the exception code resolves, show that. If not, show generic message with exception message as parameter
+                title = message(code:'exception.'+exceptionMessage+'.title',args:args,default:"UNRESOLVED")
+                if (title=="UNRESOLVED") {
+                    title=message(code:'exception.default.title',args:[exceptionName,exceptionMessage,args],default:"An exception occurred: {0}:{1} with arguments: {2}")
+                }
 
-            // If the exception code resolves, show that. If not, show generic message with exception message as parameter
-            title = message(code:'exception.'+exceptionMessage+'.title',args:args,default:"UNRESOLVED")
-            if (title=="UNRESOLVED") {
-                title=message(code:'exception.default.title',args:[exceptionName,exceptionMessage,args],default:"An exception occurred: {0}:{1} with arguments: {2}")
-            }
-
-            // If the exception code resolves, show that. If not, show generic message with exception message as parameter
-            msg = message(code:'exception.'+exceptionMessage+'.message',args:args,default:"UNRESOLVED")
-            if (msg=="UNRESOLVED") {
-                msg=message(code:'exception.default.message',args:[exceptionName,exceptionMessage,args],default:"An exception occcurred: {0}:{1} with arguments: {2}")
-            }
-
-            if (!exception) {
-                title = "Missing exception object"
+                // If the exception code resolves, show that. If not, show generic message with exception message as parameter
+                msg = message(code:'exception.'+exceptionMessage+'.message',args:args,default:"UNRESOLVED")
+                if (msg=="UNRESOLVED") {
+                    msg=message(code:'exception.default.message',args:[exceptionName,exceptionMessage,args],default:"An exception occcurred: {0}:{1} with arguments: {2}")
+                }
+            } else {
+                title = "Server error"
                 exceptionMessage=title
-                msg   = "Missing exception object in exception handler"
+                msg   = "A server error occurred while processing your request."
             }
 
 		} catch (Exception e) {
             log.debug "we have an exception: ${e}"
             log.debug dialogService.exceptionMessage(e)
-			msg=e.message
+			msg=e?.message
 		}
 
         if (!exceptionMessage) {
