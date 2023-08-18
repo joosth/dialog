@@ -1,3 +1,7 @@
 /*
  *= require /ext/select2/css/select2.min.css
 */
+/* fix width of placeholder */
+span.select2-selection li.select2-search input {
+  width: 100% !important;
+}
