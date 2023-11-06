@@ -109,3 +109,13 @@ div.tab-pane {
 h1.dialoglist-title {
     font-size: 24px; /* h3 font-size */
 }
+body {
+  font-family: Arial, sans-serif !important;   
+}
+.tooltip {
+  font-family: Arial, sans-serif !important;
+}
+
+.popover {
+  font-family: Arial, sans-serif !important;
+}
