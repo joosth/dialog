@@ -5,66 +5,64 @@ import grails.plugins.*
 class DialogGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "4.0.4 > *"
-    // resources that are excluded from plugin packaging
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
+       def grailsVersion = "6.1.2  > *"
+       // resources that are excluded from plugin packaging
+       def pluginExcludes = [
+           "grails-app/views/error.gsp"
+       ]
 
-    // TODO Fill in these fields
-    def title = "Dialog" // Headline display name of the plugin
-    def author = "Your name"
-    def authorEmail = ""
-    def description = '''\
-Brief summary/description of the plugin.
-'''
-    def profiles = ['web']
+       // TODO Fill in these fields
+       def title = "Dialog" // Headline display name of the plugin
+       def author = "Your name"
+       def authorEmail = ""
+       def description = '''\
+   Brief summary/description of the plugin.
+   '''
+   // URL to the plugin's documentation
+       def documentation = "https://grails.github.io/Dialog/"
+       def profiles = ['web']
+       // Extra (optional) plugin metadata
 
-    // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/dialog"
+       // License: one of 'APACHE', 'GPL2', 'GPL3'
+   //    def license = "APACHE"
 
-    // Extra (optional) plugin metadata
+       // Details of company behind the plugin (if there is one)
+   //    def organization = [ name: "My Company", url: "https://www.my-company.com/" ]
 
-    // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
+       // Any additional developers beyond the author specified above.
+   //    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
 
-    // Details of company behind the plugin (if there is one)
-//    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
+       // Location of the plugin's issue tracker.
+   //    def issueManagement = [ system: "GitHub", url: "https://github.com/grails/Dialog/issues" ]
 
-    // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
+       // Online location of the plugin's browseable source code.
+   //    def scm = [ url: "https://github.com/grails/Dialog" ]
 
-    // Location of the plugin's issue tracker.
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
+       Closure doWithSpring() { {->
+               // TODO Implement runtime spring config (optional)
+           }
+       }
 
-    // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+       void doWithDynamicMethods() {
+           // TODO Implement registering dynamic methods to classes (optional)
+       }
 
-    Closure doWithSpring() { {->
-            // TODO Implement runtime spring config (optional)
-        }
-    }
+       void doWithApplicationContext() {
+           // TODO Implement post initialization spring config (optional)
+       }
 
-    void doWithDynamicMethods() {
-        // TODO Implement registering dynamic methods to classes (optional)
-    }
+       void onChange(Map<String, Object> event) {
+           // TODO Implement code that is executed when any artefact that this plugin is
+           // watching is modified and reloaded. The event contains: event.source,
+           // event.application, event.manager, event.ctx, and event.plugin.
+       }
 
-    void doWithApplicationContext() {
-        // TODO Implement post initialization spring config (optional)
-    }
+       void onConfigChange(Map<String, Object> event) {
+           // TODO Implement code that is executed when the project configuration changes.
+           // The event is the same as for 'onChange'.
+       }
 
-    void onChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-    }
-
-    void onConfigChange(Map<String, Object> event) {
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
-
-    void onShutdown(Map<String, Object> event) {
-        // TODO Implement code that is executed when the application shuts down (optional)
-    }
+       void onShutdown(Map<String, Object> event) {
+           // TODO Implement code that is executed when the application shuts down (optional)
+       }
 }

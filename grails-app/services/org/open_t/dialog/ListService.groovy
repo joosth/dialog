@@ -21,7 +21,8 @@ package org.open_t.dialog
 
 import java.text.SimpleDateFormat
 
-import org.apache.commons.lang.WordUtils
+import org.apache.commons.lang3.text.WordUtils
+
 import org.grails.web.util.WebUtils
 import org.springframework.web.servlet.support.RequestContextUtils as RCU
 import grails.gorm.transactions.Transactional
