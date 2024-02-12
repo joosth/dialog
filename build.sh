@@ -1,3 +1,3 @@
 #!/bin/bash
-# Create distribution set, jars will be in build/install/dialog/lib/
+# Create distribution set, jars will be in build/libs/
 ./gradlew modulejar
