@@ -20,6 +20,10 @@ repositories {
 configurations {
     all {
     }
+    moduleimplementation {
+        extendsFrom implementation
+    }
+
 }
 
 dependencies {
@@ -71,7 +75,31 @@ bootJar.enabled = false
 
 tasks.jar {
     archiveFileName.set("dialog.jar")
+    doLast {
+        
+    }
 }
+
+task copyToLib(type: Copy) {
+    into "${buildDir}/output/libs"
+    from configurations.all
+}
+
+
 war.enabled=false
+
+task copyModuleProvidedDeps(type: Copy) {
+    group = "Build"
+    description = "Copy the dependencies that are provided by the module for Alice in the build/libs folder of the project folder. Including all the dependencies of the selected module provided dependencies."
+    timeout = Duration.ofMinutes(10)
+    def dirName ="${projectDir}/build/libs"
+    from configurations.moduleimplementation
+    into "${dirName}"
+}
+
+tasks.register('modulejar')  {
+   dependsOn tasks.jar
+   dependsOn copyModuleProvidedDeps
+}
 
 
