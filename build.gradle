@@ -1,29 +1,25 @@
 plugins {
     id "groovy"
-    id "war"
-    id "idea"
+    id "java-library"
     id "com.bertramlabs.asset-pipeline" version "4.3.0"
-
     id "org.grails.grails-plugin"
-    id "application"
+    id "idea"
     id "eclipse"
     id "org.grails.grails-gsp"
 }
 
 group = "dialog"
-version="0.1"
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core/" }
+    mavenLocal()
+    gradlePluginPortal()
 }
 
 configurations {
     all {
     }
-    moduleimplementation {
-        extendsFrom implementation
-    }
-
 }
 
 dependencies {
@@ -47,12 +43,13 @@ dependencies {
     testImplementation("org.spockframework:spock-core")
     testImplementation("io.micronaut:micronaut-http-client")
 
-    implementation  "commons-io:commons-io:2.15.1"
-    implementation "org.apache.commons:commons-lang3:3.14.0"
-}
-
-application {
-    mainClass.set("dialog.Application")
+    implementation("commons-io:commons-io") {
+        version {
+           strictly '[2.15, 2.16['
+           prefer '2.15.1'
+        }
+    }
+    implementation("org.apache.commons:commons-lang3:3.14.0")
 }
 
 java {
@@ -69,9 +66,10 @@ assets {
     minifyCss = true
     excludes = ["ext/**","*-local/**"]
     includes = ["ext/**/*.jpg","ext/**/*.jpeg","ext/**/*.png","ext/**/*.ttf","ext/**/*.svg","ext/**/*.woff","ext/**/*.eot","ext/**/*.svg","ext/ckeditor/**/*.*"]
-
 }
+
 bootJar.enabled = false
+jar.enabled = true
 
 tasks.jar {
     archiveFileName.set("dialog.jar")
@@ -79,27 +77,4 @@ tasks.jar {
         
     }
 }
-
-task copyToLib(type: Copy) {
-    into "${buildDir}/output/libs"
-    from configurations.all
-}
-
-
-war.enabled=false
-
-task copyModuleProvidedDeps(type: Copy) {
-    group = "Build"
-    description = "Copy the dependencies that are provided by the module for Alice in the build/libs folder of the project folder. Including all the dependencies of the selected module provided dependencies."
-    timeout = Duration.ofMinutes(10)
-    def dirName ="${projectDir}/build/libs"
-    from configurations.moduleimplementation
-    into "${dirName}"
-}
-
-tasks.register('modulejar')  {
-   dependsOn tasks.jar
-   dependsOn copyModuleProvidedDeps
-}
-
 
