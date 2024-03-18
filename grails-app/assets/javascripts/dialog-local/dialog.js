@@ -469,8 +469,10 @@ dialog.simpleAction = function(e) {
         dataType: "json",
 
         success:function(data) {
+            if (data.result) {
+                data=data.result;
+            }
             if (data.success) {
-
                 $(".dialog-message-events").trigger("dialog-message",{message:data.message});
             } else {
                 $(".dialog-message-events").trigger("dialog-message",{alertType:'danger',message:data.message});
