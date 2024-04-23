@@ -18,12 +18,15 @@
 */
 package org.open_t.dialog
 import grails.converters.JSON;
-
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
 /**
  * Controller for showing dialog exception messages
  */
 class DialogExceptionController {
     def dialogService
+    def messageSource
+    
 
 	def dialog() {
         log.debug "Dialog Exception with request ${request} ${request.exception?.class?.name} ${request.exception}"
@@ -72,15 +75,15 @@ class DialogExceptionController {
                 } catch (Exception ee) {}
 
                 // If the exception code resolves, show that. If not, show generic message with exception message as parameter
-                title = message(code:'exception.'+exceptionMessage+'.title',args:args,default:"UNRESOLVED")
+                title = messageSource.getMessage('exception.'+exceptionMessage+'.title',args?.toArray(),"UNRESOLVED",LocaleContextHolder.locale)
                 if (title=="UNRESOLVED") {
-                    title=message(code:'exception.default.title',args:[exceptionName,exceptionMessage,args],default:"An exception occurred: {0}:{1} with arguments: {2}")
+                    title=messageSource.getMessage('exception.default.title',[exceptionName,exceptionMessage,args].toArray(),"An exception occurred: {0}:{1} with arguments: {2}",LocaleContextHolder.locale)
                 }
 
                 // If the exception code resolves, show that. If not, show generic message with exception message as parameter
-                msg = message(code:'exception.'+exceptionMessage+'.message',args:args,default:"UNRESOLVED")
+                msg = messageSource.getMessage('exception.'+exceptionMessage+'.message',args?.toArray(),"UNRESOLVED",LocaleContextHolder.locale)
                 if (msg=="UNRESOLVED") {
-                    msg=message(code:'exception.default.message',args:[exceptionName,exceptionMessage,args],default:"An exception occcurred: {0}:{1} with arguments: {2}")
+                    msg=messageSource.getMessage('exception.default.message',[exceptionName,exceptionMessage,args].toArray(),"An exception occurred: {0}:{1} with arguments: {2}",LocaleContextHolder.locale)
                 }
             } else {
                 title = "Server error"
