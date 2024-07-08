@@ -516,7 +516,12 @@ class FileService {
 	 */
 	def stream(def file, def response, def contentType = null,fileName=null) {
         if (fileName) {
-	        response.setHeader("Content-Disposition", "attachment; filename=\"${fileName}\"")
+            fileName = fileName.replaceAll("\r", "")?.replaceAll("\n", "")
+            if (fileName != "") {
+                response.setHeader("Content-Disposition", "attachment; filename=\"${fileName}\"")
+            } else {
+                response.setHeader("Content-Disposition", "inline")
+            }
         } else {
             response.setHeader("Content-Disposition", "inline")
         }
