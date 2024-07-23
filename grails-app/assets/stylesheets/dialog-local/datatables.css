@@ -1,5 +1,8 @@
 /*
- *= require /ext/DataTables/css/dataTables.bootstrap.css
- *= require /ext/DataTables/css/rowReorder.bootstrap.css
- *= require /ext/DataTables/css/responsive.bootstrap.css
+ *= require /ext/DataTables/datatables.css
 */
+table.table.dataTable { margin-bottom: 6px !important;}
+div.dt-container div.dt-paging ul.pagination  { float:right; }
+
+div.dt-search { float: right; margin-bottom: 6px !important; }
+div.dt-length { margin-bottom: 6px !important;}
