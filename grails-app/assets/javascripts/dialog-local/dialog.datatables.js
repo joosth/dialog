@@ -19,8 +19,7 @@
 * along with this program.  If not, see http://www.gnu.org/licenses
 */
 dialog.datatables = {};
-
-
+DataTable.defaults.column.orderSequence = ['asc', 'desc'];
 dialog.datatables.open =function open (e,params) {
     var curMatch = $(this);
     var tableId = curMatch.attr('id');
