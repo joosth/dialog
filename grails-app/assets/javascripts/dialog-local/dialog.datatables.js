@@ -62,10 +62,10 @@ dialog.datatables.open =function open (e,params) {
             if (datatableType == "detail") {
                 // only show detail table if parent is present
                 if (params != null && (params.id != null)) {
-                    curMatch.closest("div.dataTables_wrapper").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : \''+params.id+'\'})">'+newString+'</span></label></div>');
+                    curMatch.closest("div.dt-container").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, { parentId : \''+params.id+'\'})">'+newString+'</span></label></div>');
                 }
             } else {
-                curMatch.closest("div.dataTables_wrapper").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, {})">'+newString+'</span></label></div>');
+                curMatch.closest("div.dt-container").find('div.toolbar div:first').prepend('<div style="float: left; margin-right: 20px;" class="btn-group"><label><span class="btn btn-default btn-sm" onclick="dialog.formDialog(null,\''+controller+'\', { refresh : \''+tableId+'\'}, {})">'+newString+'</span></label></div>');
             }
         }
     }).DataTable({
