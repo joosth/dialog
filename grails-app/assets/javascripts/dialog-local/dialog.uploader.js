@@ -46,13 +46,14 @@ dialog.uploader.handleReadyStateDone = function(file, options, response, wrapper
             var uuid = response.data.uuid;
             $(wrapper).append("<input type=\"hidden\" name=\"fileupload\" value=\"" + uuid + "\" />");
 
-            var dataTable = $(wrapper).find("#fileupload").dataTable();
+            var dataTable = $(wrapper).find("#fileupload").DataTable();
             var deleteButton = "<a href=\"#\" class=\"btn btn-default btn-danger upload-delete-button\" row-id=\"" +
                 uuid + "\" controller=\"" + options.controller + "\"><i class=\"fa fa-trash-o\"></i></a>";
 
-            var rowId = dataTable.fnAddData([ name, mimetype, size, deleteButton ]);
-            var row = dataTable.fnGetNodes(rowId);
-            $(row).attr("id", uuid);
+            var rowNode=dataTable.row.add([ name, mimetype, size, deleteButton ]).draw().node();
+
+
+            $(rowNode).attr("id", uuid);
         } else {
             $(".dialog-message-events").trigger("dialog-message", { message: response.message, alertType: "success" });
         }
