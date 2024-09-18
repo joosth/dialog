@@ -35,9 +35,9 @@ class ListConfig {
 	def newButton=true
 	def rowreordering=false
 	def idName="id"
-        def autoWidth=false    
+    def autoWidth=false    
 	List<ListConfigColumn> columns = []
-        def defaultSortColumns = [] // list of lists [columnname,direction]
+    def defaultSortColumns = [] // list of lists [columnname,direction]
 
 	def configure (Closure closure) {
 		closure.setDelegate(this)
@@ -202,6 +202,9 @@ class ListConfig {
         def sorting=[]
         defaultSortColumns.each { sortElement ->
             sorting.add ([columnIndex[sortElement[0]],sortElement[1]])
+        }
+        if (sorting.size()==0) {
+            sorting=[[0,'asc']]
         }
         return sorting
     }
