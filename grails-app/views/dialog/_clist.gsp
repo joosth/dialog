@@ -16,7 +16,7 @@
                            toolbar="${listConfig.toolbar?:''}"
                            newButton="${listConfig.newButton}"
                            autoWidth="${listConfig.autoWidth}"
-                           >
+                           defaultSorting="${raw(listConfig.defaultSortingString)}" >
         				<thead>
         					<tr>
         						<g:each in="${listConfig.columns}" var="column">

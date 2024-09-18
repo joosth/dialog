@@ -35,8 +35,9 @@ class ListConfig {
 	def newButton=true
 	def rowreordering=false
 	def idName="id"
-    def autoWidth=false
+        def autoWidth=false    
 	List<ListConfigColumn> columns = []
+        def defaultSortColumns = [] // list of lists [columnname,direction]
 
 	def configure (Closure closure) {
 		closure.setDelegate(this)
@@ -188,4 +189,27 @@ class ListConfig {
 	def getFilterColumns() {
 		columns.findAll { it.filter }.collect { it.name }
 	}
+    /**
+     * Get the default sorting columns as a list of lists
+     */
+    def getDefaultSorting() {
+        def columnIndex=[:]
+        def n=0
+        columns.each { column ->
+            columnIndex[column.name]=n
+            n++
+        }
+        def sorting=[]
+        defaultSortColumns.each { sortElement ->
+            sorting.add ([columnIndex[sortElement[0]],sortElement[1]])
+        }
+        return sorting
+    }
+    
+    /**
+    * Get the default sorting as a String
+    */
+    String getDefaultSortingString() {
+        return '[' + getDefaultSorting().collect { '[' + it[0] + ',&quot;' + it[1] + '&quot;]' }.join(',') +']'
+    }
 }
