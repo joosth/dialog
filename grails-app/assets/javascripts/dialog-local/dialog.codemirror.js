@@ -41,6 +41,7 @@ dialog.codemirror.open =function open (e,params) {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/html',
                 tabSize:4,
+                indentUnit: 4,
                 lineNumbers: true,
                 extraKeys: {
                     "'>'": function(cm) { cm.closeTag(cm, '>'); },
@@ -70,6 +71,7 @@ dialog.codemirror.open =function open (e,params) {
                 lineNumbers: true,
                 matchBrachets:true,
                 tabSize:4,
+                indentUnit: 4,
                 extraKeys: {
                     "F11": function(cm) {
                         if (cm.getOption("fullScreen")) {
@@ -92,6 +94,7 @@ dialog.codemirror.open =function open (e,params) {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/x-sql',
                 tabSize:4,
+                indentUnit: 4,
                 lineNumbers: true,
                 extraKeys: {
                     "F11": function(cm) {
