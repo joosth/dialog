@@ -38,6 +38,7 @@ class ListConfig {
     def autoWidth=false    
 	List<ListConfigColumn> columns = []
     def defaultSortColumns = [] // list of lists [columnname,direction]
+    Boolean stateSave=false
 
 	def configure (Closure closure) {
 		closure.setDelegate(this)

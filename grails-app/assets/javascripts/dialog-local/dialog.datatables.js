@@ -36,6 +36,7 @@ dialog.datatables.open =function open (e,params) {
     var rowReorder = curMatch.hasClass("rowreordering");
     var autoWidth = curMatch.attr("autoWidth")=="true";
     var defaultSorting = $.parseJSON( curMatch.attr("defaultSorting")) || [[0,"asc"]];
+    var stateSave=curMatch.attr("stateSave")=="true";
 
     curMatch.on('init.dt', function () {
         if (rowReorder) {
@@ -90,7 +91,8 @@ dialog.datatables.open =function open (e,params) {
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         "language": dialog.messages.datatables.language,
         "rowReorder": rowReorder,
-         "order": defaultSorting
+         "order": defaultSorting,
+        "stateSave":stateSave
     });
     // refresh dialog on event
     $("#"+tableId).bind("dialog-refresh",dialog.datatables.refreshDatatableEvent);
