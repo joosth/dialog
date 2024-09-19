@@ -10,4 +10,7 @@
 //= require /ext/codemirror/mode/clike/clike.js
 //= require /ext/codemirror/mode/sql/sql.js
 //= require /ext/codemirror/addon/display/fullscreen.js
+//= require /ext/codemirror/addon/search/search.js
+//= require /ext/codemirror/addon/search/searchcursor.js
+//= require /ext/codemirror/addon/dialog/dialog.js
 //= require /dialog-local/dialog.codemirror.js
