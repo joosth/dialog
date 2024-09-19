@@ -114,9 +114,10 @@ class ListService {
 			} else if (dialogService.hasProperty(dc,"listProperties")) {
 				columns=dc.listProperties
 			}
-
+            // sort by given column or first on by default
 			def sortName=columns[new Integer(params."order[0][column]")]
      		sortName=sortName? sortName:columns[0]
+            def sortDir=params."order[0][dir]" ?: "asc"
 
 			def documentList
 			def recordsTotal=dc.count()
@@ -132,7 +133,7 @@ class ListService {
 					def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
 					def masterDomainObj = grailsApplication.getClassForName(params.objectClass).get(params.objectId)
 					documentList = dc."$filterMethod"(masterDomainObj,
-					                                  [max:params.length, offset:params.start, order:params."order[0][dir]", sort:sortName])
+					                                  [max:params.length, offset:params.start, order:sortDir, sort:sortName])
 					recordsTotal = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object".toString(),
 					                               ['object':masterDomainObj])
 					recordsFiltered=recordsTotal
@@ -152,9 +153,9 @@ class ListService {
 					def whereLike=fields.collect { "str(dc.${it?.toString()?:''}) like :term"}.join(" or ")
 					def order=fields.collect {"dc.${it?.toString()?:''}"}.join(", ")
 					def searchTerm = "%"+(params."search[value]")+"%"
-					documentList=dc.findAll("from ${dc.getName()} as dc where ${whereLike} order by ${order}".toString(),
+					documentList=dc.findAll("from ${dc.getName()} as dc where ${whereLike} order by ${sortName} ${sortDir}".toString(),
 					                        [term:searchTerm],
-					                        [max: params.length, offset: params.start, order: params."order[0][dir]", sort: sortName])
+					                        [max: params.length, offset: params.start, order: sortDir, sort: sortName])
 					recordsFiltered = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${whereLike}".toString(),
                                                       [term:searchTerm])
 				} else {
