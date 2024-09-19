@@ -35,7 +35,10 @@ dialog.datatables.open =function open (e,params) {
     var pageLength=parseInt(curMatch.attr("pageLength")) || 5;
     var rowReorder = curMatch.hasClass("rowreordering");
     var autoWidth = curMatch.attr("autoWidth")=="true";
-    var defaultSorting = $.parseJSON( curMatch.attr("defaultSorting")) || [[0,"asc"]];
+    var defaultSorting=[[0,'asc']];
+    if (curMatch.attr("defaultSorting")) {
+        defaultSorting = $.parseJSON(curMatch.attr("defaultSorting"));
+    }
     var stateSave=curMatch.attr("stateSave")=="true";
 
     curMatch.on('init.dt', function () {
