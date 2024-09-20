@@ -1005,7 +1005,7 @@ class DialogTagLib {
 
         out <<
             """
-            <table id="${prefix}" ${copiedAttrs} class="table table-striped table-bordered table-hover dialog-open-events ${cssClass}" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}">
+            <table id="${prefix}" ${copiedAttrs} class="table table-striped table-bordered table-hover dialog-open-events ${cssClass}" jsonUrl="${jsonUrl}" positionUrl="${positionUrl}" filter="${listConfig?.filter ? true : false}" >
                 <thead>
                     <tr>
             """
@@ -1265,7 +1265,7 @@ class DialogTagLib {
             }
         }
 
-        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}"  ${copiedAttrs}>${link}</li>"""
+        out << """<li ${onclick}class="menu-item ${attrs.class ?: ""}"  ${copiedAttrs}>${link}</li>""".toString()
     }
 
     /**

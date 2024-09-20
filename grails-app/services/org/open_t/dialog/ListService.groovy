@@ -121,45 +121,63 @@ class ListService {
 
 			def documentList
 			def recordsTotal=dc.count()
-			def recordsFiltered
+			def recordsFiltered=recordsTotal
 
 			//Create Id for the table
 			def detailTableId="detailTable_"+dc
 			detailTableId=detailTableId.replace(".","_")
 			detailTableId=detailTableId.replace("class ","")
 
-			if (params['objectId'] != null) {
-				if (params.objectId !='null') {
-					def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
-					def masterDomainObj = grailsApplication.getClassForName(params.objectClass).get(params.objectId)
-					documentList = dc."$filterMethod"(masterDomainObj,
-					                                  [max:params.length, offset:params.start, order:sortDir, sort:sortName])
-					recordsTotal = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object".toString(),
-					                               ['object':masterDomainObj])
-					recordsFiltered=recordsTotal
-				} else {
-					recordsTotal=0
-					recordsFiltered=0
-				}
-			} else {
-				if (filterColumnNames && params."search[value]") {
-					def fields
-					if (String.isInstance(filterColumnNames)) {
-						fields=[filterColumnNames]
-					} else {
-						fields=filterColumnNames
-					}
+            def whereLike=null
+            def searchTerm=null
 
-					def whereLike=fields.collect { "str(dc.${it?.toString()?:''}) like :term"}.join(" or ")
-					def order=fields.collect {"dc.${it?.toString()?:''}"}.join(", ")
-					def searchTerm = "%"+(params."search[value]")+"%"
+		    if (filterColumnNames && params."search[value]") {
+				def fields
+				if (String.isInstance(filterColumnNames)) {
+                    fields=[filterColumnNames]
+                } else {
+                    fields=filterColumnNames
+                }
+
+                whereLike=fields.collect { "str(dc.${it?.toString()?:''}) like :term"}.join(" or ")
+                searchTerm = "%"+(params."search[value]")+"%"
+            }
+
+
+			if ((params.objectId != null) && (params.objectId !='null')) {
+                def filterMethod = "findAllBy"+WordUtils.capitalize(params.property)
+                def masterDomainObj = grailsApplication.getClassForName(params.objectClass).get(params.objectId)
+                if (whereLike) {
+                    // parent Object AND search filter
+                    documentList=dc.findAll("from ${dc.getName()} as dc where ${params.property}=:object and (${whereLike}) order by ${sortName} ${sortDir}".toString(),
+                                        [term:searchTerm,object:masterDomainObj],
+                                        [max: params.length, offset: params.start, order: sortDir, sort: sortName])
+                    recordsTotal = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object".toString(),
+                                               ['object':masterDomainObj])[0]
+
+                    recordsFiltered = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object and (${whereLike})".toString(),
+                                               ['object':masterDomainObj,'term':searchTerm])[0]
+
+
+                } else {
+                    // parent Object WITHOUT search filter
+                    documentList = dc."$filterMethod"(masterDomainObj,[max:params.length, offset:params.start, order:sortDir, sort:sortName])
+                    recordsTotal = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${params.property}=:object".toString(),
+                                               ['object':masterDomainObj])[0]
+                    recordsFiltered=recordsTotal
+                }
+			} else {
+                if (searchTerm && whereLike) {
+                    // No parent object WITH search filter
 					documentList=dc.findAll("from ${dc.getName()} as dc where ${whereLike} order by ${sortName} ${sortDir}".toString(),
 					                        [term:searchTerm],
 					                        [max: params.length, offset: params.start, order: sortDir, sort: sortName])
-					recordsFiltered = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${whereLike}".toString(),
-                                                      [term:searchTerm])
+					recordsTotal = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc".toString(),[])[0]
+					recordsFiltered = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc where ${whereLike}".toString(),[term:searchTerm])[0]
 				} else {
+                    // No parent object AND no search filter
 					documentList=dc.list([max:params.length, offset:params.start, order:params."order[0][dir]", sort:sortName])
+					recordsTotal = dc.executeQuery("select count(*) as cnt from ${dc.getName()} as dc".toString(),[])[0]
 					recordsFiltered = recordsTotal
 				}
 			}
@@ -210,6 +228,7 @@ class ListService {
     		}
 
     		def json = [draw:params.draw,recordsTotal:recordsTotal,recordsFiltered:recordsFiltered,data:data]
+
         	return json
         }
 
