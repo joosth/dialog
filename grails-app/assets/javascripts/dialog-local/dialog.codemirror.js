@@ -31,6 +31,8 @@ dialog.codemirror.openpre =function open (e,params) {
 dialog.codemirror.open =function open (e,params) {
     var id=$(this).attr("id");
     var width=$(this).attr("width");
+    var readOnly=$(this).prop("readonly")||false;
+    
     var height=$(this).attr("height");
     if (id){
         var mode = $(this).attr('codeMirrorMode');
@@ -43,6 +45,7 @@ dialog.codemirror.open =function open (e,params) {
                 tabSize:4,
                 indentUnit: 4,
                 lineNumbers: true,
+                readOnly:readOnly,    
                 extraKeys: {
                     "'>'": function(cm) { cm.closeTag(cm, '>'); },
                     "'/'": function(cm) { cm.closeTag(cm, '/'); },
@@ -69,6 +72,7 @@ dialog.codemirror.open =function open (e,params) {
             dialog.codemirror.editors[id] = CodeMirror.fromTextArea(textarea, {
                 mode: 'text/x-groovy',
                 lineNumbers: true,
+                readOnly:readOnly,    
                 matchBrachets:true,
                 tabSize:4,
                 indentUnit: 4,
@@ -96,6 +100,7 @@ dialog.codemirror.open =function open (e,params) {
                 tabSize:4,
                 indentUnit: 4,
                 lineNumbers: true,
+                readOnly:readOnly,    
                 extraKeys: {
                     "F11": function(cm) {
                         if (cm.getOption("fullScreen")) {

@@ -22,3 +22,7 @@
 div.CodeMirror { border: 1px solid #ccc;
     border-radius:3px;
 }
+
+.CodeMirror-fullscreen {
+  position: fixed !important;
+}
