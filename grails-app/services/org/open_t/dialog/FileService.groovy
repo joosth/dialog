@@ -130,6 +130,11 @@ class FileService {
 
         // Refuse upload if this will bring us under the defined miminum free space (default: 100M)
         String tempDir = System.getProperty("java.io.tmpdir");
+        if (!tempDir.exists()) {
+            log.error("Java temp folder does not exist. \"${tempDir.toString()}\" not found upload failed.")
+            return [ success: false, message: "exception.default.title" ]
+        }
+
         def freeSpace=new File(tempDir).getFreeSpace()
         def minimumFreeTempSpace = grailsApplication.config?.dialog?.files?.minimumFreeTempSpace
         if (!minimumFreeTempSpace) {
