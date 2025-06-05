@@ -135,7 +135,7 @@ class FileService {
             return [ success: false, message: "exception.default.title" ]
         }
 
-        def freeSpace=tempDir.getFreeSpace()
+        def freeSpace=tempDir.getUsableSpace()
         def minimumFreeTempSpace = grailsApplication.config?.dialog?.files?.minimumFreeTempSpace
         if (!minimumFreeTempSpace) {
             minimumFreeTempSpace=100000000
