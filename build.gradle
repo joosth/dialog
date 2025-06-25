@@ -1,3 +1,16 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+    mavenCentral()
+  }
+  dependencies {
+    //classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.10.1"
+    classpath "com.bertramlabs.plugins:asset-pipeline-gradle:4.3.0" // 5.0.1 requires java17
+  }
+}
+
 plugins {
     id "groovy"
     id "java-library"
@@ -10,10 +23,9 @@ plugins {
 
 group = "dialog"
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core/" }
-    mavenLocal()
+    maven { url "https://plugins.gradle.org/m2/" }
     gradlePluginPortal()
 }
 
@@ -52,8 +64,9 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.14.0")
 }
 
-java {
-    sourceCompatibility = JavaVersion.toVersion("11")
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
 }
 
 tasks.withType(Test) {
