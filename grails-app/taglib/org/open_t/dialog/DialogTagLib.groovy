@@ -42,91 +42,7 @@ class DialogTagLib {
      * @param request The HTTPServletRequest
      */
     def head = {
-        out <<
-            """
-            <script type="text/javascript">
-                var dialog = {};
-                dialog.options = {
-                    "refreshPage": false
-                };
-                dialog.baseUrl = "${request.contextPath}";
-                dialog.pluginUrl = "${resource(plugin: "dialog")}";
-                dialog.language = "${g.message(code: "language.code", default: "en")}";
-
-                dialog.messages = {};
-                dialog.messages.ok = "${message(code: "dialog.messages.ok")}";
-                dialog.messages.delete = "${message(code: "dialog.messages.delete")}";
-                dialog.messages.cancel = "${message(code: "dialog.messages.cancel")}";
-
-                dialog.messages.uploading = "${message(code: "dialog.messages.uploading")}";
-                dialog.messages.uploadcompleted = "${message(code: "dialog.messages.uploadcompleted")}";
-
-                dialog.messages['new'] = "${message(code: "dialog.messages.new")}";
-                dialog.messages.confirmdelete = "${message(code: "dialog.messages.confirmdelete")}";
-                dialog.messages.confirmdeleteTitle = "${message(code: "dialog.messages.confirmdeleteTitle")}";
-
-                dialog.messages.moment = {};
-                dialog.messages.moment.inputDateFormat = "${message(code: "dialog.moment.inputDateFormat")}";
-                dialog.messages.moment.inputTimeFormat = "${message(code: "dialog.moment.inputTimeFormat")}";
-
-                dialog.messages.datetimepicker = {};
-                dialog.messages.datetimepicker.tooltips = {
-                    today: "${message(code: "dialog.datetimepicker.today")}",
-                    clear: "${message(code: "dialog.datetimepicker.clear")}",
-                    close: "${message(code: "dialog.datetimepicker.close")}",
-                    selectMonth: "${message(code: "dialog.datetimepicker.selectMonth")}",
-                    prevMonth: "${message(code: "dialog.datetimepicker.prevMonth")}",
-                    nextMonth: "${message(code: "dialog.datetimepicker.nextMonth")}",
-                    selectYear: "${message(code: "dialog.datetimepicker.selectYear")}",
-                    prevYear: "${message(code: "dialog.datetimepicker.prevYear")}",
-                    nextYear: "${message(code: "dialog.datetimepicker.nextYear")}",
-                    selectDecade: "${message(code: "dialog.datetimepicker.selectDecade")}",
-                    prevDecade: "${message(code: "dialog.datetimepicker.prevDecade")}",
-                    nextDecade: "${message(code: "dialog.datetimepicker.nextDecade")}",
-                    prevCentury: "${message(code: "dialog.datetimepicker.prevCentury")}",
-                    nextCentury: "${message(code: "dialog.datetimepicker.nextCentury")}"
-                }
-                dialog.messages.maskedinput = {};
-                dialog.messages.maskedinput.date = "${message(code: "dialog.maskedinput.date")}";
-                dialog.messages.maskedinput.time = "${message(code: "dialog.maskedinput.time")}";
-                dialog.messages.datatables = {
-                    "language": {
-                        "decimal":        "${message(code: "dialog.datatables.decimal")}",
-                        "emptyTable":     "${message(code: "dialog.datatables.emptyTable")}",
-                        "info":           "${message(code: "dialog.datatables.info")}",
-                        "infoEmpty":      "${message(code: "dialog.datatables.infoEmpty")}",
-                        "infoFiltered":   "${message(code: "dialog.datatables.infoFiltered")}",
-                        "infoPostFix":    "${message(code: "dialog.datatables.infoPostFix")}",
-                        "thousands":      "${message(code: "dialog.datatables.thousands")}",
-                        "lengthMenu":     "${message(code: "dialog.datatables.lengthMenu")}",
-                        "loadingRecords": "${message(code: "dialog.datatables.loadingRecords")}",
-                        "processing":     "${message(code: "dialog.datatables.processing")}",
-                        "search":         "${message(code: "dialog.datatables.search")}",
-                        "zeroRecords":    "${message(code: "dialog.datatables.zeroRecords")}",
-                        "paginate": {
-                            "first":      "${message(code: "dialog.datatables.paginate.first")}",
-                            "last":       "${message(code: "dialog.datatables.paginate.last")}",
-                            "next":       "${message(code: "dialog.datatables.paginate.next")}",
-                            "previous":   "${message(code: "dialog.datatables.paginate.previous")}",
-                            "aria": {
-                                "first":    "${message(code: "dialog.datatables.paginate.aria.first")}",
-                                "previous": "${message(code: "dialog.datatables.paginate.aria.previous")}",
-                                "next":     "${message(code: "dialog.datatables.paginate.aria.next")}",
-                                "last":     "${message(code: "dialog.datatables.paginate.aria.last")}"
-                            }
-                        },
-                        "aria": {
-                            "sortAscending":  "${message(code: "dialog.datatables.aria.sortAscending")}",
-                            "sortDescending": "${message(code: "dialog.datatables.aria.sortDescending")}"
-                        }
-                    }
-                };
-                dialog.messages.validation = {};
-                dialog.messages.validation.invalidTime="${message(code: "dialog.validation.invalidTime")}";
-                dialog.messages.validation.invalidDateTime="${message(code: "dialog.validation.invalidDateTime")}";
-                var CKEDITOR_BASEPATH = dialog.baseUrl+"/assets/ext/ckeditor/";
-            </script>
-            """
+        out << """<script type="text/javascript" src="${request.contextPath}/dialogEnvVars/envvars.js"></script>"""
     }
 
     /**
@@ -134,16 +50,7 @@ class DialogTagLib {
      * This tag should be after any other dialog modules
      */
     def last = {
-        out <<
-            """
-            <script type="text/javascript">
-                \$(function() {
-                    \$(document).trigger("dialog-init", {});
-                    \$(".dialog-open-events").filter(".dialog-open-first").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true});
-                    \$(".dialog-open-events").filter(":not(.dialog-open-first)").filter(":not(.dialog-opened)").trigger("dialog-open", {"page": true}).addClass("dialog-opened");
-                });
-            </script>
-            """
+        out << """<script text="text/javascript" src="${request.contextPath}/dialogEnvVars/init.js"></script>"""
     }
 
     /**
